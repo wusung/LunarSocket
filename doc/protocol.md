@@ -308,8 +308,8 @@ Sent when you are trying to emote
 
 ## PlayerInfoRequest - `48`
 
-Sent when the player wants information about other connected players.
-The server should send after some [PlayerInfo](#playerinfo---8) if some players are running Lunar Client.
+Sent around every 300ms to request information about other connected players.
+The server should send [PlayerInfo](#playerinfo---8) for every player on Lunar Client.
 
 ```js
 {
