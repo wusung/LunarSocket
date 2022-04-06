@@ -17,6 +17,7 @@ You can see Lunar Client protocol detailed [here](https://github.com/Solar-Tweak
 $ git clone https://github.com/Solar-Tweaks/LunarSocket # Clone repo
 $ cd LunarSocket # Go to LunarSocket folder
 $ npm install # Install dependencies
+$ npm run build # Build the project
 ```
 
 # Configuration
