@@ -49,7 +49,7 @@
 
 Send a message to the player's console.
 
-Note: *supports Minecraft Color Codes*
+Note: *supports Minecraft color codes*
 
 ```js
 {
@@ -61,7 +61,7 @@ Note: *supports Minecraft Color Codes*
 
 Send a pop up notification to the client. Title field can be an empty string. However description cannot.
 
-Note: *supports Minecraft Color Codes*
+Note: *supports Minecraft color codes*
 
 ```js
 {
@@ -72,10 +72,11 @@ Note: *supports Minecraft Color Codes*
 
 ## FriendList - `4`
 
-Packet confaining your friend list. Sent at boot by lunar.
+Packet containing your friend list. Sent at boot by lunar.
 
-Note: *We suppose that the `unknownInt` is for an online friend is the friend's Minecraft version.
-Note: *The `online` array seems to be empty everytime and the another packet is telling if the friend is online.
+Note: *We suppose that the `unknownInt` is for an online friend is the friend's Minecraft version.*
+
+Note: *The `online` array seems to be empty everytime and another packet is telling if the friend is online.*
 
 ```js
 {
@@ -115,8 +116,8 @@ Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 
 Packet containing a player details.
 Used in two cases:
-  - When it sends information about the current player
-  - When it sends information about other players
+  - When it tells information about the current player
+  - When it tells information about other players
 
 Note: *The `equipped` field for cosmetics is ignored when the packet tells information about another player. 
 Which means lunar sends you only equipped cosmetics*
@@ -165,7 +166,7 @@ Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 
 ## ForceCrash - `33`
 
-Crash the client ¯\_(ツ)_/¯
+Crash the client ¯\\_(ツ)_/¯
 
 ```js
 {}
@@ -211,7 +212,7 @@ Packet containing all player's emotes
 Sent when the player sends a message in the Admin Console.
 
 Note: *In order to open the Admin Console, you need to open your friend menu and press <kbd>F1</kbd>.
-The `consoleAccess` field ([FriendList](#friendlist---4) packet should be on `true` as well or you won't be able to open the console.*
+The `consoleAccess` field ([FriendList](#friendlist---4)) packet should be on `true` as well or you won't be able to open the console.*
 
 ```js
 {
@@ -307,11 +308,12 @@ Sent when you are trying to emote
 
 ## PlayerInfoRequest - `48`
 
-Sent when the player wants information about other connected players
+Sent when the player wants information about other connected players.
+The server should send after some [PlayerInfo](#playerinfo---8) if some players are running Lunar Client.
 
 ```js
 {
-  uuids: 'Array<UUI>'
+  uuids: 'Array<UUID>'
 }
 ```
 
@@ -345,6 +347,7 @@ Note: *this packet seems to be sent very very often*
 Packet containing your `hosts` file.
 
 Note: *this packet was introduced to prevent players from overriding lunar client domains and using custom websockets/api without modifying the game*
+
 Note: *yes privacy*
 
 ```js
