@@ -15,6 +15,10 @@
     "websocket"
   ],
   "author": "RichardDorian",
+  "contributors": [
+    "Steviegt6",
+    "GhqstMC"
+  ],
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/Solar-Tweaks/LunarSocket/issues"

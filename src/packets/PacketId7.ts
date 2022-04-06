@@ -1,16 +1,15 @@
 import BufWrapper from '@minecraft-js/bufwrapper';
-import logger from '../utils/logger';
 
 import Packet from './Packet';
 
-export default class PacketId7 extends Packet<id7> {
+export default class PacketId7 extends Packet<Id7> {
   public static id = 7;
 
   public constructor(buf?: BufWrapper) {
     super(buf);
   }
 
-  public write(data: id7): void {
+  public write(data: Id7): void {
     this.data = data;
 
     this.buf = new BufWrapper();
@@ -26,6 +25,6 @@ export default class PacketId7 extends Packet<id7> {
   }
 }
 
-interface id7 {
+interface Id7 {
   bulk: unknown[];
 }
