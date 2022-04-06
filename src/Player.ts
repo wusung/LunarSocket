@@ -70,7 +70,7 @@ export default class Player {
     for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
 
     // Yes, wea re giving cosmetics out of nowhere again
-    for (let i = 1; i < 1200; i++)
+    for (let i = 1; i < 2361; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
     // Forwarding data
