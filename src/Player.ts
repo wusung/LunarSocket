@@ -232,6 +232,11 @@ export default class Player {
       // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
     });
 
+    this.incomingPacketHandler.on('modSettings', () => {
+      // Lunar doesn't need to know what mods are enabled or not
+      // Dear Lunar: that's called privacy! Do you know what that means?
+    });
+
     // After every listeners are registered sending a hi notification
     setTimeout(() => {
       const notification = new NotificationPacket();

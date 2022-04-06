@@ -32,7 +32,7 @@
 | 55        |                                                                                               |          |
 | 56        | [EquipEmote](#equipemotes---56)                                                               | Server   |
 | 57        | [GiveEmotes](#giveemotes---57)                                                                | Client   |
-| 64        |                                                                                               |          |
+| 64        | [ModSettings](#modsettings---64)                                                              | Server   |
 | 65        |                                                                                               |          |
 | 67        |                                                                                               |          |
 | 68        |                                                                                               |          |
@@ -231,5 +231,14 @@
 ```js
 {
   emotes: 'Array<int>'
+}
+```
+
+## ModSettings - `64`
+
+```js
+{
+  settings: 'Map<string, boolean>',
+  game: 'string'
 }
 ```

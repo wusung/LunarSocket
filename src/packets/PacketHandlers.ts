@@ -21,6 +21,7 @@ import ConsoleMessagePacket from './ConsoleMessage';
 import FriendRequestPacket from './FriendRequestPacket';
 import FriendResponsePacket from './FriendResponsePacket';
 import ForceCrashPacket from './ForceCrashPacket';
+import ModSettingsPacket from './ModSettingsPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -92,6 +93,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendMessage: FriendMessagePacket,
     friendRequest: FriendRequestPacket,
     friendResponse: FriendResponsePacket,
+    modSettings: ModSettingsPacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -112,7 +114,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     if (id === 50) return;
 
     if (!Packet) {
-      // logger.warn('Unknown packet id (incoming):', id, data);
+      logger.warn('Unknown packet id (incoming):', id, data.toString('hex'));
       return this.player.writeToServer(data);
     }
 
@@ -137,4 +139,5 @@ type IncomingPacketHandlerEvents = {
   playerInfoRequest: (packet: PlayerInfoRequestPacket) => void;
   friendRequest: (packet: FriendRequestPacket) => void;
   friendResponse: (packet: FriendResponsePacket) => void;
+  modSettings: (packet: ModSettingsPacket) => void;
 };
