@@ -19,6 +19,8 @@ import FriendMessagePacket from './FriendMessage';
 import PacketId7 from './PacketId7';
 import ConsoleMessagePacket from './ConsoleMessage';
 import FriendRequestPacket from './FriendRequestPacket';
+import FriendResponsePacket from './FriendResponsePacket';
+import ForceCrashPacket from './ForceCrashPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -31,6 +33,8 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendMessage: FriendMessagePacket,
     id7: PacketId7,
     friendRequest: FriendRequestPacket,
+    friendResponse: FriendResponsePacket,
+    forceCrash: ForceCrashPacket,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);
@@ -73,6 +77,7 @@ type OutgoingPacketHandlerEvents = {
   friendList: (packet: FriendListPacket) => void;
   id7: (packet: PacketId7) => void;
   friendRequest: (packet: FriendRequestPacket) => void;
+  friendResponse: (packet: FriendResponsePacket) => void;
 };
 
 // Incoming is when a packet is sent by the client to the server
@@ -86,6 +91,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     playerInfoRequest: PlayerInfoRequestPacket,
     friendMessage: FriendMessagePacket,
     friendRequest: FriendRequestPacket,
+    friendResponse: FriendResponsePacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -130,4 +136,5 @@ type IncomingPacketHandlerEvents = {
   applyCosmetics: (packet: ApplyCosmeticsPacket) => void;
   playerInfoRequest: (packet: PlayerInfoRequestPacket) => void;
   friendRequest: (packet: FriendRequestPacket) => void;
+  friendResponse: (packet: FriendResponsePacket) => void;
 };
