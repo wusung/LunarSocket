@@ -108,7 +108,7 @@ Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 {
   // Don't ask me why this is called bulk ¯\_(ツ)_/¯
   // That's how Lunar calls it
-  bulk: 'JsonArray (sent as string and parsed when received)'
+  bulk: 'Array<unknown>'
 }
 ```
 
