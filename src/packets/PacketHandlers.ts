@@ -54,8 +54,6 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     const id = buf.readVarInt();
     const Packet = OutgoingPacketHandler.packets.find((p) => p.id === id);
 
-    logger.debug(`Outgoing packet id`, id);
-
     if (!Packet) {
       // logger.warn('Unknown packet id (outgoing):', id, data.toString('hex'));
       return this.player.writeToClient(data);
@@ -114,8 +112,6 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
 
     const id = buf.readVarInt();
     const Packet = IncomingPacketHandler.packets.find((p) => p.id === id);
-
-    logger.debug('Incoming packet id:', id);
 
     if (id === 50) return;
 
