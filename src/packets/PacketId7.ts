@@ -20,7 +20,6 @@ export default class PacketId7 extends Packet<id7> {
   }
 
   public read(): void {
-    logger.debug(this.buf.buffer);
     this.data = {
       bulk: JSON.parse(this.buf.readString()),
     };
