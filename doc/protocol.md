@@ -5,9 +5,9 @@
 | 2         | ConsoleCommand    | Server   |
 | 3         | Notification      | Client   |
 | 4         | FriendList        | Client   |
-| 5         | FriendMessage     | Client   |
+| 5         | FriendMessage     | Both     |
 | 6         | JoinServer        | Server   |
-| 7         |                   |          |
+| 7         | Unknown           | Client   |
 | 8         | PlayerInfo        | Client   |
 | 9         | FriendRequest     | Server   |
 | 16        |                   |          |
@@ -60,8 +60,8 @@
 {
   consoleAccess: 'boolean',
   requestsEnabled: 'boolean',
-  online: `Array<{ uuid: string, unknownStringA: string, unknownInt: int, unknownStringB: string }>`
-  offline: `Array<{ uuid: string, unknownString: string, unknownLong: long }>`
+  online: `Array<{ uuid: string, displayName: string, unknownInt: int, status: string }>`
+  offline: `Array<{ uuid: string, displayName: string, offlineFor: long }>`
 }
 ```
 
@@ -71,6 +71,16 @@
 {
   uuid: 'string',
   message: 'string'
+}
+```
+
+## Unknown - `7`
+
+```js
+{
+  // Don't ask me why this is called bulk ¯\_(ツ)_/¯
+  // That's how Lunar calls it
+  bulk: 'JsonArray (sent as string and parsed when received)'
 }
 ```
 
@@ -125,11 +135,21 @@
 }
 ```
 
+## FriendMessage - `5`
+
+```js
+{
+  uuid: 'string',
+  message: 'string'
+}
+```
+
 ## JoinServer - `6`
 
 ```js
 {
-  ip: 'string'
+  uuid: 'string', // Seems to always be empty ¯\_(ツ)_/¯
+  server: 'string'
 }
 ```
 

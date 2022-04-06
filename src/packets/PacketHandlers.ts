@@ -14,6 +14,9 @@ import NotificationPacket from './NotificationPacket';
 import PlayerInfoPacket from './PlayerInfoPacket';
 import ApplyCosmeticsPacket from './ApplyCosmeticsPacket';
 import PlayerInfoRequestPacket from './PlayerInfoRequestPacket';
+import FriendListPacket from './FriendListPacket';
+import FriendMessagePacket from './FriendMessage';
+import PacketId7 from './PacketId7';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -22,6 +25,9 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     playEmote: PlayEmotePacket,
     notification: NotificationPacket,
     playerInfo: PlayerInfoPacket,
+    friendList: FriendListPacket,
+    friendMessage: FriendMessagePacket,
+    id7: PacketId7,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);
@@ -51,7 +57,8 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
       (key) => OutgoingPacketHandler.packetMap[key] === Packet
     );
     // @ts-ignore - event is type of string and not keyof OutgoingPacketHandlerEvents but it works anyway
-    this.emit(event, packet);
+    if (this.listenerCount(event) > 0) this.emit(event, packet);
+    else this.player.writeToClient(data);
   }
 }
 
@@ -60,6 +67,8 @@ type OutgoingPacketHandlerEvents = {
   playEmote: (packet: PlayEmotePacket) => void;
   notification: (packet: NotificationPacket) => void;
   playerInfo: (packet: PlayerInfoPacket) => void;
+  friendList: (packet: FriendListPacket) => void;
+  id7: (packet: PacketId7) => void;
 };
 
 // Incoming is when a packet is sent by the client to the server
@@ -71,6 +80,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     equipEmotes: EquipEmotesPacket,
     applyCosmetics: ApplyCosmeticsPacket,
     playerInfoRequest: PlayerInfoRequestPacket,
+    friendMessage: FriendMessagePacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -102,7 +112,8 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
       (key) => IncomingPacketHandler.packetMap[key] === Packet
     );
     // @ts-ignore - event is type of string and not keyof IncomingPacketHandlerEvents but it works anyway
-    this.emit(event, packet);
+    if (this.listenerCount(event) > 0) this.emit(event, packet);
+    else this.player.writeToServer(data);
   }
 }
 

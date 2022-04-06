@@ -13,6 +13,7 @@ import EquipEmotesPacket from './packets/EquipEmotesPacket';
 import NotificationPacket from './packets/NotificationPacket';
 import PlayerInfoPacket from './packets/PlayerInfoPacket';
 import ApplyCosmeticsPacket from './packets/ApplyCosmeticsPacket';
+import FriendListPacket from './packets/FriendListPacket';
 
 export default class Player {
   public version: string;
@@ -64,7 +65,7 @@ export default class Player {
     this.outgoingPacketHandler = new OutgoingPacketHandler(this);
     this.incomingPacketHandler = new IncomingPacketHandler(this);
 
-    logger.log(`${this.username} connected!`);
+    logger.log(this.username, 'connected!');
 
     // Yes, we are giving emotes out of nowhere
     for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
@@ -116,14 +117,6 @@ export default class Player {
       this.sendEmotes();
     });
 
-    this.outgoingPacketHandler.on('playEmote', (packet) => {
-      this.writeToClient(packet);
-    });
-
-    this.outgoingPacketHandler.on('notification', (packet) => {
-      this.writeToClient(packet);
-    });
-
     this.outgoingPacketHandler.on('playerInfo', (packet) => {
       if (packet.data.uuid === this.uuid) {
         // Player info for this player
@@ -154,8 +147,7 @@ export default class Player {
         (p) => p.uuid === packet.data.uuid
       );
       // If the player is not on the this websocket, sending back the original packet
-      if (!connectedPlayer) this.writeToClient(packet);
-      logger.debug('Getting', connectedPlayer.uuid, 'data for', this.uuid);
+      if (!connectedPlayer) return this.writeToClient(packet);
 
       const newPacket = new PlayerInfoPacket();
       newPacket.write({
@@ -179,7 +171,7 @@ export default class Player {
     });
 
     this.incomingPacketHandler.on('joinServer', (packet) => {
-      this.server = packet.data.ip;
+      this.server = packet.data.server;
       this.writeToServer(packet);
     });
 
@@ -222,10 +214,6 @@ export default class Player {
 
       // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
     });
-
-    this.incomingPacketHandler.on('playerInfoRequest', (packet) =>
-      this.writeToServer(packet)
-    );
 
     // After every listeners are registered sending a hi notification
     setTimeout(() => {
@@ -300,6 +288,7 @@ export default class Player {
   }
 
   public removePlayer(): void {
+    logger.log(this.username, 'disconnected!');
     try {
       this.socket.close();
     } catch (error) {}
