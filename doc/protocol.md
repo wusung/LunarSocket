@@ -248,7 +248,7 @@
 }
 ```
 
-## ModSettings - `68`
+## ModSettings - `64`
 
 ```js
 {
@@ -257,7 +257,7 @@
 }
 ```
 
-## HostList - `36`
+## HostList - `68`
 
 ```js
 {
