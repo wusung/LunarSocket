@@ -40,8 +40,6 @@ server.on('listening', () => {
 });
 
 server.on('connection', (socket, request) => {
-  // logger.log(`New connection (addr=${request.socket.remoteAddress})`);
-
   const handshake = {
     accountType: request.headers['accounttype'] as string,
     arch: request.headers['arch'] as string,
@@ -65,6 +63,10 @@ server.on('connection', (socket, request) => {
   // Ignoring players with older/newer protocol versions
   if (handshake.protocolVersion !== '5')
     return socket.close(1002, 'Incompatible protocol version, requires 5');
+
+  if (config.enableWhitelist)
+    if (!config.whitelist.includes(handshake.playerId))
+      return socket.close(3000, 'You are not whitelisted');
 
   // Closing the connection if the player is already connected
   if (connectedPlayers.find((p) => p.uuid === handshake.playerId))

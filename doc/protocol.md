@@ -19,7 +19,7 @@
 | 24        |                                                                                               |          |
 | 25        |                                                                                               |          |
 | 33        | [ForceCrash](#forcecrash---33)                                                                | Client   |
-| 35        |                                                                                               |          |
+| 35        | [TaskListRequest](#tasklistrequest---35)                                                      | Client   |
 | 36        | [TaskList](#tasklist---36)                                                                    | Server   |
 | 39        | [DoEmote](#doemote---39)                                                                      | Server   |
 | 40        |                                                                                               |          |
@@ -35,7 +35,7 @@
 | 64        | [ModSettings](#modsettings---64)                                                              | Server   |
 | 65        |                                                                                               |          |
 | 67        |                                                                                               |          |
-| 68        |                                                                                               |          |
+| 68        | [HostList](#hostlist---36)                                                                    | Server   |
 | 69        |                                                                                               |          |
 | 70        |                                                                                               |          |
 | 71        |                                                                                               |          |
@@ -128,6 +128,12 @@
 ```
 
 ## ForceCrash - `33`
+
+```js
+{}
+```
+
+## TaskListRequest - `35`
 
 ```js
 {}
@@ -242,11 +248,19 @@
 }
 ```
 
-## ModSettings - `64`
+## ModSettings - `68`
 
 ```js
 {
   settings: 'Map<string, boolean>',
   game: 'string'
+}
+```
+
+## HostList - `36`
+
+```js
+{
+  hosts: 'Array<string>'
 }
 ```

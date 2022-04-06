@@ -12,6 +12,9 @@ interface Config {
     key: string;
     cert: string;
   };
+  welcomeMessage: '';
+  enableWhitelist: boolean;
+  whitelist: string[];
 }
 
 export default config;

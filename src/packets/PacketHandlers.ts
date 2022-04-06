@@ -23,6 +23,8 @@ import FriendResponsePacket from './FriendResponsePacket';
 import ForceCrashPacket from './ForceCrashPacket';
 import ModSettingsPacket from './ModSettingsPacket';
 import TaskListPacket from './TaskListPacket';
+import HostListPacket from './HostListPacket';
+import TaskListRequestPacket from './TaskListRequestPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -37,6 +39,7 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendRequest: FriendRequestPacket,
     friendResponse: FriendResponsePacket,
     forceCrash: ForceCrashPacket,
+    taskListRequest: TaskListRequestPacket,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);
@@ -80,6 +83,7 @@ type OutgoingPacketHandlerEvents = {
   id7: (packet: PacketId7) => void;
   friendRequest: (packet: FriendRequestPacket) => void;
   friendResponse: (packet: FriendResponsePacket) => void;
+  taskListRequest: (packet: TaskListRequestPacket) => void;
 };
 
 // Incoming is when a packet is sent by the client to the server
@@ -96,6 +100,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendResponse: FriendResponsePacket,
     modSettings: ModSettingsPacket,
     taskList: TaskListPacket,
+    hostList: HostListPacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -116,7 +121,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     if (id === 50) return;
 
     if (!Packet) {
-      // logger.warn('Unknown packet id (incoming):', id, data);
+      logger.warn('Unknown packet id (incoming):', id, data);
       return this.player.writeToServer(data);
     }
 
@@ -143,4 +148,5 @@ type IncomingPacketHandlerEvents = {
   friendResponse: (packet: FriendResponsePacket) => void;
   modSettings: (packet: ModSettingsPacket) => void;
   taskList: (packet: TaskListPacket) => void;
+  hostList: (packet: HostListPacket) => void;
 };

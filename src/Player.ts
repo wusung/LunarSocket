@@ -16,6 +16,7 @@ import ApplyCosmeticsPacket from './packets/ApplyCosmeticsPacket';
 import FriendListPacket from './packets/FriendListPacket';
 import ConsoleMessagePacket from './packets/ConsoleMessage';
 import CommandHandler from './commands/CommandHandler';
+import config from './utils/config';
 
 export default class Player {
   public version: string;
@@ -237,12 +238,17 @@ export default class Player {
       // Not sending data back to lunar
     });
 
+    this.incomingPacketHandler.on('hostList', (packet) => {
+      logger.debug(packet.data);
+      // Not sending data back to lunar
+    });
+
     // After every listeners are registered sending a hi notification
     setTimeout(() => {
       const notification = new NotificationPacket();
       notification.write({
         title: '',
-        message: '§6Never gonna give you up :D',
+        message: config.welcomeMessage,
       });
       this.writeToClient(notification);
     }, 1000);
