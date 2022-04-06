@@ -35,7 +35,7 @@
 | 64        | [ModSettings](#modsettings---64)                                                              | Server   |
 | 65        |                                                                                               |          |
 | 67        |                                                                                               |          |
-| 68        | [HostList](#hostlist---36)                                                                    | Server   |
+| 68        | [HostList](#hostlist---68)                                                                    | Server   |
 | 69        |                                                                                               |          |
 | 70        |                                                                                               |          |
 | 71        |                                                                                               |          |
