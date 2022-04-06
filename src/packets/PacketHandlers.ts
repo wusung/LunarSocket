@@ -7,7 +7,7 @@ import logger from '../utils/logger';
 import GiveEmotesPacket from './GiveEmotesPacket';
 import PlayEmotePacket from './PlayEmotePacket';
 import DoEmotePacket from './DoEmotePacket';
-import ConsoleCommand from './ConsoleCommand';
+import ConsoleCommand from './ConsoleMessage';
 import JoinServerPacket from './JoinServerPacket';
 import EquipEmotesPacket from './EquipEmotesPacket';
 import NotificationPacket from './NotificationPacket';
@@ -17,6 +17,8 @@ import PlayerInfoRequestPacket from './PlayerInfoRequestPacket';
 import FriendListPacket from './FriendListPacket';
 import FriendMessagePacket from './FriendMessage';
 import PacketId7 from './PacketId7';
+import ConsoleMessagePacket from './ConsoleMessage';
+import FriendRequestPacket from './FriendRequestPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -28,6 +30,7 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendList: FriendListPacket,
     friendMessage: FriendMessagePacket,
     id7: PacketId7,
+    friendRequest: FriendRequestPacket,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);
@@ -69,18 +72,20 @@ type OutgoingPacketHandlerEvents = {
   playerInfo: (packet: PlayerInfoPacket) => void;
   friendList: (packet: FriendListPacket) => void;
   id7: (packet: PacketId7) => void;
+  friendRequest: (packet: FriendRequestPacket) => void;
 };
 
 // Incoming is when a packet is sent by the client to the server
 export class IncomingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<IncomingPacketHandlerEvents>) {
   public static packetMap = {
     doEmote: DoEmotePacket,
-    consoleCommand: ConsoleCommand,
+    consoleMessage: ConsoleMessagePacket,
     joinServer: JoinServerPacket,
     equipEmotes: EquipEmotesPacket,
     applyCosmetics: ApplyCosmeticsPacket,
     playerInfoRequest: PlayerInfoRequestPacket,
     friendMessage: FriendMessagePacket,
+    friendRequest: FriendRequestPacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -119,9 +124,10 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
 
 type IncomingPacketHandlerEvents = {
   doEmote: (packet: DoEmotePacket) => void;
-  consoleCommand: (packet: ConsoleCommand) => void;
+  consoleMessage: (packet: ConsoleCommand) => void;
   joinServer: (packet: JoinServerPacket) => void;
   equipEmotes: (packet: EquipEmotesPacket) => void;
   applyCosmetics: (packet: ApplyCosmeticsPacket) => void;
   playerInfoRequest: (packet: PlayerInfoRequestPacket) => void;
+  friendRequest: (packet: FriendRequestPacket) => void;
 };

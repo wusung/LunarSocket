@@ -2,14 +2,14 @@
 
 | Packet ID | Name              | Bound to |
 |-----------|-------------------|----------|
-| 2         | ConsoleCommand    | Server   |
+| 2         | ConsoleMessage    | Server   |
 | 3         | Notification      | Client   |
 | 4         | FriendList        | Client   |
 | 5         | FriendMessage     | Both     |
 | 6         | JoinServer        | Server   |
 | 7         | Unknown           | Client   |
 | 8         | PlayerInfo        | Client   |
-| 9         | FriendRequest     | Server   |
+| 9         | FriendRequest     | Both     |
 | 16        |                   |          |
 | 17        |                   |          |
 | 18        |                   |          |
@@ -127,11 +127,11 @@
 
 # Serverbound packets
 
-## ConsoleCommand - `2`
+## ConsoleMessage - `2`
 
 ```js
 {
-  command: 'string'
+  message: 'string'
 }
 ```
 

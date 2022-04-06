@@ -1,6 +1,7 @@
 import BufWrapper from '@minecraft-js/bufwrapper';
 
 import Packet from './Packet';
+import processColorCodes from '../utils/processColorCodes';
 
 export default class NotificationPacket extends Packet<Notification> {
   public static id = 3;
@@ -15,8 +16,8 @@ export default class NotificationPacket extends Packet<Notification> {
     this.buf = new BufWrapper();
     this.buf.writeVarInt(NotificationPacket.id); // Packet ID
 
-    this.buf.writeString(data.title);
-    this.buf.writeString(data.message);
+    this.buf.writeString(processColorCodes(data.title));
+    this.buf.writeString(processColorCodes(data.message));
   }
 
   public read(): void {

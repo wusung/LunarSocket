@@ -14,6 +14,8 @@ import NotificationPacket from './packets/NotificationPacket';
 import PlayerInfoPacket from './packets/PlayerInfoPacket';
 import ApplyCosmeticsPacket from './packets/ApplyCosmeticsPacket';
 import FriendListPacket from './packets/FriendListPacket';
+import ConsoleMessagePacket from './packets/ConsoleMessage';
+import CommandHandler from './commands/CommandHandler';
 
 export default class Player {
   public version: string;
@@ -35,6 +37,7 @@ export default class Player {
   private fakeSocket: WebSocket;
   private outgoingPacketHandler: OutgoingPacketHandler;
   private incomingPacketHandler: IncomingPacketHandler;
+  private commandHandler: CommandHandler;
 
   public constructor(socket: WebSocket, handshake: Handshake) {
     this.version = handshake.version;
@@ -64,6 +67,7 @@ export default class Player {
     );
     this.outgoingPacketHandler = new OutgoingPacketHandler(this);
     this.incomingPacketHandler = new IncomingPacketHandler(this);
+    this.commandHandler = new CommandHandler(this);
 
     logger.log(this.username, 'connected!');
 
@@ -157,6 +161,19 @@ export default class Player {
       this.writeToClient(newPacket);
     });
 
+    this.outgoingPacketHandler.on('friendList', (packet) => {
+      const newPacket = new FriendListPacket();
+      newPacket.write({
+        ...packet.data,
+        consoleAccess: true,
+      });
+      this.writeToClient(newPacket);
+    });
+
+    this.incomingPacketHandler.on('consoleMessage', (packet) => {
+      this.commandHandler.handle(packet.data.message);
+    });
+
     this.incomingPacketHandler.on('doEmote', (packet) => {
       if (
         this.emotes.owned.owned.includes(packet.data.id) ||
@@ -220,7 +237,7 @@ export default class Player {
       const notification = new NotificationPacket();
       notification.write({
         title: '',
-        message: 'Never gonna give you up :D',
+        message: '§6Never gonna give you up :D',
       });
       this.writeToClient(notification);
     }, 1000);
@@ -265,6 +282,12 @@ export default class Player {
     const packet = new PlayEmotePacket();
     packet.write({ uuid: this.uuid, id });
     broadcast(packet, this.server); // Sending only to people who are on the same server
+  }
+
+  public sendConsoleMessage(message: string): void {
+    const packet = new ConsoleMessagePacket();
+    packet.write({ message });
+    this.writeToClient(packet);
   }
 
   public writeToClient(data: any | Packet): void {
