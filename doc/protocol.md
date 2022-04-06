@@ -4,21 +4,21 @@
 |-----------|----------------|----------|
 | 2         | ConsoleCommand | Server   |
 | 3         | Notification   | Client   |
-| 4         |                |          |
-| 5         |                |          |
+| 4         | FriendList     | Client   |
+| 5         | FriendMessage  | Client   |
 | 6         | JoinServer     | Server   |
 | 7         |                |          |
 | 8         | PlayerInfo     | Client   |
-| 9         |                |          |
+| 9         | FriendRequest  | Server   |
 | 16        |                |          |
 | 17        |                |          |
 | 18        |                |          |
 | 20        | ApplyCosmetics | Server   |
-| 21        |                |          |
+| 21        | FriendResponse | Client   |
 | 22        |                |          |
 | 24        |                |          |
 | 25        |                |          |
-| 33        |                |          |
+| 33        | ForceCrash     | Client   |
 | 35        |                |          |
 | 36        |                |          |
 | 39        | DoEmote        | Server   |
@@ -54,6 +54,27 @@
 }
 ```
 
+## FriendList - `4`
+
+```js
+{
+  consoleAccess: 'boolean',
+  requestsEnabled: 'boolean',
+  onlineMapSize: 'int',
+  offlineMapSize: 'int',
+  onlineMap: `Array<{ player: string, unknownDataOne: string, unknownDataTwo: int, unknownDataThree: string }>`
+  offlineMap: `Array<{ player: string, unknownDataOne: string, unknownDataTwo: long }>`
+```
+
+## FriendMessage - `5`
+
+```js
+{
+  uuid: 'string',
+  message: 'string'
+}
+```
+
 ## PlayerInfo - `8`
 
 ```js
@@ -68,6 +89,15 @@
   unknownBooleanD: 'boolean',
   unknownHashMap: 'HashMap<int, float>',
   plusColor: 'int'
+}
+```
+
+## FriendResponse - `21`
+
+```js
+{
+  added: 'boolean',
+  uuid: 'string'
 }
 ```
 
@@ -95,6 +125,15 @@
 ```js
 {
   ip: 'string'
+}
+```
+
+## FriendRequest
+
+```js
+{
+  uuid: 'string',
+  username: 'string'
 }
 ```
 
