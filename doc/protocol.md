@@ -5,7 +5,7 @@
 | 2         | ConsoleMessage ([C](#consolemessage-clientbound---2)\|[S](#consolemessage-serverbound---2))   | Both     |
 | 3         | [Notification](#notification---3)                                                             | Client   |
 | 4         | [FriendList](#friendlist---4)                                                                 | Client   |
-| 5         | [FriendMessage](../src/packets/FriendMessage.ts)                                              | Both     |
+| 5         | [FriendMessage](#friendmessage---5)                                              | Both     |
 | 6         | [JoinServer](#joinserver---6)                                                                 | Server   |
 | 7         | [Unknown](#unknown---7)                                                                       | Client   |
 | 8         | [PlayerInfo](#playerinfo---8)                                                                 | Client   |
@@ -47,6 +47,10 @@
 
 ## ConsoleMessage (clientbound) - `2`
 
+Send a message to the player's console.
+
+Note: *supports Minecraft Color Codes*
+
 ```js
 {
   message: 'string'
@@ -54,6 +58,10 @@
 ```
 
 ## Notification - `3`
+
+Send a pop up notification to the client. Title field can be an empty string. However description cannot.
+
+Note: *supports Minecraft Color Codes*
 
 ```js
 {
@@ -63,6 +71,11 @@
 ```
 
 ## FriendList - `4`
+
+Packet confaining your friend list. Sent at boot by lunar.
+
+Note: *We suppose that the `unknownInt` is for an online friend is the friend's Minecraft version.
+Note: *The `online` array seems to be empty everytime and the another packet is telling if the friend is online.
 
 ```js
 {
@@ -75,6 +88,10 @@
 
 ## FriendMessage - `5`
 
+When a friend of the player sends a message.
+
+Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
+
 ```js
 {
   uuid: 'string',
@@ -83,6 +100,8 @@
 ```
 
 ## Unknown - `7`
+
+???
 
 ```js
 {
@@ -93,6 +112,14 @@
 ```
 
 ## PlayerInfo - `8`
+
+Packet containing a player details.
+Used in two cases:
+  - When it sends information about the current player
+  - When it sends information about other players
+
+Note: *The `equipped` field for cosmetics is ignored when the packet tells information about another player. 
+Which means lunar sends you only equipped cosmetics*
 
 ```js
 {
@@ -111,6 +138,11 @@
 
 ## FriendRequest (clientbound) - `9`
 
+When the player receives a friend request from someone
+
+Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
+Note: *The `uuid` field seems to be empty everytime
+
 ```js
 {
   uuid: 'string',
@@ -119,6 +151,10 @@
 ```
 
 ## FriendResponse (clientbound) - `21`
+
+Sent when a player accepts or denies your friend request
+
+Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 
 ```js
 {
@@ -129,17 +165,26 @@
 
 ## ForceCrash - `33`
 
+Crash the client ¯\_(ツ)_/¯
+
 ```js
 {}
 ```
 
 ## TaskListRequest - `35`
 
+Send a task list request to the client. 
+The client should send back a [TaskList](#tasklist---36) packet with the data
+
+Note: *yes privacy*
+
 ```js
 {}
 ```
 
 ## PlayEmote - `51`
+
+Play the emote animation for someone
 
 ```js
 {
@@ -149,6 +194,8 @@
 ```
 
 ## GiveEmotes - `57`
+
+Packet containing all player's emotes
 
 ```js
 {
@@ -161,6 +208,11 @@
 
 ## ConsoleMessage (serverbound) - `2`
 
+Sent when the player sends a message in the Admin Console.
+
+Note: *In order to open the Admin Console, you need to open your friend menu and press <kbd>F1</kbd>.
+The `consoleAccess` field ([FriendList](#friendlist---4) packet should be on `true` as well or you won't be able to open the console.*
+
 ```js
 {
   message: 'string'
@@ -168,6 +220,8 @@
 ```
 
 ## FriendMessage - `5`
+
+Sent when the player sends a message to one of his friends
 
 ```js
 {
@@ -178,6 +232,10 @@
 
 ## JoinServer - `6`
 
+Sent when the player joins a server
+
+Note: *An empty string is set when the player leaves the server*
+
 ```js
 {
   uuid: 'string', // Seems to always be empty ¯\_(ツ)_/¯
@@ -187,6 +245,10 @@
 
 ## FriendRequest (serverbound) - `9`
 
+Sent when you send a friend request to someone
+
+Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
+
 ```js
 {
   uuid: 'string',
@@ -195,6 +257,8 @@
 ```
 
 ## ApplyCosmetics - `20`
+
+Sent when you equip a cosmetic or change ClothCloak state
 
 ```js
 {
@@ -209,6 +273,8 @@
 
 ## FriendResponse (serverbound) - `21`
 
+Sent when uh I don't remember
+
 ```js
 {
   accepted: 'boolean',
@@ -218,6 +284,11 @@
 
 ## TaskList - `36`
 
+Packet containing the output of the `tasklist.exe` program on Windows..
+Sent after receiving the [TaskListRequest](#tasklistrequest---35) packet.
+
+Note: *yes privacy*
+
 ```js
 {
   tasks: 'Array<string>'
@@ -225,6 +296,8 @@
 ```
 
 ## DoEmote - `39`
+
+Sent when you are trying to emote
 
 ```js
 {
@@ -234,6 +307,8 @@
 
 ## PlayerInfoRequest - `48`
 
+Sent when the player wants information about other connected players
+
 ```js
 {
   uuids: 'Array<UUI>'
@@ -241,6 +316,10 @@
 ```
 
 ## EquipEmotes - `56`
+
+Sent when you equip an emote
+
+Note: *the packet is only sent when you leave the emote menu (not the selector)*
 
 ```js
 {
@@ -250,6 +329,10 @@
 
 ## ModSettings - `64`
 
+Packet containing all your mods and their state (whether they are enabled or not)
+
+Note: *this packet seems to be sent very very often*
+
 ```js
 {
   settings: 'Map<string, boolean>',
@@ -258,6 +341,11 @@
 ```
 
 ## HostList - `68`
+
+Packet containing your `hosts` file.
+
+Note: *this packet was introduced to prevent players from overriding lunar client domains and using custom websockets/api without modifying the game*
+Note: *yes privacy*
 
 ```js
 {
