@@ -20,7 +20,7 @@
 | 25        |                                                                                               |          |
 | 33        | [ForceCrash](#forcecrash---33)                                                                | Client   |
 | 35        |                                                                                               |          |
-| 36        |                                                                                               |          |
+| 36        | [TaskList](#tasklist---36)                                                                    | Server   |
 | 39        | [DoEmote](#doemote---39)                                                                      | Server   |
 | 40        |                                                                                               |          |
 | 48        | [PlayerInfoRequest](#playerinforequest---48)                                                  | Server   |
@@ -207,6 +207,14 @@
 {
   accepted: 'boolean',
   uuid: 'string'
+}
+```
+
+## TaskList - `36`
+
+```js
+{
+  tasks: 'Array<string>'
 }
 ```
 

@@ -63,11 +63,12 @@ server.on('connection', (socket, request) => {
   };
 
   // Ignoring players with older/newer protocol versions
-  if (handshake.protocolVersion !== '5') return socket.close();
+  if (handshake.protocolVersion !== '5')
+    return socket.close(1002, 'Incompatible protocol version, requires 5');
 
   // Closing the connection if the player is already connected
   if (connectedPlayers.find((p) => p.uuid === handshake.playerId))
-    return socket.close();
+    return socket.close(1006, 'Already connected');
 
   const player = new Player(socket, handshake);
 

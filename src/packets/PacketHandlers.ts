@@ -22,6 +22,7 @@ import FriendRequestPacket from './FriendRequestPacket';
 import FriendResponsePacket from './FriendResponsePacket';
 import ForceCrashPacket from './ForceCrashPacket';
 import ModSettingsPacket from './ModSettingsPacket';
+import TaskListPacket from './TaskListPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -53,8 +54,10 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     const id = buf.readVarInt();
     const Packet = OutgoingPacketHandler.packets.find((p) => p.id === id);
 
+    logger.debug(`Outgoing packet id`, id);
+
     if (!Packet) {
-      // logger.warn('Unknown packet id (outgoing):', id);
+      // logger.warn('Unknown packet id (outgoing):', id, data.toString('hex'));
       return this.player.writeToClient(data);
     }
 
@@ -94,6 +97,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendRequest: FriendRequestPacket,
     friendResponse: FriendResponsePacket,
     modSettings: ModSettingsPacket,
+    taskList: TaskListPacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -111,10 +115,12 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     const id = buf.readVarInt();
     const Packet = IncomingPacketHandler.packets.find((p) => p.id === id);
 
+    logger.debug('Incoming packet id:', id);
+
     if (id === 50) return;
 
     if (!Packet) {
-      logger.warn('Unknown packet id (incoming):', id, data.toString('hex'));
+      // logger.warn('Unknown packet id (incoming):', id, data);
       return this.player.writeToServer(data);
     }
 
@@ -140,4 +146,5 @@ type IncomingPacketHandlerEvents = {
   friendRequest: (packet: FriendRequestPacket) => void;
   friendResponse: (packet: FriendResponsePacket) => void;
   modSettings: (packet: ModSettingsPacket) => void;
+  taskList: (packet: TaskListPacket) => void;
 };

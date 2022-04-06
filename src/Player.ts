@@ -232,9 +232,9 @@ export default class Player {
       // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
     });
 
-    this.incomingPacketHandler.on('modSettings', () => {
-      // Lunar doesn't need to know what mods are enabled or not
-      // Dear Lunar: that's called privacy! Do you know what that means?
+    this.incomingPacketHandler.on('taskList', (packet) => {
+      logger.debug(packet.data);
+      // Not sending data back to lunar
     });
 
     // After every listeners are registered sending a hi notification
@@ -318,10 +318,10 @@ export default class Player {
   public removePlayer(): void {
     logger.log(this.username, 'disconnected!');
     try {
-      this.socket.close();
+      this.socket.close(1000);
     } catch (error) {}
     try {
-      this.fakeSocket.close();
+      this.fakeSocket.close(1000);
     } catch (error) {}
     removePlayer(this.uuid);
   }
