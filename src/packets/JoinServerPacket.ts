@@ -10,6 +10,8 @@ export default class JoinServerPacket extends Packet<JoinServer> {
   }
 
   public write(data: JoinServer): void {
+    this.data = data;
+
     this.buf = new BufWrapper();
     this.buf.writeVarInt(JoinServerPacket.id); // Packet ID
 

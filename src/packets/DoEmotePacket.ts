@@ -10,6 +10,8 @@ export default class DoEmotePacket extends Packet<DoEmote> {
   }
 
   public write(data: DoEmote): void {
+    this.data = data;
+
     this.buf = new BufWrapper();
     this.buf.writeVarInt(DoEmotePacket.id); // Packet ID
 

@@ -10,6 +10,8 @@ export default class NotificationPacket extends Packet<Notification> {
   }
 
   public write(data: Notification): void {
+    this.data = data;
+
     this.buf = new BufWrapper();
     this.buf.writeVarInt(NotificationPacket.id); // Packet ID
 

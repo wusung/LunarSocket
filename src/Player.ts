@@ -7,7 +7,7 @@ import {
 } from './packets/PacketHandlers';
 import logger from './utils/logger';
 import GiveEmotesPacket from './packets/GiveEmotesPacket';
-import { broadcast, removePlayer } from '.';
+import { broadcast, connectedPlayers, removePlayer } from '.';
 import PlayEmotePacket from './packets/PlayEmotePacket';
 import EquipEmotesPacket from './packets/EquipEmotesPacket';
 import NotificationPacket from './packets/NotificationPacket';
@@ -64,11 +64,13 @@ export default class Player {
     this.outgoingPacketHandler = new OutgoingPacketHandler(this);
     this.incomingPacketHandler = new IncomingPacketHandler(this);
 
+    logger.log(`${this.username} connected!`);
+
     // Yes, we are giving emotes out of nowhere
     for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
 
     // Yes, wea re giving cosmetics out of nowhere again
-    for (let i = 0; i < 15; i++)
+    for (let i = 1; i < 1200; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
     // Forwarding data
@@ -147,7 +149,20 @@ export default class Player {
         });
         return this.writeToClient(newPacket);
       }
-      this.writeToClient(packet);
+
+      const connectedPlayer = connectedPlayers.find(
+        (p) => p.uuid === packet.data.uuid
+      );
+      // If the player is not on the this websocket, sending back the original packet
+      if (!connectedPlayer) this.writeToClient(packet);
+      logger.debug('Getting', connectedPlayer.uuid, 'data for', this.uuid);
+
+      const newPacket = new PlayerInfoPacket();
+      newPacket.write({
+        ...packet.data,
+        ...connectedPlayer.getPlayerInfo(),
+      });
+      this.writeToClient(newPacket);
     });
 
     this.incomingPacketHandler.on('doEmote', (packet) => {
@@ -191,14 +206,26 @@ export default class Player {
       for (const cosmetic of packet.data.cosmetics) {
         this.setCosmeticState(cosmetic.id, cosmetic.equipped);
       }
+      this.clothCloak.fake = packet.data.clothCloak;
 
       // Sending the new state of the cosmetics to lunar
       const _packet = new ApplyCosmeticsPacket();
       _packet.write({
+        ...packet.data,
         cosmetics: this.cosmetics.owned,
-        update: packet.data.update,
+        // Non premium users can't change clothCloak
+        clothCloak: this.premium.real
+          ? packet.data.clothCloak
+          : this.clothCloak.real,
       });
+      this.writeToServer(_packet);
+
+      // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
     });
+
+    this.incomingPacketHandler.on('playerInfoRequest', (packet) =>
+      this.writeToServer(packet)
+    );
 
     // After every listeners are registered sending a hi notification
     setTimeout(() => {
@@ -209,6 +236,18 @@ export default class Player {
       });
       this.writeToClient(notification);
     }, 1000);
+  }
+
+  public getPlayerInfo() {
+    return {
+      cosmetics: [...this.cosmetics.fake, ...this.cosmetics.owned].filter(
+        (c) => c.equipped
+      ),
+      premium: this.premium.fake,
+      color: this.color.fake,
+      clothCloak: this.clothCloak.fake,
+      plusColor: this.plusColor.fake,
+    };
   }
 
   public setCosmeticState(id: number, state: boolean): void {

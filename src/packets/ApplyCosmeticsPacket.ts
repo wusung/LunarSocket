@@ -10,6 +10,8 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
   }
 
   public write(data: ApplyCosmetics): void {
+    this.data = data;
+
     this.buf = new BufWrapper();
     this.buf.writeVarInt(ApplyCosmeticsPacket.id); // Packet ID
 
@@ -19,7 +21,20 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
       this.buf.writeBoolean(cosmetic.equipped);
     }
 
-    this.buf.writeBoolean(data.update);
+    this.buf.writeBoolean(data.clothCloak);
+    this.buf.writeBoolean(data.unknownBooleanA);
+    this.buf.writeBoolean(data.unknownBooleanB);
+
+    this.buf.writeVarInt(Object.keys(data.unknownMap).length);
+    for (const key in data.unknownMap) {
+      if (Object.prototype.hasOwnProperty.call(data.unknownMap, key)) {
+        const element = data.unknownMap[key];
+        this.buf.writeInt(parseInt(key));
+        this.buf.writeFloat(element);
+      }
+    }
+
+    this.buf.writeInt(data.unknownInt);
   }
 
   public read(): void {
@@ -33,9 +48,24 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
       });
     }
 
+    const clothCloak = this.buf.readBoolean();
+    const unknownBooleanA = this.buf.readBoolean();
+    const unknownBooleanB = this.buf.readBoolean();
+
+    const unknownMapLength = this.buf.readVarInt();
+    const unknownMap: { [key: number]: number } = {};
+    for (let i = 0; i < unknownMapLength; i++)
+      unknownMap[this.buf.readInt()] = this.buf.readFloat();
+
+    const unknownInt = this.buf.readInt();
+
     this.data = {
       cosmetics,
-      update: this.buf.readBoolean(),
+      clothCloak,
+      unknownBooleanA,
+      unknownBooleanB,
+      unknownMap,
+      unknownInt,
     };
   }
 }
@@ -47,5 +77,9 @@ interface Cosmetic {
 
 interface ApplyCosmetics {
   cosmetics: Cosmetic[];
-  update: boolean;
+  clothCloak: boolean;
+  unknownBooleanA: boolean;
+  unknownBooleanB: boolean;
+  unknownMap: { [key: number]: number };
+  unknownInt: number;
 }

@@ -10,6 +10,8 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
   }
 
   public write(data: PlayerInfo): void {
+    this.data = data;
+
     this.buf = new BufWrapper();
     this.buf.writeVarInt(PlayerInfoPacket.id); // Packet ID
 

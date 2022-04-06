@@ -1,47 +1,47 @@
 # Overview
 
-| Packet ID | Name           | Bound to |
-|-----------|----------------|----------|
-| 2         | ConsoleCommand | Server   |
-| 3         | Notification   | Client   |
-| 4         | FriendList     | Client   |
-| 5         | FriendMessage  | Client   |
-| 6         | JoinServer     | Server   |
-| 7         |                |          |
-| 8         | PlayerInfo     | Client   |
-| 9         | FriendRequest  | Server   |
-| 16        |                |          |
-| 17        |                |          |
-| 18        |                |          |
-| 20        | ApplyCosmetics | Server   |
-| 21        | FriendResponse | Client   |
-| 22        |                |          |
-| 24        |                |          |
-| 25        |                |          |
-| 33        | ForceCrash     | Client   |
-| 35        |                |          |
-| 36        |                |          |
-| 39        | DoEmote        | Server   |
-| 40        |                |          |
-| 48        |                |          |
-| 50        |                |          |
-| 51        | PlayEmote      | Client   |
-| 52        |                |          |
-| 53        |                |          |
-| 54        |                |          |
-| 55        |                |          |
-| 56        | EquipEmote     | Server   |
-| 57        | GiveEmotes     | Client   |
-| 64        |                |          |
-| 65        |                |          |
-| 67        |                |          |
-| 68        |                |          |
-| 69        |                |          |
-| 70        |                |          |
-| 71        |                |          |
-| 72        |                |          |
-| 73        |                |          |
-| 1056      |                |          |
+| Packet ID | Name              | Bound to |
+|-----------|-------------------|----------|
+| 2         | ConsoleCommand    | Server   |
+| 3         | Notification      | Client   |
+| 4         | FriendList        | Client   |
+| 5         | FriendMessage     | Client   |
+| 6         | JoinServer        | Server   |
+| 7         |                   |          |
+| 8         | PlayerInfo        | Client   |
+| 9         | FriendRequest     | Server   |
+| 16        |                   |          |
+| 17        |                   |          |
+| 18        |                   |          |
+| 20        | ApplyCosmetics    | Server   |
+| 21        | FriendResponse    | Client   |
+| 22        |                   |          |
+| 24        |                   |          |
+| 25        |                   |          |
+| 33        | ForceCrash        | Client   |
+| 35        |                   |          |
+| 36        |                   |          |
+| 39        | DoEmote           | Server   |
+| 40        |                   |          |
+| 48        | PlayerInfoRequest | Server   |
+| 50        |                   |          |
+| 51        | PlayEmote         | Client   |
+| 52        |                   |          |
+| 53        |                   |          |
+| 54        |                   |          |
+| 55        |                   |          |
+| 56        | EquipEmote        | Server   |
+| 57        | GiveEmotes        | Client   |
+| 64        |                   |          |
+| 65        |                   |          |
+| 67        |                   |          |
+| 68        |                   |          |
+| 69        |                   |          |
+| 70        |                   |          |
+| 71        |                   |          |
+| 72        |                   |          |
+| 73        |                   |          |
+| 1056      |                   |          |
 
 # Clientbound packets
 
@@ -60,10 +60,9 @@
 {
   consoleAccess: 'boolean',
   requestsEnabled: 'boolean',
-  onlineMapSize: 'int',
-  offlineMapSize: 'int',
-  onlineMap: `Array<{ player: string, unknownDataOne: string, unknownDataTwo: int, unknownDataThree: string }>`
-  offlineMap: `Array<{ player: string, unknownDataOne: string, unknownDataTwo: long }>`
+  online: `Array<{ uuid: string, unknownStringA: string, unknownInt: int, unknownStringB: string }>`
+  offline: `Array<{ uuid: string, unknownString: string, unknownLong: long }>`
+}
 ```
 
 ## FriendMessage - `5`
@@ -110,6 +109,12 @@
 }
 ```
 
+## ForceCrash - `33`
+
+```js
+{}
+```
+
 # Serverbound packets
 
 ## ConsoleCommand - `2`
@@ -128,7 +133,7 @@
 }
 ```
 
-## FriendRequest
+## FriendRequest - `9`
 
 ```js
 {
@@ -142,7 +147,11 @@
 ```js
 {
   cosmetics: 'Array<{ id: number, equipped: boolean }>',
-  update: 'boolean'
+  clothCloak: 'boolean',
+  unknownBooleanA: 'boolean',
+  unknownBooleanB: 'boolean',
+  unknownMap: 'Map<Int, Float>',
+  unknownInt: 'int'
 }
 ```
 
@@ -151,6 +160,14 @@
 ```js
 {
   id: 'int'
+}
+```
+
+## PlayerInfoRequest - `48`
+
+```js
+{
+  uuids: 'Array<UUI>'
 }
 ```
 

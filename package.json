@@ -21,7 +21,7 @@
   },
   "homepage": "https://github.com/Solar-Tweaks/LunarSocket#readme",
   "dependencies": {
-    "@minecraft-js/bufwrapper": "^1.2.2",
+    "@minecraft-js/bufwrapper": "^1.2.3",
     "chalk": "^4.1.2",
     "typed-emitter": "^2.1.0",
     "ws": "^8.5.0"

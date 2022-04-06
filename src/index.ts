@@ -5,6 +5,7 @@ import { Server as WebSocketServer } from 'ws';
 import config from './utils/config';
 import logger from './utils/logger';
 import Player from './Player';
+import Packet from './packets/Packet';
 
 console.log(`   _____       _               _____            _        _   
   / ____|     | |             / ____|          | |      | |  
@@ -73,7 +74,7 @@ server.on('connection', (socket, request) => {
   connectedPlayers.push(player);
 });
 
-export function broadcast(data: any, server?: string): void {
+export function broadcast(data: Buffer | Packet, server?: string): void {
   connectedPlayers.forEach((p) => {
     if (server) {
       if (server === p.server) p.writeToClient(data);

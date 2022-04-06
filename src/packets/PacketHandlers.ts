@@ -13,6 +13,7 @@ import EquipEmotesPacket from './EquipEmotesPacket';
 import NotificationPacket from './NotificationPacket';
 import PlayerInfoPacket from './PlayerInfoPacket';
 import ApplyCosmeticsPacket from './ApplyCosmeticsPacket';
+import PlayerInfoRequestPacket from './PlayerInfoRequestPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -69,6 +70,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     joinServer: JoinServerPacket,
     equipEmotes: EquipEmotesPacket,
     applyCosmetics: ApplyCosmeticsPacket,
+    playerInfoRequest: PlayerInfoRequestPacket,
   };
 
   public static packets = Object.values(IncomingPacketHandler.packetMap);
@@ -85,6 +87,8 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
 
     const id = buf.readVarInt();
     const Packet = IncomingPacketHandler.packets.find((p) => p.id === id);
+
+    if (id === 50) return;
 
     if (!Packet) {
       // logger.warn('Unknown packet id (incoming):', id, data);
@@ -108,4 +112,5 @@ type IncomingPacketHandlerEvents = {
   joinServer: (packet: JoinServerPacket) => void;
   equipEmotes: (packet: EquipEmotesPacket) => void;
   applyCosmetics: (packet: ApplyCosmeticsPacket) => void;
+  playerInfoRequest: (packet: PlayerInfoRequestPacket) => void;
 };

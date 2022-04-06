@@ -10,6 +10,8 @@ export default class EquipEmotesPacket extends Packet<EquipEmotes> {
   }
 
   public write(data: EquipEmotes): void {
+    this.data = data;
+
     this.buf = new BufWrapper();
     this.buf.writeVarInt(EquipEmotesPacket.id); // Packet ID
 
