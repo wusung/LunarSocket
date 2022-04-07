@@ -25,6 +25,7 @@ import ModSettingsPacket from './ModSettingsPacket';
 import TaskListPacket from './TaskListPacket';
 import HostListPacket from './HostListPacket';
 import TaskListRequestPacket from './TaskListRequestPacket';
+import HostListRequestPacket from './HostListRequest';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -40,6 +41,7 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendResponse: FriendResponsePacket,
     forceCrash: ForceCrashPacket,
     taskListRequest: TaskListRequestPacket,
+    hostListRequest: HostListRequestPacket,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);

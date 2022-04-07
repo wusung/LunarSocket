@@ -1,11 +1,11 @@
 # Overview
 
 | Packet ID | Name                                                                                          | Bound to |
-|-----------|-----------------------------------------------------------------------------------------------|----------|
+| --------- | --------------------------------------------------------------------------------------------- | -------- |
 | 2         | ConsoleMessage ([C](#consolemessage-clientbound---2)\|[S](#consolemessage-serverbound---2))   | Both     |
 | 3         | [Notification](#notification---3)                                                             | Client   |
 | 4         | [FriendList](#friendlist---4)                                                                 | Client   |
-| 5         | [FriendMessage](#friendmessage---5)                                              | Both     |
+| 5         | [FriendMessage](#friendmessage---5)                                                           | Both     |
 | 6         | [JoinServer](#joinserver---6)                                                                 | Server   |
 | 7         | [Unknown](#unknown---7)                                                                       | Client   |
 | 8         | [PlayerInfo](#playerinfo---8)                                                                 | Client   |
@@ -34,14 +34,14 @@
 | 57        | [GiveEmotes](#giveemotes---57)                                                                | Client   |
 | 64        | [ModSettings](#modsettings---64)                                                              | Server   |
 | 65        |                                                                                               |          |
-| 67        |                                                                                               |          |
+| 67        | [HostListRequest](#hostlistrequest---67)                                                      | Client   |
 | 68        | [HostList](#hostlist---68)                                                                    | Server   |
 | 69        |                                                                                               |          |
 | 70        |                                                                                               |          |
 | 71        |                                                                                               |          |
 | 72        |                                                                                               |          |
 | 73        |                                                                                               |          |
-| 1056      |                                                                                               |          |
+| 1056      | [Unknown](#unknown---1056)                                                                    | Unknown  |
 
 # Clientbound packets
 
@@ -49,11 +49,11 @@
 
 Send a message to the player's console.
 
-Note: *supports Minecraft color codes*
+Note: _supports Minecraft color codes_
 
 ```js
 {
-  message: 'string'
+  message: 'string';
 }
 ```
 
@@ -61,7 +61,7 @@ Note: *supports Minecraft color codes*
 
 Send a pop up notification to the client. Title field can be an empty string. However description cannot.
 
-Note: *supports Minecraft color codes*
+Note: _supports Minecraft color codes_
 
 ```js
 {
@@ -74,9 +74,9 @@ Note: *supports Minecraft color codes*
 
 Packet containing your friend list. Sent at boot by lunar.
 
-Note: *We suppose that the `unknownInt` is for an online friend is the friend's Minecraft version.*
+Note: _We suppose that the `unknownInt` is for an online friend is the friend's Minecraft version._
 
-Note: *The `online` array seems to be empty everytime and another packet is telling if the friend is online.*
+Note: _The `online` array seems to be empty everytime and another packet is telling if the friend is online._
 
 ```js
 {
@@ -91,7 +91,7 @@ Note: *The `online` array seems to be empty everytime and another packet is tell
 
 When a friend of the player sends a message.
 
-Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
+Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
 
 ```js
 {
@@ -108,7 +108,7 @@ Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 {
   // Don't ask me why this is called bulk ¯\_(ツ)_/¯
   // That's how Lunar calls it
-  bulk: 'Array<unknown>'
+  bulk: 'Array<unknown>';
 }
 ```
 
@@ -116,11 +116,12 @@ Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 
 Packet containing a player details.
 Used in two cases:
-  - When it tells information about the current player
-  - When it tells information about other players
 
-Note: *The `equipped` field for cosmetics is ignored when the packet tells information about another player. 
-Which means lunar sends you only equipped cosmetics*
+- When it tells information about the current player
+- When it tells information about other players
+
+Note: _The `equipped` field for cosmetics is ignored when the packet tells information about another player.
+Which means lunar sends you only equipped cosmetics_
 
 ```js
 {
@@ -141,8 +142,8 @@ Which means lunar sends you only equipped cosmetics*
 
 When the player receives a friend request from someone
 
-Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
-Note: *The `uuid` field seems to be empty everytime
+Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
+Note: \*The `uuid` field seems to be empty everytime
 
 ```js
 {
@@ -155,7 +156,7 @@ Note: *The `uuid` field seems to be empty everytime
 
 Sent when a player accepts or denies your friend request
 
-Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
+Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
 
 ```js
 {
@@ -169,18 +170,20 @@ Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
 Crash the client ¯\\_(ツ)_/¯
 
 ```js
-{}
+{
+}
 ```
 
 ## TaskListRequest - `35`
 
-Send a task list request to the client. 
+Send a task list request to the client.
 The client should send back a [TaskList](#tasklist---36) packet with the data
 
-Note: *yes privacy*
+Note: _yes privacy_
 
 ```js
-{}
+{
+}
 ```
 
 ## PlayEmote - `51`
@@ -205,18 +208,30 @@ Packet containing all player's emotes
 }
 ```
 
+## HostListRequest - `67`
+
+Send a host list request to the client.
+The client should send back a [HostList](#hostlist---68) packet with the data
+
+Note: _yes privacy_
+
+```js
+{
+}
+```
+
 # Serverbound packets
 
 ## ConsoleMessage (serverbound) - `2`
 
 Sent when the player sends a message in the Admin Console.
 
-Note: *In order to open the Admin Console, you need to open your friend menu and press <kbd>F1</kbd>.
-The `consoleAccess` field ([FriendList](#friendlist---4)) packet should be on `true` as well or you won't be able to open the console.*
+Note: _In order to open the Admin Console, you need to open your friend menu and press <kbd>F1</kbd>.
+The `consoleAccess` field ([FriendList](#friendlist---4)) packet should be on `true` as well or you won't be able to open the console._
 
 ```js
 {
-  message: 'string'
+  message: 'string';
 }
 ```
 
@@ -235,11 +250,11 @@ Sent when the player sends a message to one of his friends
 
 Sent when the player joins a server
 
-Note: *An empty string is set when the player leaves the server*
+Note: _An empty string is set when the player leaves the server_
 
 ```js
 {
-  uuid: 'string', // Seems to always be empty ¯\_(ツ)_/¯
+  uuid: 'string', // Seems to always be empty ¯\\_(ツ)\_/¯
   server: 'string'
 }
 ```
@@ -248,7 +263,7 @@ Note: *An empty string is set when the player leaves the server*
 
 Sent when you send a friend request to someone
 
-Note: *The `uuid` field is a string and not an UUID! This is not a mistake*
+Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
 
 ```js
 {
@@ -288,11 +303,11 @@ Sent when uh I don't remember
 Packet containing the output of the `tasklist.exe` program on Windows..
 Sent after receiving the [TaskListRequest](#tasklistrequest---35) packet.
 
-Note: *yes privacy*
+Note: _yes privacy_
 
 ```js
 {
-  tasks: 'Array<string>'
+  tasks: 'Array<string>';
 }
 ```
 
@@ -302,7 +317,7 @@ Sent when you are trying to emote
 
 ```js
 {
-  id: 'int'
+  id: 'int';
 }
 ```
 
@@ -313,7 +328,7 @@ The server should send [PlayerInfo](#playerinfo---8) for every player on Lunar C
 
 ```js
 {
-  uuids: 'Array<UUID>'
+  uuids: 'Array<UUID>';
 }
 ```
 
@@ -321,11 +336,11 @@ The server should send [PlayerInfo](#playerinfo---8) for every player on Lunar C
 
 Sent when you equip an emote
 
-Note: *the packet is only sent when you leave the emote menu (not the selector)*
+Note: _the packet is only sent when you leave the emote menu (not the selector)_
 
 ```js
 {
-  emotes: 'Array<int>'
+  emotes: 'Array<int>';
 }
 ```
 
@@ -333,7 +348,7 @@ Note: *the packet is only sent when you leave the emote menu (not the selector)*
 
 Packet containing all your mods and their state (whether they are enabled or not)
 
-Note: *this packet seems to be sent very very often*
+Note: _this packet seems to be sent very very often_
 
 ```js
 {
@@ -346,12 +361,26 @@ Note: *this packet seems to be sent very very often*
 
 Packet containing your `hosts` file.
 
-Note: *this packet was introduced to prevent players from overriding lunar client domains and using custom websockets/api without modifying the game*
+Note: _this packet was introduced to prevent players from overriding lunar client domains and using custom websockets/api without modifying the game_
 
-Note: *yes privacy*
+Note: _yes privacy_
 
 ```js
 {
-  hosts: 'Array<string>'
+  hosts: 'Array<string>';
+}
+```
+
+# Unknown packets
+
+## Unknown - `1056`
+
+???
+
+```js
+{
+  id: 'int',
+  username: 'string',
+  servers: 'Array<string>'
 }
 ```
