@@ -2,11 +2,12 @@ import Command from './Command';
 import Player from '../Player';
 import online from './online';
 import help from './help';
+import whitelist from './whitelist';
 
 export default class CommandHandler {
   public player: Player;
 
-  public static commands: Command[] = [online, help];
+  public static commands: Command[] = [online, help, whitelist];
 
   public constructor(player: Player) {
     this.player = player;

@@ -16,7 +16,7 @@ import ApplyCosmeticsPacket from './packets/ApplyCosmeticsPacket';
 import FriendListPacket from './packets/FriendListPacket';
 import ConsoleMessagePacket from './packets/ConsoleMessage';
 import CommandHandler from './commands/CommandHandler';
-import config from './utils/config';
+import getConfig from './utils/config';
 
 export default class Player {
   public version: string;
@@ -243,11 +243,11 @@ export default class Player {
     });
 
     // After every listeners are registered sending a hi notification
-    setTimeout(() => {
+    setTimeout(async () => {
       const notification = new NotificationPacket();
       notification.write({
         title: '',
-        message: config.welcomeMessage,
+        message: (await getConfig()).welcomeMessage,
       });
       this.writeToClient(notification);
     }, 1000);

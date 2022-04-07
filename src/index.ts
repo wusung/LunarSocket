@@ -2,7 +2,7 @@ import { Server, createServer } from 'node:https';
 import { readFileSync } from 'node:fs';
 import { Server as WebSocketServer } from 'ws';
 
-import config from './utils/config';
+import getConfig, { getConfigSync } from './utils/config';
 import logger from './utils/logger';
 import Player from './Player';
 import Packet from './packets/Packet';
@@ -15,6 +15,8 @@ console.log(`  _                               _____            _        _
  |______\\__,_|_| |_|\\__,_|_|    |_____/ \\___/ \\___|_|\\_\\___|\\__|\n`);
 
 let httpsServer: Server;
+
+const config = getConfigSync();
 
 if (config.secure) {
   httpsServer = createServer({
@@ -39,7 +41,7 @@ server.on('listening', () => {
   logger.log(`Server listening on port ${config.port}`);
 });
 
-server.on('connection', (socket, request) => {
+server.on('connection', async (socket, request) => {
   const handshake = {
     accountType: request.headers['accounttype'] as string,
     arch: request.headers['arch'] as string,
@@ -63,6 +65,8 @@ server.on('connection', (socket, request) => {
   // Ignoring players with older/newer protocol versions
   if (handshake.protocolVersion !== '5')
     return socket.close(1002, 'Incompatible protocol version, requires 5');
+
+  const config = await getConfig();
 
   if (config.enableWhitelist)
     if (!config.whitelist.includes(handshake.playerId))

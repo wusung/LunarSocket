@@ -1,9 +1,20 @@
-import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { readFile, writeFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 
-const config: Config = JSON.parse(
-  readFileSync(join(process.cwd(), 'config.json'), 'utf-8')
-);
+const configPath = join(process.cwd(), 'config.json');
+
+export default async function getConfig(): Promise<Config> {
+  return JSON.parse(await readFile(configPath, 'utf-8'));
+}
+
+export function getConfigSync(): Config {
+  return JSON.parse(readFileSync(configPath, 'utf-8'));
+}
+
+export async function editConfig(newConfig: Config): Promise<void> {
+  await writeFile(configPath, JSON.stringify(newConfig, null, 2));
+}
 
 interface Config {
   port: number;
@@ -16,5 +27,3 @@ interface Config {
   enableWhitelist: boolean;
   whitelist: string[];
 }
-
-export default config;

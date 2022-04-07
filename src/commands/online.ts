@@ -5,8 +5,8 @@ const command = new Command('online');
 
 command.help = `usage: online §o[options]
   options:
-    §l-n§r, §l--names     §rShow connected player names
-    §l-u§r, §l--uuids     §rShow connected player UUIDs
+    §l-n§r, §l--names    §rShow connected player names
+    §l-u§r, §l--uuids    §rShow connected player UUIDs
 `;
 
 command.setHandler((player, command, args) => {
