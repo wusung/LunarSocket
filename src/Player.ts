@@ -17,6 +17,7 @@ import FriendListPacket from './packets/FriendListPacket';
 import ConsoleMessagePacket from './packets/ConsoleMessage';
 import CommandHandler from './commands/CommandHandler';
 import getConfig from './utils/config';
+import instanceStorage from './utils/instanceStorage';
 
 export default class Player {
   public version: string;
@@ -34,6 +35,7 @@ export default class Player {
   };
   public cosmetics: OwnedFake<{ id: number; equipped: boolean }[]>;
 
+  private disconnected: boolean;
   private socket: WebSocket;
   private fakeSocket: WebSocket;
   private outgoingPacketHandler: OutgoingPacketHandler;
@@ -59,6 +61,7 @@ export default class Player {
       fake: [],
     };
 
+    this.disconnected = false;
     this.socket = socket;
     this.fakeSocket = new WebSocket(
       'wss://assetserver.lunarclientprod.com/connect',
@@ -78,6 +81,9 @@ export default class Player {
     // Yes, wea re giving cosmetics out of nowhere again
     for (let i = 1; i < 2361; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
+
+    this.restoreFromInstanceStorage(); // Restoring data if it exists
+    this.updateInstanceStorage(); // Saving data to instanceStorage
 
     // Forwarding data
     this.socket.on('message', (data) => {
@@ -120,6 +126,7 @@ export default class Player {
       this.emotes.owned.owned = packet.data.owned;
       this.emotes.equipped.owned = packet.data.equipped;
       this.sendEmotes();
+      this.updateInstanceStorage();
     });
 
     this.outgoingPacketHandler.on('playerInfo', (packet) => {
@@ -134,6 +141,8 @@ export default class Player {
         this.color.real = packet.data.color;
         this.clothCloak.real = packet.data.clothCloak;
         this.plusColor.real = packet.data.plusColor;
+
+        this.updateInstanceStorage();
 
         // Sending the owned and fake cosmetics to the client
         const newPacket = new PlayerInfoPacket();
@@ -210,6 +219,11 @@ export default class Player {
         packet.write({ emotes: owned });
         this.writeToServer(packet);
       });
+
+      this.emotes.equipped.owned = owned;
+      this.emotes.equipped.fake = fake;
+
+      this.updateInstanceStorage();
     });
 
     this.incomingPacketHandler.on('applyCosmetics', (packet) => {
@@ -229,6 +243,8 @@ export default class Player {
           : this.clothCloak.real,
       });
       this.writeToServer(_packet);
+
+      this.updateInstanceStorage();
 
       // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
     });
@@ -321,6 +337,8 @@ export default class Player {
   }
 
   public removePlayer(): void {
+    if (this.disconnected) return;
+    this.disconnected = true;
     logger.log(this.username, 'disconnected!');
     try {
       this.socket.close(1000);
@@ -329,6 +347,28 @@ export default class Player {
       this.fakeSocket.close(1000);
     } catch (error) {}
     removePlayer(this.uuid);
+  }
+
+  private updateInstanceStorage(): void {
+    instanceStorage.set(this.uuid, {
+      emotes: this.emotes,
+      cosmetics: this.cosmetics,
+      color: this.color,
+      clothCloak: this.clothCloak,
+      plusColor: this.plusColor,
+      premium: this.premium,
+    });
+  }
+
+  private restoreFromInstanceStorage(): void {
+    const data = instanceStorage.get(this.uuid);
+    if (!data) return;
+    this.emotes = data.emotes;
+    this.cosmetics = data.cosmetics;
+    this.color = data.color;
+    this.clothCloak = data.clothCloak;
+    this.plusColor = data.plusColor;
+    this.premium = data.premium;
   }
 }
 
