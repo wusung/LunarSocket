@@ -367,7 +367,7 @@ Note: _yes privacy_
 
 ```js
 {
-  hosts: 'Array<string>';
+  hosts: 'Array<string>'
 }
 ```
 
