@@ -327,6 +327,48 @@ Note: _yes privacy_
 }
 ```
 
+<details>
+  <summary>Example packet</summary>
+  <br/>
+  
+  ```js
+  {
+    tasks: [
+      '',
+      'Image Name                     PID Session Name        Session#    Mem Usage',
+      '========================= ======== ================ =========== ============',
+      'System Idle Process              0 Services                   0          8 K',
+      'System                           4 Services                   0      7,292 K',
+      'Secure System                  136 Services                   0     46,628 K',
+      'Registry                       208 Services                   0     52,132 K',
+      'smss.exe                       612 Services                   0      1,228 K',
+      'csrss.exe                      872 Services                   0      5,416 K',
+      'wininit.exe                   1020 Services                   0      7,136 K',
+      'services.exe                   852 Services                   0     16,584 K',
+      'LsaIso.exe                    1032 Services                   0      3,688 K',
+      'lsass.exe                     1040 Services                   0     28,356 K',
+      'svchost.exe                   1244 Services                   0     38,832 K',
+      'fontdrvhost.exe               1276 Services                   0      3,216 K',
+      'vmms.exe                      2536 Services                   0     32,096 K',
+      'NVDisplay.Container.exe       2748 Services                   0     19,492 K',
+      'Memory Compression            3124 Services                   0     75,004 K',
+      'spoolsv.exe                   3824 Services                   0     17,328 K',
+      'MsMpEng.exe                   4220 Services                   0    287,224 K',
+      'vgc.exe                       4252 Services                   0     29,972 K',
+      'vmcompute.exe                 4688 Services                   0     13,068 K',
+      'AggregatorHost.exe            4996 Services                   0      5,560 K',
+      'NisSrv.exe                    5984 Services                   0     11,584 K',
+      'vmmem                         7496 Services                   0          N/A',
+      'GoogleCrashHandler.exe        5796 Services                   0      1,568 K',
+      'GoogleCrashHandler64.exe      8556 Services                   0      1,356 K',
+      'SearchIndexer.exe             9272 Services                   0     51,500 K',
+      'MpCopyAccelerator.exe         5448 Services                   0      6,864 K',
+      ...
+    ]
+  }
+  ```
+</details>
+
 ## DoEmote - `39`
 
 Sent when you are trying to emote
@@ -385,3 +427,18 @@ Note: _yes privacy_
   hosts: 'Array<string>'
 }
 ```
+
+<details>
+  <summary>Example packet</summary>
+  <br/>
+
+  ```js
+  {
+    hosts: [
+      '127.0.0.1 example.com',
+      '127.0.0.1 anotherdomain.com',
+      '127.0.0.1 www.youtube.com'
+    ]
+  }
+  ```
+</details>

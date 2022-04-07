@@ -234,7 +234,6 @@ export default class Player {
     });
 
     this.incomingPacketHandler.on('taskList', (packet) => {
-      logger.debug(packet.data);
       // Not sending data back to lunar
     });
 
