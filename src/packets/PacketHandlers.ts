@@ -21,11 +21,12 @@ import ConsoleMessagePacket from './ConsoleMessage';
 import FriendRequestPacket from './FriendRequestPacket';
 import FriendResponsePacket from './FriendResponsePacket';
 import ForceCrashPacket from './ForceCrashPacket';
-import ModSettingsPacket from './ModSettingsPacket';
+import KeepAlivePacket from './KeepAlivePacket';
 import TaskListPacket from './TaskListPacket';
 import HostListPacket from './HostListPacket';
 import TaskListRequestPacket from './TaskListRequestPacket';
 import HostListRequestPacket from './HostListRequest';
+import ClientBanPacket from './ClientBanPacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -42,6 +43,7 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     forceCrash: ForceCrashPacket,
     taskListRequest: TaskListRequestPacket,
     hostListRequest: HostListRequestPacket,
+    clientBan: ClientBanPacket,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);
@@ -86,6 +88,7 @@ type OutgoingPacketHandlerEvents = {
   friendRequest: (packet: FriendRequestPacket) => void;
   friendResponse: (packet: FriendResponsePacket) => void;
   taskListRequest: (packet: TaskListRequestPacket) => void;
+  clientBan: (packet: ClientBanPacket) => void;
 };
 
 // Incoming is when a packet is sent by the client to the server
@@ -100,7 +103,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     friendMessage: FriendMessagePacket,
     friendRequest: FriendRequestPacket,
     friendResponse: FriendResponsePacket,
-    modSettings: ModSettingsPacket,
+    keepAlive: KeepAlivePacket,
     taskList: TaskListPacket,
     hostList: HostListPacket,
   };
@@ -148,7 +151,7 @@ type IncomingPacketHandlerEvents = {
   playerInfoRequest: (packet: PlayerInfoRequestPacket) => void;
   friendRequest: (packet: FriendRequestPacket) => void;
   friendResponse: (packet: FriendResponsePacket) => void;
-  modSettings: (packet: ModSettingsPacket) => void;
+  keepAlive: (packet: KeepAlivePacket) => void;
   taskList: (packet: TaskListPacket) => void;
   hostList: (packet: HostListPacket) => void;
 };

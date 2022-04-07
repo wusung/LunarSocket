@@ -2,18 +2,18 @@ import BufWrapper from '@minecraft-js/bufwrapper';
 
 import Packet from './Packet';
 
-export default class PacketId1056 extends Packet<Id1056> {
+export default class ClientBanPacket extends Packet<ClientBan> {
   public static id = 1056;
 
   public constructor(buf?: BufWrapper) {
     super(buf);
   }
 
-  public write(data: Id1056): void {
+  public write(data: ClientBan): void {
     this.data = data;
 
     this.buf = new BufWrapper();
-    this.buf.writeVarInt(PacketId1056.id); // Packet ID
+    this.buf.writeVarInt(ClientBanPacket.id); // Packet ID
 
     this.buf.writeInt(data.id);
     this.buf.writeString(data.username);
@@ -42,7 +42,7 @@ export default class PacketId1056 extends Packet<Id1056> {
   }
 }
 
-interface Id1056 {
+interface ClientBan {
   id: number;
   username: string;
   servers: string[];

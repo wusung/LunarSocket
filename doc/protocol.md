@@ -32,7 +32,7 @@
 | 55        |                                                                                               |          |
 | 56        | [EquipEmote](#equipemotes---56)                                                               | Server   |
 | 57        | [GiveEmotes](#giveemotes---57)                                                                | Client   |
-| 64        | [ModSettings](#modsettings---64)                                                              | Server   |
+| 64        | [KeepAlive](#keepalive---64)                                                                  | Server   |
 | 65        |                                                                                               |          |
 | 67        | [HostListRequest](#hostlistrequest---67)                                                      | Client   |
 | 68        | [HostList](#hostlist---68)                                                                    | Server   |
@@ -41,7 +41,7 @@
 | 71        |                                                                                               |          |
 | 72        |                                                                                               |          |
 | 73        |                                                                                               |          |
-| 1056      | [Unknown](#unknown---1056)                                                                    | Unknown  |
+| 1056      | [ClientBan](#clientban---1056)                                                                | Client   |
 
 # Clientbound packets
 
@@ -220,6 +220,22 @@ Note: _yes privacy_
 }
 ```
 
+## ClientBan - `1056`
+
+Sent when you get banned from Lunar Client
+
+Note: _There's maybe a serverbound version of this packet since the write methods are in the code_
+Note: _Not sure what are those fields used for since it doesn't get send very often lol_
+
+```js
+{
+  id: 'int',
+  username: 'string',
+  servers: 'Array<string>'
+}
+```
+
+
 # Serverbound packets
 
 ## ConsoleMessage (serverbound) - `2`
@@ -344,15 +360,14 @@ Note: _the packet is only sent when you leave the emote menu (not the selector)_
 }
 ```
 
-## ModSettings - `64`
+## KeepAlive - `64`
 
+Packet used to keep alive the connection
 Packet containing all your mods and their state (whether they are enabled or not)
-
-Note: _this packet seems to be sent very very often_
 
 ```js
 {
-  settings: 'Map<string, boolean>',
+  mods: 'Map<string, boolean>',
   game: 'string'
 }
 ```
@@ -368,19 +383,5 @@ Note: _yes privacy_
 ```js
 {
   hosts: 'Array<string>'
-}
-```
-
-# Unknown packets
-
-## Unknown - `1056`
-
-???
-
-```js
-{
-  id: 'int',
-  username: 'string',
-  servers: 'Array<string>'
 }
 ```
