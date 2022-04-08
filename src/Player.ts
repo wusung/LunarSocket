@@ -249,18 +249,12 @@ export default class Player {
       // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
     });
 
-    this.incomingPacketHandler.on('taskList', (packet) => {
+    this.incomingPacketHandler.on('taskList', () => {
       // Not sending data back to lunar
     });
 
-    this.incomingPacketHandler.on('hostList', (packet) => {
-      logger.debug(packet.data);
+    this.incomingPacketHandler.on('hostList', () => {
       // Not sending data back to lunar
-    });
-
-    this.outgoingPacketHandler.on('friendUpdate', (packet) => {
-      logger.debug(packet.data);
-      this.writeToClient(packet);
     });
 
     // After every listeners are registered sending a hi notification

@@ -129,7 +129,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     const Packet = IncomingPacketHandler.packets.find((p) => p.id === id);
 
     if (!Packet) {
-      logger.warn('Unknown packet id (incoming):', id, data);
+      // logger.warn('Unknown packet id (incoming):', id, data);
       return this.player.writeToServer(data);
     }
 
