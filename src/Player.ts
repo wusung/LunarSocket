@@ -14,7 +14,7 @@ import NotificationPacket from './packets/NotificationPacket';
 import PlayerInfoPacket from './packets/PlayerInfoPacket';
 import ApplyCosmeticsPacket from './packets/ApplyCosmeticsPacket';
 import FriendListPacket from './packets/FriendListPacket';
-import ConsoleMessagePacket from './packets/ConsoleMessage';
+import ConsoleMessagePacket from './packets/ConsoleMessagePacket';
 import CommandHandler from './commands/CommandHandler';
 import getConfig from './utils/config';
 import instanceStorage from './utils/instanceStorage';
@@ -233,8 +233,8 @@ export default class Player {
       this.clothCloak.fake = packet.data.clothCloak;
 
       // Sending the new state of the cosmetics to lunar
-      const _packet = new ApplyCosmeticsPacket();
-      _packet.write({
+      const newPacket = new ApplyCosmeticsPacket();
+      newPacket.write({
         ...packet.data,
         cosmetics: this.cosmetics.owned,
         // Non premium users can't change clothCloak
@@ -242,7 +242,7 @@ export default class Player {
           ? packet.data.clothCloak
           : this.clothCloak.real,
       });
-      this.writeToServer(_packet);
+      this.writeToServer(newPacket);
 
       this.updateInstanceStorage();
 

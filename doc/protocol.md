@@ -12,7 +12,7 @@
 | 9         | FriendRequest ([C](#friendrequest-clientbound---9)\|[S](#friendrequest-serverbound---9))      | Both     |
 | 16        |                                                                                               |          |
 | 17        |                                                                                               |          |
-| 18        |                                                                                               |          |
+| 18        | [FriendUpdate](#friendupdate---18)                                                            | Client   |
 | 20        | [ApplyCosmetics](#applycosmetics---20)                                                        | Server   |
 | 21        | FriendResponse ([C](#friendresponse-clientbound---21)\|[S](#friendresponse-serverbound---21)) | Both     |
 | 22        |                                                                                               |          |
@@ -57,6 +57,8 @@ Note: _supports Minecraft color codes_
 }
 ```
 
+See [implementation](../src/packets/ConsoleMessagePacket.ts)
+
 ## Notification - `3`
 
 Send a pop up notification to the client. Title field can be an empty string. However description cannot.
@@ -69,6 +71,8 @@ Note: _supports Minecraft color codes_
   message: 'string'
 }
 ```
+
+See [implementation](../src/packets/NotificationPacket.ts)
 
 ## FriendList - `4`
 
@@ -87,6 +91,8 @@ Note: _The `online` array seems to be empty every time and another packet is tel
 }
 ```
 
+See [implementation](../src/packets/FriendListPacket.ts)
+
 ## FriendMessage - `5`
 
 When a friend of the player sends a message.
@@ -99,6 +105,8 @@ Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
   message: 'string'
 }
 ```
+
+See [implementation](../src/packets/FriendMessagePacket.ts)
 
 ## JoinServer (clientbound) - `6`
 
@@ -115,6 +123,8 @@ Note: _The `server` field is set to "In Menus" when the friend leaves the server
 }
 ```
 
+See [implementation](../src/packets/JoinServerPacket.ts)
+
 ## Unknown - `7`
 
 ???
@@ -126,6 +136,8 @@ Note: _The `server` field is set to "In Menus" when the friend leaves the server
   bulk: 'Array<unknown>';
 }
 ```
+
+See [implementation](../src/packets/PacketId7.ts)
 
 ## PlayerInfo - `8`
 
@@ -153,6 +165,8 @@ Which means lunar sends you only equipped cosmetics_
 }
 ```
 
+See [implementation](../src/packets/PlayerInfoPacket.ts)
+
 ## FriendRequest (clientbound) - `9`
 
 When the player receives a friend request from someone
@@ -167,9 +181,23 @@ Note: \*The `uuid` field seems to be empty everytime
 }
 ```
 
+See [implementation](../src/packets/FriendRequestPacket.ts)
+
 ## FriendUpdate - `18`
 
 Sent when a friend connects or disconnects
+
+```js
+{
+  uuid: 'string';
+  name: 'string';
+  unknownLong: 'long';
+  unknownBoolean: 'boolean';
+  version: 'string';
+}
+```
+
+See [implementation](../src/packets/FriendUpdatePacket.ts)
 
 ## FriendResponse (clientbound) - `21`
 
@@ -184,14 +212,18 @@ Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
 }
 ```
 
+See [implementation](../src/packets/FriendResponsePacket.ts)
+
 ## ForceCrash - `33`
 
-Crash the client ¯\\_(ツ)_/¯
+Crashes the client ¯\\\_(ツ)\_/¯
 
 ```js
 {
 }
 ```
+
+See [implementation](../src/packets/ForceCrashPacket.ts)
 
 ## TaskListRequest - `35`
 
@@ -205,6 +237,8 @@ Note: _yes privacy_
 }
 ```
 
+See [implementation](../src/packets/TaskListRequestPacket.ts)
+
 ## PlayEmote - `51`
 
 Play the emote animation for someone
@@ -215,6 +249,8 @@ Play the emote animation for someone
   id: 'int'
 }
 ```
+
+See [implementation](../src/packets/PlayEmotePacket.ts)
 
 ## GiveEmotes - `57`
 
@@ -227,6 +263,8 @@ Packet containing all player's emotes
 }
 ```
 
+See [implementation](../src/packets/GiveEmotesPacket.ts)
+
 ## HostListRequest - `67`
 
 Send a host list request to the client.
@@ -238,6 +276,8 @@ Note: _yes privacy_
 {
 }
 ```
+
+See [implementation](../src/packets/HostListRequest.ts)
 
 ## ClientBan - `1056`
 
@@ -254,6 +294,7 @@ Note: _Not sure what are those fields used for since it doesn't get send very of
 }
 ```
 
+See [implementation](../src/packets/ClientBanPacket.ts)
 
 # Serverbound packets
 
@@ -270,6 +311,8 @@ The `consoleAccess` field ([FriendList](#friendlist---4)) packet should be on `t
 }
 ```
 
+See [implementation](../src/packets/ConsoleMessagePacket.ts)
+
 ## FriendMessage - `5`
 
 Sent when the player sends a message to one of his friends
@@ -280,6 +323,8 @@ Sent when the player sends a message to one of his friends
   message: 'string'
 }
 ```
+
+See [implementation](../src/packets/FriendMessagePacket.ts)
 
 ## JoinServer (serverbound) - `6`
 
@@ -296,6 +341,8 @@ Note: _An empty string is set when the player leaves the server_
 }
 ```
 
+See [implementation](../src/packets/JoinServerPacket.ts)
+
 ## FriendRequest (serverbound) - `9`
 
 Sent when you send a friend request to someone
@@ -308,6 +355,8 @@ Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
   username: 'string'
 }
 ```
+
+See [implementation](../src/packets/FriendRequestPacket.ts)
 
 ## ApplyCosmetics - `20`
 
@@ -324,6 +373,8 @@ Sent when you equip a cosmetic or change ClothCloak state
 }
 ```
 
+See [implementation](../src/packets/ApplyCosmeticsPacket.ts)
+
 ## FriendResponse (serverbound) - `21`
 
 Sent when uh I don't remember
@@ -334,6 +385,8 @@ Sent when uh I don't remember
   uuid: 'string'
 }
 ```
+
+See [implementation](../src/packets/FriendResponsePacket.ts)
 
 ## TaskList - `36`
 
@@ -347,6 +400,8 @@ Note: _yes privacy_
   tasks: 'Array<string>';
 }
 ```
+
+See [implementation](../src/packets/TaskListPacket.ts)
 
 <details>
   <summary>Example packet</summary>
@@ -400,6 +455,8 @@ Sent when you are trying to emote
 }
 ```
 
+See [implementation](../src/packets/DoEmotePacket.ts)
+
 ## PlayerInfoRequest - `48`
 
 Sent around every 300ms to request information about other connected players.
@@ -410,6 +467,8 @@ The server should send [PlayerInfo](#playerinfo---8) for every player on Lunar C
   uuids: 'Array<UUID>';
 }
 ```
+
+See [implementation](../src/packets/PlayerInfoRequestPacket.ts)
 
 ## EquipEmotes - `56`
 
@@ -423,6 +482,8 @@ Note: _the packet is only sent when you leave the emote menu (not the selector)_
 }
 ```
 
+See [implementation](../src/packets/EquipEmotesPacket.ts)
+
 ## KeepAlive - `64`
 
 Packet used to keep alive the connection
@@ -434,6 +495,8 @@ Packet containing all your mods and their state (whether they are enabled or not
   game: 'string'
 }
 ```
+
+See [implementation](../src/packets/KeepAlivePacket.ts)
 
 ## HostList - `68`
 
@@ -448,6 +511,8 @@ Note: _yes privacy_
   hosts: 'Array<string>'
 }
 ```
+
+See [implementation](../src/packets/HostListPacket.ts)
 
 <details>
   <summary>Example packet</summary>
