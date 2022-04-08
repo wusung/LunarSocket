@@ -74,7 +74,7 @@ server.on('connection', async (socket, request) => {
 
   // Closing the connection if the player is already connected
   if (connectedPlayers.find((p) => p.uuid === handshake.playerId))
-    return socket.close(1006, 'Already connected');
+    return socket.close(3001, 'Already connected');
 
   const player = new Player(socket, handshake);
 

@@ -27,6 +27,7 @@ import HostListPacket from './HostListPacket';
 import TaskListRequestPacket from './TaskListRequestPacket';
 import HostListRequestPacket from './HostListRequest';
 import ClientBanPacket from './ClientBanPacket';
+import FriendUpdatePacket from './FriendUpdatePacket';
 
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
@@ -44,6 +45,8 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     taskListRequest: TaskListRequestPacket,
     hostListRequest: HostListRequestPacket,
     clientBan: ClientBanPacket,
+    friendUpdate: FriendUpdatePacket,
+    joinServer: JoinServerPacket,
   };
 
   public static packets = Object.values(OutgoingPacketHandler.packetMap);
@@ -89,6 +92,8 @@ type OutgoingPacketHandlerEvents = {
   friendResponse: (packet: FriendResponsePacket) => void;
   taskListRequest: (packet: TaskListRequestPacket) => void;
   clientBan: (packet: ClientBanPacket) => void;
+  friendUpdate: (packet: FriendUpdatePacket) => void;
+  joinServer: (packet: JoinServerPacket) => void;
 };
 
 // Incoming is when a packet is sent by the client to the server
@@ -122,8 +127,6 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
 
     const id = buf.readVarInt();
     const Packet = IncomingPacketHandler.packets.find((p) => p.id === id);
-
-    if (id === 50) return;
 
     if (!Packet) {
       logger.warn('Unknown packet id (incoming):', id, data);

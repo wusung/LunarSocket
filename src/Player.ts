@@ -258,6 +258,11 @@ export default class Player {
       // Not sending data back to lunar
     });
 
+    this.outgoingPacketHandler.on('friendUpdate', (packet) => {
+      logger.debug(packet.data);
+      this.writeToClient(packet);
+    });
+
     // After every listeners are registered sending a hi notification
     setTimeout(async () => {
       const notification = new NotificationPacket();

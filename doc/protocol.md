@@ -6,7 +6,7 @@
 | 3         | [Notification](#notification---3)                                                             | Client   |
 | 4         | [FriendList](#friendlist---4)                                                                 | Client   |
 | 5         | [FriendMessage](#friendmessage---5)                                                           | Both     |
-| 6         | [JoinServer](#joinserver---6)                                                                 | Server   |
+| 6         | JoinServer ([C](#joinserver-clientbound---6)\|[S](#joinserver-serverbound---6))               | Both     |
 | 7         | [Unknown](#unknown---7)                                                                       | Client   |
 | 8         | [PlayerInfo](#playerinfo---8)                                                                 | Client   |
 | 9         | FriendRequest ([C](#friendrequest-clientbound---9)\|[S](#friendrequest-serverbound---9))      | Both     |
@@ -76,7 +76,7 @@ Packet containing your friend list. Sent at boot by lunar.
 
 Note: _We suppose that the `unknownInt` is for an online friend is the friend's Minecraft version._
 
-Note: _The `online` array seems to be empty everytime and another packet is telling if the friend is online._
+Note: _The `online` array seems to be empty every time and another packet is telling if the friend is online._
 
 ```js
 {
@@ -97,6 +97,21 @@ Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
 {
   uuid: 'string',
   message: 'string'
+}
+```
+
+## JoinServer (clientbound) - `6`
+
+Sent when a friend joins a server
+
+Note: _The uuid is always empty when [serverbound](#joinserver-serverbound---6). It's used when the packet is clientbound_
+
+Note: _The `server` field is set to "In Menus" when the friend leaves the server. This field is more status than server imo¯\\\_(ツ)\_/¯_
+
+```js
+{
+  uuid: 'string',
+  server: 'string'
 }
 ```
 
@@ -151,6 +166,10 @@ Note: \*The `uuid` field seems to be empty everytime
   username: 'string'
 }
 ```
+
+## FriendUpdate - `18`
+
+Sent when a friend connects or disconnects
 
 ## FriendResponse (clientbound) - `21`
 
@@ -262,15 +281,17 @@ Sent when the player sends a message to one of his friends
 }
 ```
 
-## JoinServer - `6`
+## JoinServer (serverbound) - `6`
 
 Sent when the player joins a server
+
+Note: _The uuid is always empty when serverbound. It's used when the packet is [clientbound](#joinserver-clientbound---6)_
 
 Note: _An empty string is set when the player leaves the server_
 
 ```js
 {
-  uuid: 'string', // Seems to always be empty ¯\\_(ツ)\_/¯
+  uuid: 'string',
   server: 'string'
 }
 ```
