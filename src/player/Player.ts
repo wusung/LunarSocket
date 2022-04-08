@@ -1,23 +1,25 @@
 import { WebSocket } from 'ws';
+import { readdir } from 'fs/promises';
+import { join } from 'path';
 
-import Packet from './packets/Packet';
+import Packet from '../packets/Packet';
 import {
   IncomingPacketHandler,
   OutgoingPacketHandler,
-} from './packets/PacketHandlers';
-import logger from './utils/logger';
-import GiveEmotesPacket from './packets/GiveEmotesPacket';
-import { broadcast, connectedPlayers, removePlayer } from '.';
-import PlayEmotePacket from './packets/PlayEmotePacket';
-import EquipEmotesPacket from './packets/EquipEmotesPacket';
-import NotificationPacket from './packets/NotificationPacket';
-import PlayerInfoPacket from './packets/PlayerInfoPacket';
-import ApplyCosmeticsPacket from './packets/ApplyCosmeticsPacket';
-import FriendListPacket from './packets/FriendListPacket';
-import ConsoleMessagePacket from './packets/ConsoleMessagePacket';
-import CommandHandler from './commands/CommandHandler';
-import getConfig from './utils/config';
-import instanceStorage from './utils/instanceStorage';
+} from '../packets/PacketHandlers';
+import logger from '../utils/logger';
+import GiveEmotesPacket from '../packets/GiveEmotesPacket';
+import { broadcast, connectedPlayers, removePlayer } from '..';
+import PlayEmotePacket from '../packets/PlayEmotePacket';
+import EquipEmotesPacket from '../packets/EquipEmotesPacket';
+import NotificationPacket from '../packets/NotificationPacket';
+import PlayerInfoPacket from '../packets/PlayerInfoPacket';
+import ApplyCosmeticsPacket from '../packets/ApplyCosmeticsPacket';
+import FriendListPacket from '../packets/FriendListPacket';
+import ConsoleMessagePacket from '../packets/ConsoleMessagePacket';
+import CommandHandler from '../commands/CommandHandler';
+import getConfig from '../utils/config';
+import instanceStorage from '../utils/instanceStorage';
 
 export default class Player {
   public version: string;
@@ -35,12 +37,13 @@ export default class Player {
   };
   public cosmetics: OwnedFake<{ id: number; equipped: boolean }[]>;
 
+  public commandHandler: CommandHandler;
+
   private disconnected: boolean;
   private socket: WebSocket;
   private fakeSocket: WebSocket;
   private outgoingPacketHandler: OutgoingPacketHandler;
   private incomingPacketHandler: IncomingPacketHandler;
-  private commandHandler: CommandHandler;
 
   public constructor(socket: WebSocket, handshake: Handshake) {
     this.version = handshake.version;
@@ -122,12 +125,41 @@ export default class Player {
       this.removePlayer();
     });
 
-    this.outgoingPacketHandler.on('giveEmotes', (packet) => {
-      this.emotes.owned.owned = packet.data.owned;
-      this.emotes.equipped.owned = packet.data.equipped;
-      this.sendEmotes();
-      this.updateInstanceStorage();
-    });
+    (async () => {
+      const outgoingEvents = await readdir(
+        join(process.cwd(), 'dist', 'player', 'events', 'outgoing')
+      );
+      for (const event of outgoingEvents) {
+        if (!event.endsWith('.js')) continue;
+        this.outgoingPacketHandler.on(
+          // @ts-ignore - Perfectly fine
+          event.replace('.js', ''),
+          async (packet) => {
+            const handler = await import(
+              join(process.cwd(), 'dist', 'player', 'events', 'outgoing', event)
+            );
+            handler.default(this, packet);
+          }
+        );
+      }
+
+      const incomingEvents = await readdir(
+        join(process.cwd(), 'dist', 'player', 'events', 'incoming')
+      );
+      for (const event of incomingEvents) {
+        if (!event.endsWith('.js')) continue;
+        this.incomingPacketHandler.on(
+          // @ts-ignore - Perfectly fine
+          event.replace('.js', ''),
+          async (packet) => {
+            const handler = await import(
+              join(process.cwd(), 'dist', 'player', 'events', 'incoming', event)
+            );
+            handler.default(this, packet);
+          }
+        );
+      }
+    })();
 
     this.outgoingPacketHandler.on('playerInfo', (packet) => {
       if (packet.data.uuid === this.uuid) {
@@ -178,10 +210,6 @@ export default class Player {
         consoleAccess: true,
       });
       this.writeToClient(newPacket);
-    });
-
-    this.incomingPacketHandler.on('consoleMessage', (packet) => {
-      this.commandHandler.handle(packet.data.message);
     });
 
     this.incomingPacketHandler.on('doEmote', (packet) => {
@@ -348,7 +376,7 @@ export default class Player {
     removePlayer(this.uuid);
   }
 
-  private updateInstanceStorage(): void {
+  public updateInstanceStorage(): void {
     instanceStorage.set(this.uuid, {
       emotes: this.emotes,
       cosmetics: this.cosmetics,

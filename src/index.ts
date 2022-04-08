@@ -4,7 +4,7 @@ import { Server as WebSocketServer } from 'ws';
 
 import getConfig, { getConfigSync } from './utils/config';
 import logger from './utils/logger';
-import Player from './Player';
+import Player from './player/Player';
 import Packet from './packets/Packet';
 
 console.log(`  _                               _____            _        _   

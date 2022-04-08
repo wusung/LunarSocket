@@ -1,5 +1,5 @@
 import Command from './Command';
-import Player from '../Player';
+import Player from '../player/Player';
 import online from './online';
 import help from './help';
 import whitelist from './whitelist';

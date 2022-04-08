@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import TypedEventEmitter from 'typed-emitter';
 import BufWrapper from '@minecraft-js/bufwrapper';
 
-import Player from '../Player';
+import Player from '../player/Player';
 import logger from '../utils/logger';
 import GiveEmotesPacket from './GiveEmotesPacket';
 import PlayEmotePacket from './PlayEmotePacket';

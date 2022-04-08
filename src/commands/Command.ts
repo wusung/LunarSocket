@@ -1,4 +1,4 @@
-import Player from '../Player';
+import Player from '../player/Player';
 
 export default class Command {
   public readonly command: string;
