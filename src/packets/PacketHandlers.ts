@@ -82,7 +82,7 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
 }
 
 type OutgoingPacketHandlerEvents = {
-  [key in keyof typeof OutgoingPacketHandler.packetMap]: (packet: typeof OutgoingPacketHandler.packetMap[key]) => void;
+  [key in keyof typeof OutgoingPacketHandler.packetMap]: (packet: InstanceType<typeof OutgoingPacketHandler.packetMap[key]>) => void;
 }
 
 // Incoming is when a packet is sent by the client to the server
@@ -135,15 +135,5 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
 }
 
 type IncomingPacketHandlerEvents = {
-  doEmote: (packet: DoEmotePacket) => void;
-  consoleMessage: (packet: ConsoleCommand) => void;
-  joinServer: (packet: JoinServerPacket) => void;
-  equipEmotes: (packet: EquipEmotesPacket) => void;
-  applyCosmetics: (packet: ApplyCosmeticsPacket) => void;
-  playerInfoRequest: (packet: PlayerInfoRequestPacket) => void;
-  friendRequest: (packet: FriendRequestPacket) => void;
-  friendResponse: (packet: FriendResponsePacket) => void;
-  keepAlive: (packet: KeepAlivePacket) => void;
-  taskList: (packet: TaskListPacket) => void;
-  hostList: (packet: HostListPacket) => void;
-};
+  [key in keyof typeof IncomingPacketHandler.packetMap]: (packet: InstanceType<typeof IncomingPacketHandler.packetMap[key]>) => void;
+}
