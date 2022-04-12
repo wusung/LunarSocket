@@ -82,19 +82,8 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
 }
 
 type OutgoingPacketHandlerEvents = {
-  giveEmotes: (packet: GiveEmotesPacket) => void;
-  playEmote: (packet: PlayEmotePacket) => void;
-  notification: (packet: NotificationPacket) => void;
-  playerInfo: (packet: PlayerInfoPacket) => void;
-  friendList: (packet: FriendListPacket) => void;
-  id7: (packet: PacketId7) => void;
-  friendRequest: (packet: FriendRequestPacket) => void;
-  friendResponse: (packet: FriendResponsePacket) => void;
-  taskListRequest: (packet: TaskListRequestPacket) => void;
-  clientBan: (packet: ClientBanPacket) => void;
-  friendUpdate: (packet: FriendUpdatePacket) => void;
-  joinServer: (packet: JoinServerPacket) => void;
-};
+  [key in keyof typeof OutgoingPacketHandler.packetMap]: (packet: typeof OutgoingPacketHandler.packetMap[key]) => void;
+}
 
 // Incoming is when a packet is sent by the client to the server
 export class IncomingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<IncomingPacketHandlerEvents>) {
