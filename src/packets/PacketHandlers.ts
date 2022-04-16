@@ -3,11 +3,9 @@ import TypedEventEmitter from 'typed-emitter';
 import BufWrapper from '@minecraft-js/bufwrapper';
 
 import Player from '../player/Player';
-import logger from '../utils/logger';
 import GiveEmotesPacket from './GiveEmotesPacket';
 import PlayEmotePacket from './PlayEmotePacket';
 import DoEmotePacket from './DoEmotePacket';
-import ConsoleCommand from './ConsoleMessagePacket';
 import JoinServerPacket from './JoinServerPacket';
 import EquipEmotesPacket from './EquipEmotesPacket';
 import NotificationPacket from './NotificationPacket';
@@ -29,27 +27,27 @@ import HostListRequestPacket from './HostListRequest';
 import ClientBanPacket from './ClientBanPacket';
 import FriendUpdatePacket from './FriendUpdatePacket';
 
+const OutgoingPackets = {
+  giveEmotes: GiveEmotesPacket,
+  playEmote: PlayEmotePacket,
+  notification: NotificationPacket,
+  playerInfo: PlayerInfoPacket,
+  friendList: FriendListPacket,
+  friendMessage: FriendMessagePacket,
+  id7: PacketId7,
+  friendRequest: FriendRequestPacket,
+  friendResponse: FriendResponsePacket,
+  forceCrash: ForceCrashPacket,
+  taskListRequest: TaskListRequestPacket,
+  hostListRequest: HostListRequestPacket,
+  clientBan: ClientBanPacket,
+  friendUpdate: FriendUpdatePacket,
+  joinServer: JoinServerPacket,
+};
+
 // Outgoing is when a packet is sent by the server to the client
 export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<OutgoingPacketHandlerEvents>) {
-  public static packetMap = {
-    giveEmotes: GiveEmotesPacket,
-    playEmote: PlayEmotePacket,
-    notification: NotificationPacket,
-    playerInfo: PlayerInfoPacket,
-    friendList: FriendListPacket,
-    friendMessage: FriendMessagePacket,
-    id7: PacketId7,
-    friendRequest: FriendRequestPacket,
-    friendResponse: FriendResponsePacket,
-    forceCrash: ForceCrashPacket,
-    taskListRequest: TaskListRequestPacket,
-    hostListRequest: HostListRequestPacket,
-    clientBan: ClientBanPacket,
-    friendUpdate: FriendUpdatePacket,
-    joinServer: JoinServerPacket,
-  };
-
-  public static packets = Object.values(OutgoingPacketHandler.packetMap);
+  public static packets = Object.values(OutgoingPackets);
 
   private player: Player;
 
@@ -72,8 +70,8 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     const packet = new Packet(buf);
     packet.read();
 
-    const event = Object.keys(OutgoingPacketHandler.packetMap).find(
-      (key) => OutgoingPacketHandler.packetMap[key] === Packet
+    const event = Object.keys(OutgoingPackets).find(
+      (key) => OutgoingPackets[key] === Packet
     );
     // @ts-ignore - event is type of string and not keyof OutgoingPacketHandlerEvents but it works anyway
     if (this.listenerCount(event) > 0) this.emit(event, packet);
@@ -82,27 +80,29 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
 }
 
 type OutgoingPacketHandlerEvents = {
-  [key in keyof typeof OutgoingPacketHandler.packetMap]: (packet: InstanceType<typeof OutgoingPacketHandler.packetMap[key]>) => void;
-}
+  [key in keyof typeof OutgoingPackets]: (
+    packet: InstanceType<typeof OutgoingPackets[key]>
+  ) => void;
+};
+
+const IncomingPackets = {
+  doEmote: DoEmotePacket,
+  consoleMessage: ConsoleMessagePacket,
+  joinServer: JoinServerPacket,
+  equipEmotes: EquipEmotesPacket,
+  applyCosmetics: ApplyCosmeticsPacket,
+  playerInfoRequest: PlayerInfoRequestPacket,
+  friendMessage: FriendMessagePacket,
+  friendRequest: FriendRequestPacket,
+  friendResponse: FriendResponsePacket,
+  keepAlive: KeepAlivePacket,
+  taskList: TaskListPacket,
+  hostList: HostListPacket,
+};
 
 // Incoming is when a packet is sent by the client to the server
 export class IncomingPacketHandler extends (EventEmitter as new () => TypedEventEmitter<IncomingPacketHandlerEvents>) {
-  public static packetMap = {
-    doEmote: DoEmotePacket,
-    consoleMessage: ConsoleMessagePacket,
-    joinServer: JoinServerPacket,
-    equipEmotes: EquipEmotesPacket,
-    applyCosmetics: ApplyCosmeticsPacket,
-    playerInfoRequest: PlayerInfoRequestPacket,
-    friendMessage: FriendMessagePacket,
-    friendRequest: FriendRequestPacket,
-    friendResponse: FriendResponsePacket,
-    keepAlive: KeepAlivePacket,
-    taskList: TaskListPacket,
-    hostList: HostListPacket,
-  };
-
-  public static packets = Object.values(IncomingPacketHandler.packetMap);
+  public static packets = Object.values(IncomingPackets);
 
   private player: Player;
 
@@ -125,8 +125,8 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     const packet = new Packet(buf);
     packet.read();
 
-    const event = Object.keys(IncomingPacketHandler.packetMap).find(
-      (key) => IncomingPacketHandler.packetMap[key] === Packet
+    const event = Object.keys(IncomingPackets).find(
+      (key) => IncomingPackets[key] === Packet
     );
     // @ts-ignore - event is type of string and not keyof IncomingPacketHandlerEvents but it works anyway
     if (this.listenerCount(event) > 0) this.emit(event, packet);
@@ -135,5 +135,7 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
 }
 
 type IncomingPacketHandlerEvents = {
-  [key in keyof typeof IncomingPacketHandler.packetMap]: (packet: InstanceType<typeof IncomingPacketHandler.packetMap[key]>) => void;
-}
+  [key in keyof typeof IncomingPackets]: (
+    packet: InstanceType<typeof IncomingPackets[key]>
+  ) => void;
+};
