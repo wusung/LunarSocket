@@ -1,11 +1,9 @@
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import { WebSocket } from 'ws';
-import { broadcast, connectedPlayers, removePlayer } from '..';
+import { broadcast, removePlayer } from '..';
 import CommandHandler from '../commands/CommandHandler';
-import ApplyCosmeticsPacket from '../packets/ApplyCosmeticsPacket';
 import ConsoleMessagePacket from '../packets/ConsoleMessagePacket';
-import EquipEmotesPacket from '../packets/EquipEmotesPacket';
 import FriendListPacket from '../packets/FriendListPacket';
 import GiveEmotesPacket from '../packets/GiveEmotesPacket';
 import NotificationPacket from '../packets/NotificationPacket';
@@ -15,7 +13,6 @@ import {
   OutgoingPacketHandler,
 } from '../packets/PacketHandlers';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
-import PlayerInfoPacket from '../packets/PlayerInfoPacket';
 import getConfig from '../utils/config';
 import instanceStorage from '../utils/instanceStorage';
 import logger from '../utils/logger';
@@ -37,6 +34,8 @@ export default class Player {
   };
   public cosmetics: OwnedFake<{ id: number; equipped: boolean }[]>;
 
+  public lastFriendList: FriendListPacket;
+
   public commandHandler: CommandHandler;
 
   private disconnected: boolean;
@@ -44,8 +43,6 @@ export default class Player {
   private fakeSocket: WebSocket;
   private outgoingPacketHandler: OutgoingPacketHandler;
   private incomingPacketHandler: IncomingPacketHandler;
-
-  private lastFriendList: FriendListPacket;
 
   public constructor(socket: WebSocket, handshake: Handshake) {
     this.version = handshake.version;
@@ -164,132 +161,6 @@ export default class Player {
         );
       }
     })();
-
-    this.outgoingPacketHandler.on('playerInfo', (packet) => {
-      if (packet.data.uuid === this.uuid) {
-        // Player info for this player
-        this.cosmetics.owned = packet.data.cosmetics;
-        // Removing the owned cosmetics from the fake list
-        this.cosmetics.fake = this.cosmetics.fake.filter(
-          (c) => !this.cosmetics.owned.find((o) => o.id === c.id)
-        );
-        this.premium.real = packet.data.premium;
-        this.color.real = packet.data.color;
-        this.clothCloak.real = packet.data.clothCloak;
-        this.plusColor.real = packet.data.plusColor;
-
-        this.updateInstanceStorage();
-
-        // Sending the owned and fake cosmetics to the client
-        const newPacket = new PlayerInfoPacket();
-        newPacket.write({
-          ...packet.data,
-          cosmetics: [...this.cosmetics.fake, ...this.cosmetics.owned],
-          premium: this.premium.fake,
-          color: this.color.fake,
-          clothCloak: this.clothCloak.fake,
-          plusColor: this.plusColor.fake,
-        });
-        return this.writeToClient(newPacket);
-      }
-
-      const connectedPlayer = connectedPlayers.find(
-        (p) => p.uuid === packet.data.uuid
-      );
-      // If the player is not on the this websocket, sending back the original packet
-      if (!connectedPlayer) return this.writeToClient(packet);
-
-      const newPacket = new PlayerInfoPacket();
-      newPacket.write({
-        ...packet.data,
-        ...connectedPlayer.getPlayerInfo(),
-      });
-      this.writeToClient(newPacket);
-    });
-
-    this.outgoingPacketHandler.on('friendList', (packet) => {
-      const newPacket = new FriendListPacket();
-      newPacket.write({
-        ...packet.data,
-        consoleAccess: this.operator,
-      });
-      this.writeToClient(newPacket);
-
-      this.lastFriendList = newPacket;
-    });
-
-    this.incomingPacketHandler.on('doEmote', (packet) => {
-      if (
-        this.emotes.owned.owned.includes(packet.data.id) ||
-        packet.data.id === -1 // -1 is when you cancel/finish the emote
-      ) {
-        // Player really owns this emote, playing on the real server
-        this.writeToServer(packet);
-      } else {
-        // Player is using a fake emote, playing on the fake server
-        this.playEmote(packet.data.id);
-      }
-    });
-
-    this.incomingPacketHandler.on('joinServer', (packet) => {
-      this.server = packet.data.server;
-      this.writeToServer(packet);
-    });
-
-    this.incomingPacketHandler.on('equipEmotes', (packet) => {
-      const owned: number[] = [];
-      const fake: number[] = [];
-      packet.data.emotes.forEach((emote) => {
-        if (this.emotes.owned.owned.includes(emote)) {
-          // Player really has the emote, making sure it's in the owned list
-          owned.push(emote);
-        } else {
-          // Player doesn't have the emote, making sure it's in the fake list
-          fake.push(emote);
-        }
-
-        // Sending the owned emote list to the server
-        const packet = new EquipEmotesPacket();
-        packet.write({ emotes: owned });
-        this.writeToServer(packet);
-      });
-
-      this.emotes.equipped.owned = owned;
-      this.emotes.equipped.fake = fake;
-
-      this.updateInstanceStorage();
-    });
-
-    this.incomingPacketHandler.on('applyCosmetics', (packet) => {
-      for (const cosmetic of packet.data.cosmetics) {
-        this.setCosmeticState(cosmetic.id, cosmetic.equipped);
-      }
-      this.clothCloak.fake = packet.data.clothCloak;
-
-      // Sending the new state of the cosmetics to lunar
-      const newPacket = new ApplyCosmeticsPacket();
-      newPacket.write({
-        ...packet.data,
-        cosmetics: this.cosmetics.owned,
-        // Non premium users can't change clothCloak
-        clothCloak: this.premium.real
-          ? packet.data.clothCloak
-          : this.clothCloak.real,
-      });
-      this.writeToServer(newPacket);
-
-      this.updateInstanceStorage();
-
-      // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
-    });
-
-    this.incomingPacketHandler.on('taskList', () => {
-      // Not sending data back to lunar
-    });
-
-    this.incomingPacketHandler.on('hostList', () => {
-      // Not sending data back to lunar
-    });
 
     // After every listeners are registered sending a hi notification
     setTimeout(async () => {
