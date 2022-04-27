@@ -1,7 +1,10 @@
 import { connectedPlayers } from '..';
 import Command from './Command';
 
-const command = new Command('broadcast');
+const command = new Command(
+  'broadcast',
+  'Broadcast a message to everyone, will be displayed as a pop up notification'
+);
 
 command.help = `usage: broadcast <message>`;
 

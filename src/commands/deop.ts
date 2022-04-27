@@ -3,7 +3,7 @@ import checkUUID from '../utils/checkUUID';
 import getConfig, { editConfig } from '../utils/config';
 import Command from './Command';
 
-const command = new Command('deop');
+const command = new Command('deop', 'Remove someone from the operators list');
 
 command.help = `usage: deop <uuid>`;
 

@@ -1,7 +1,7 @@
 import { connectedPlayers } from '..';
 import Command from './Command';
 
-const command = new Command('online');
+const command = new Command('online', 'See how many players are online');
 
 command.help = `usage: online §o[options]
   options:

@@ -2,7 +2,7 @@ import checkUUID from '../utils/checkUUID';
 import getConfig, { editConfig } from '../utils/config';
 import Command from './Command';
 
-const command = new Command('whitelist');
+const command = new Command('whitelist', 'Manage the whitelist');
 
 command.help = `usage: whitelist <action> §o[value]
   actions:

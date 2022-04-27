@@ -2,12 +2,15 @@ import Player from '../player/Player';
 
 export default class Command {
   public readonly command: string;
+  public readonly description: string;
+
   public help: string;
 
   private handler: CommandHandlerFn;
 
-  public constructor(command: string) {
+  public constructor(command: string, description: string) {
     this.command = command;
+    this.description = description;
   }
 
   public trigger(player: Player, raw: string): void {

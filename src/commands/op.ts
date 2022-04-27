@@ -3,7 +3,7 @@ import checkUUID from '../utils/checkUUID';
 import getConfig, { editConfig } from '../utils/config';
 import Command from './Command';
 
-const command = new Command('op');
+const command = new Command('op', 'Make someone an operator');
 
 command.help = `usage: op <uuid>`;
 
