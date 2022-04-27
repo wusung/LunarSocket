@@ -1,5 +1,6 @@
-import Command from './Command';
+import checkUUID from '../utils/checkUUID';
 import getConfig, { editConfig } from '../utils/config';
+import Command from './Command';
 
 const command = new Command('whitelist');
 
@@ -27,13 +28,6 @@ command.setHandler(async (player, command, args) => {
     );
   }
 
-  function checkUUID(uuid: string): boolean {
-    const match =
-      /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/.test(uuid);
-    if (!match) player.sendConsoleMessage(`§c${uuid} is not a valid UUID!`);
-    return match;
-  }
-
   const config = await getConfig();
 
   switch (args[0]) {
@@ -59,7 +53,7 @@ command.setHandler(async (player, command, args) => {
       break;
     case 'add':
       if (!args[1]) return invalidValue();
-      if (!checkUUID(args[1])) return;
+      if (!checkUUID(args[1], player)) return;
       await editConfig({
         ...config,
         whitelist: [...config.whitelist, args[1]],
@@ -68,7 +62,7 @@ command.setHandler(async (player, command, args) => {
       break;
     case 'remove':
       if (!args[1]) return invalidValue();
-      if (!checkUUID(args[1])) return;
+      if (!checkUUID(args[1], player)) return;
       await editConfig({
         ...config,
         whitelist: config.whitelist.filter((uuid) => uuid !== args[1]),

@@ -1,25 +1,24 @@
-import { WebSocket } from 'ws';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
-
+import { WebSocket } from 'ws';
+import { broadcast, connectedPlayers, removePlayer } from '..';
+import CommandHandler from '../commands/CommandHandler';
+import ApplyCosmeticsPacket from '../packets/ApplyCosmeticsPacket';
+import ConsoleMessagePacket from '../packets/ConsoleMessagePacket';
+import EquipEmotesPacket from '../packets/EquipEmotesPacket';
+import FriendListPacket from '../packets/FriendListPacket';
+import GiveEmotesPacket from '../packets/GiveEmotesPacket';
+import NotificationPacket from '../packets/NotificationPacket';
 import Packet from '../packets/Packet';
 import {
   IncomingPacketHandler,
   OutgoingPacketHandler,
 } from '../packets/PacketHandlers';
-import logger from '../utils/logger';
-import GiveEmotesPacket from '../packets/GiveEmotesPacket';
-import { broadcast, connectedPlayers, removePlayer } from '..';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
-import EquipEmotesPacket from '../packets/EquipEmotesPacket';
-import NotificationPacket from '../packets/NotificationPacket';
 import PlayerInfoPacket from '../packets/PlayerInfoPacket';
-import ApplyCosmeticsPacket from '../packets/ApplyCosmeticsPacket';
-import FriendListPacket from '../packets/FriendListPacket';
-import ConsoleMessagePacket from '../packets/ConsoleMessagePacket';
-import CommandHandler from '../commands/CommandHandler';
 import getConfig from '../utils/config';
 import instanceStorage from '../utils/instanceStorage';
+import logger from '../utils/logger';
 
 export default class Player {
   public version: string;
@@ -30,6 +29,7 @@ export default class Player {
   public premium: RealFake<boolean>;
   public clothCloak: RealFake<boolean>;
   public plusColor: RealFake<number>;
+  public operator: boolean;
 
   public emotes: {
     owned: OwnedFake<number[]>;
@@ -44,6 +44,8 @@ export default class Player {
   private fakeSocket: WebSocket;
   private outgoingPacketHandler: OutgoingPacketHandler;
   private incomingPacketHandler: IncomingPacketHandler;
+
+  private lastFriendList: FriendListPacket;
 
   public constructor(socket: WebSocket, handshake: Handshake) {
     this.version = handshake.version;
@@ -126,6 +128,8 @@ export default class Player {
     });
 
     (async () => {
+      this.operator = (await getConfig()).operators.includes(this.uuid);
+
       const outgoingEvents = await readdir(
         join(process.cwd(), 'dist', 'player', 'events', 'outgoing')
       );
@@ -207,9 +211,11 @@ export default class Player {
       const newPacket = new FriendListPacket();
       newPacket.write({
         ...packet.data,
-        consoleAccess: true,
+        consoleAccess: this.operator,
       });
       this.writeToClient(newPacket);
+
+      this.lastFriendList = newPacket;
     });
 
     this.incomingPacketHandler.on('doEmote', (packet) => {
@@ -341,6 +347,29 @@ export default class Player {
     const packet = new ConsoleMessagePacket();
     packet.write({ message });
     this.writeToClient(packet);
+  }
+
+  public sendNotification(title: string, message: string): void {
+    const packet = new NotificationPacket();
+    packet.write({ title, message });
+    this.writeToClient(packet);
+  }
+
+  public setOperatorState(newState: boolean): void {
+    this.operator = newState;
+
+    const message = this.operator
+      ? '§l§aYou are now an operator!'
+      : '§l§cYou are no longer an operator!';
+    this.sendNotification('', message);
+
+    const friendListPacket = new FriendListPacket();
+    friendListPacket.write({
+      ...this.lastFriendList.data,
+      consoleAccess: this.operator,
+    });
+
+    this.updateInstanceStorage();
   }
 
   public writeToClient(data: any | Packet): void {

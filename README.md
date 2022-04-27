@@ -31,7 +31,14 @@ Open the `config.example.json` file and edit the values
     // Certificates path (only if secure is true)
     "key": "/path/to/key.key",
     "cert": "/path/to/cert.crt"
-  }
+  },
+  "welcomeMessage": "Welcome!", // Message sent to the player when they connects
+  "enableWhitelist": true, // Whether or not the enable whitelist
+  "whitelist": [
+    "827f8c48-cdb2-4105-af39-df5a64f93490", // UUIDs of the players to whitelist
+    "7642d15d-2aec-4be8-8cbe-99a53c434248"
+  ],
+  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"] // Players with operator privileges (console and commands access)
 }
 ```
 Once you have edited the file save it as `config.json` and start the server.

@@ -1,6 +1,6 @@
-import { join } from 'node:path';
-import { readFile, writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 const configPath = join(process.cwd(), 'config.json');
 
@@ -26,4 +26,5 @@ interface Config {
   welcomeMessage: '';
   enableWhitelist: boolean;
   whitelist: string[];
+  operators: string[];
 }
