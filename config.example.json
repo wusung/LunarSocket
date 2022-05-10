@@ -11,5 +11,9 @@
     "827f8c48-cdb2-4105-af39-df5a64f93490",
     "7642d15d-2aec-4be8-8cbe-99a53c434248"
   ],
-  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"]
+  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"],
+  "database": "instanceStorage",
+  "databaseConfig": {
+    "mongo": "mongo+srv://..."
+  }
 }

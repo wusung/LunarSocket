@@ -23,6 +23,7 @@ $ npm run build # Build the project
 # Configuration
 
 Open the `config.example.json` file and edit the values
+
 ```jsonc
 {
   "port": 80, // Port of the server
@@ -38,10 +39,22 @@ Open the `config.example.json` file and edit the values
     "827f8c48-cdb2-4105-af39-df5a64f93490", // UUIDs of the players to whitelist
     "7642d15d-2aec-4be8-8cbe-99a53c434248"
   ],
-  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"] // Players with operator privileges (console and commands access)
+  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"], // Players with operator privileges (console and commands access)
+  "database": "instanceStorage", // See database section,
+  "databaseConfig": {
+    "mongo": "mongo+srv://...." // MongoDB connection string
+  }
 }
 ```
+
 Once you have edited the file save it as `config.json` and start the server.
+
+## Database
+
+There's two types of databases available:
+
+- `instanceStorage` - Stores the data in the Lunar Socket instance which means that the data will be deleted when the server is restarted/stopped/updated.
+- `mango` - Stores the data in a MongoDB database.
 
 # Start the server
 

@@ -27,4 +27,8 @@ interface Config {
   enableWhitelist: boolean;
   whitelist: string[];
   operators: string[];
+  database: 'instanceStorage' | 'mango';
+  databaseConfig?: {
+    mongo?: string;
+  };
 }

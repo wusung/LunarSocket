@@ -22,5 +22,5 @@ export default function (player: Player, packet: EquipEmotesPacket): void {
   player.emotes.equipped.owned = owned;
   player.emotes.equipped.fake = fake;
 
-  player.updateInstanceStorage();
+  player.updateDatabase();
 }

@@ -3,6 +3,7 @@ import { join } from 'path';
 import { WebSocket } from 'ws';
 import { broadcast, removePlayer } from '..';
 import CommandHandler from '../commands/CommandHandler';
+import DatabaseManager from '../databases/Manager';
 import ConsoleMessagePacket from '../packets/ConsoleMessagePacket';
 import FriendListPacket from '../packets/FriendListPacket';
 import GiveEmotesPacket from '../packets/GiveEmotesPacket';
@@ -14,7 +15,6 @@ import {
 } from '../packets/PacketHandlers';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
 import getConfig from '../utils/config';
-import instanceStorage from '../utils/instanceStorage';
 import logger from '../utils/logger';
 
 export default class Player {
@@ -85,7 +85,7 @@ export default class Player {
       this.cosmetics.fake.push({ id: i, equipped: false });
 
     this.restoreFromInstanceStorage(); // Restoring data if it exists
-    this.updateInstanceStorage(); // Saving data to instanceStorage
+    this.updateDatabase(); // Saving data to instanceStorage
 
     // Forwarding data
     this.socket.on('message', (data) => {
@@ -240,7 +240,7 @@ export default class Player {
       consoleAccess: this.operator,
     });
 
-    this.updateInstanceStorage();
+    this.updateDatabase();
   }
 
   public writeToClient(data: any | Packet): void {
@@ -276,19 +276,23 @@ export default class Player {
     removePlayer(this.uuid);
   }
 
-  public updateInstanceStorage(): void {
-    instanceStorage.set(this.uuid, {
+  public getDatabasePlayer(): DatabasePlayer {
+    return {
       emotes: this.emotes,
       cosmetics: this.cosmetics,
       color: this.color,
       clothCloak: this.clothCloak,
       plusColor: this.plusColor,
       premium: this.premium,
-    });
+    };
   }
 
-  private restoreFromInstanceStorage(): void {
-    const data = instanceStorage.get(this.uuid);
+  public updateDatabase(): void {
+    DatabaseManager.database.setPlayer(this);
+  }
+
+  private async restoreFromInstanceStorage(): Promise<void> {
+    const data = await DatabaseManager.database.getPlayer(this.uuid);
     if (!data) return;
     this.emotes = data.emotes;
     this.cosmetics = data.cosmetics;
@@ -297,6 +301,15 @@ export default class Player {
     this.plusColor = data.plusColor;
     this.premium = data.premium;
   }
+}
+
+export interface DatabasePlayer {
+  emotes: typeof Player.prototype.emotes;
+  cosmetics: typeof Player.prototype.cosmetics;
+  color: typeof Player.prototype.color;
+  clothCloak: typeof Player.prototype.clothCloak;
+  plusColor: typeof Player.prototype.plusColor;
+  premium: typeof Player.prototype.premium;
 }
 
 interface Handshake {

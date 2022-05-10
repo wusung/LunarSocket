@@ -15,7 +15,7 @@ export default function (player: Player, packet: PlayerInfoPacket): void {
     player.clothCloak.real = packet.data.clothCloak;
     player.plusColor.real = packet.data.plusColor;
 
-    player.updateInstanceStorage();
+    player.updateDatabase();
 
     // Sending the owned and fake cosmetics to the client
     const newPacket = new PlayerInfoPacket();

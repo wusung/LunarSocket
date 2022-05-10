@@ -19,7 +19,7 @@ export default function (player: Player, packet: ApplyCosmeticsPacket): void {
   });
   player.writeToServer(newPacket);
 
-  player.updateInstanceStorage();
+  player.updateDatabase();
 
   // No need to send the PlayerInfoPacket to other players because lunar is doing it for us :D
 }
