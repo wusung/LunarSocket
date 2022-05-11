@@ -1,4 +1,5 @@
 import { connectedPlayers } from '..';
+import logger from '../utils/logger';
 import Command from './Command';
 
 const command = new Command(
@@ -15,6 +16,8 @@ command.setHandler(async (player, command, args) => {
   for (const match of matches) message = message.replace(match, `§${match[1]}`);
 
   for (player of connectedPlayers) player.sendNotification('', message);
+
+  logger.log(`${player.username} broadcasted: ${message}`);
 });
 
 export default command;
