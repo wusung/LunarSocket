@@ -16,19 +16,27 @@ export async function editConfig(newConfig: Config): Promise<void> {
   await writeFile(configPath, JSON.stringify(newConfig, null, 2));
 }
 
-interface Config {
-  port: number;
-  secure: boolean;
-  certificates?: {
-    key: string;
-    cert: string;
-  };
-  welcomeMessage: '';
-  enableWhitelist: boolean;
-  whitelist: string[];
-  operators: string[];
-  database: 'instanceStorage' | 'mango';
-  databaseConfig?: {
-    mongo?: string;
-  };
-}
+const defaultConfig = {
+  server: {
+    port: 80,
+    secure: false,
+    certificates: {
+      key: '',
+      cert: '',
+    },
+  },
+  whitelist: {
+    enabled: false,
+    list: [] as string[],
+  },
+  welcomeMessage: 'LunarSocket made by Cy0ze with love <3',
+  operators: [] as string[],
+  database: {
+    type: 'instanceStorage' as 'instanceStorage' | 'mongo',
+    config: {
+      mongo: 'mongodb://<password>@localhost:27017',
+    },
+  },
+};
+
+type Config = typeof defaultConfig;

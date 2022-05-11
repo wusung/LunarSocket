@@ -1,11 +1,10 @@
-import { Server, createServer } from 'node:https';
 import { readFileSync } from 'node:fs';
+import { createServer, Server } from 'node:https';
 import { Server as WebSocketServer } from 'ws';
-
+import Packet from './packets/Packet';
+import Player from './player/Player';
 import getConfig, { getConfigSync } from './utils/config';
 import logger from './utils/logger';
-import Player from './player/Player';
-import Packet from './packets/Packet';
 
 console.log(`  _                               _____            _        _   
  | |                             / ____|          | |      | |  
@@ -18,18 +17,18 @@ let httpsServer: Server;
 
 const config = getConfigSync();
 
-if (config.secure) {
+if (config.server.secure) {
   httpsServer = createServer({
-    cert: readFileSync(config.certificates.cert),
-    key: readFileSync(config.certificates.key),
+    cert: readFileSync(config.server.certificates.cert),
+    key: readFileSync(config.server.certificates.key),
   });
 
-  httpsServer.listen(config.port);
+  httpsServer.listen(config.server.port);
 }
 
 const server = new WebSocketServer({
-  server: config.secure ? httpsServer : undefined,
-  port: config.secure ? undefined : config.port,
+  server: config.server.secure ? httpsServer : undefined,
+  port: config.server.secure ? undefined : config.server.port,
   path: '/connect',
 });
 
@@ -38,7 +37,7 @@ server.on('error', (error) => {
 });
 
 server.on('listening', () => {
-  logger.log(`Server listening on port ${config.port}`);
+  logger.log(`Server listening on port ${config.server.port}`);
 });
 
 server.on('connection', async (socket, request) => {
@@ -68,8 +67,8 @@ server.on('connection', async (socket, request) => {
 
   const config = await getConfig();
 
-  if (config.enableWhitelist)
-    if (!config.whitelist.includes(handshake.playerId))
+  if (config.whitelist.enabled)
+    if (!config.whitelist.list.includes(handshake.playerId))
       return socket.close(3000, 'You are not whitelisted');
 
   // Closing the connection if the player is already connected

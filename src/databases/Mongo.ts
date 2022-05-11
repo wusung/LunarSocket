@@ -16,7 +16,7 @@ export default class Mongo extends Database {
   private async init(): Promise<void> {
     const config = await getConfig();
 
-    this.client = new MongoClient(config.databaseConfig.mongo);
+    this.client = new MongoClient(config.database.type);
     await this.client.connect();
     logger.log('Connected to MongoDB');
 

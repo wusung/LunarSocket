@@ -34,21 +34,27 @@ command.setHandler(async (player, command, args) => {
     case 'status':
       player.sendConsoleMessage(
         `Whitelist is currently ${
-          config.enableWhitelist ? '§aenabled' : '§cdisabled'
+          config.whitelist.enabled ? '§aenabled' : '§cdisabled'
         }`
       );
       break;
     case 'on':
-      await editConfig({ ...config, enableWhitelist: true });
+      await editConfig({
+        ...config,
+        whitelist: { ...config.whitelist, enabled: true },
+      });
       player.sendConsoleMessage('Whitelist has been §aenabled');
       break;
     case 'off':
-      await editConfig({ ...config, enableWhitelist: false });
+      await editConfig({
+        ...config,
+        whitelist: { ...config.whitelist, enabled: false },
+      });
       player.sendConsoleMessage('Whitelist has been §cdisabled');
       break;
     case 'list':
       player.sendConsoleMessage(
-        `Players whitelisted: §o${config.whitelist.join(', ')}`
+        `Players whitelisted: §o${config.whitelist.list.join(', ')}`
       );
       break;
     case 'add':
@@ -56,7 +62,10 @@ command.setHandler(async (player, command, args) => {
       if (!checkUUID(args[1], player)) return;
       await editConfig({
         ...config,
-        whitelist: [...config.whitelist, args[1]],
+        whitelist: {
+          ...config.whitelist,
+          list: [...config.whitelist.list, args[1]],
+        },
       });
       player.sendConsoleMessage(`${args[1]} has been added to the whitelist`);
       break;
@@ -65,7 +74,10 @@ command.setHandler(async (player, command, args) => {
       if (!checkUUID(args[1], player)) return;
       await editConfig({
         ...config,
-        whitelist: config.whitelist.filter((uuid) => uuid !== args[1]),
+        whitelist: {
+          ...config.whitelist,
+          list: config.whitelist.list.filter((uuid) => uuid !== args[1]),
+        },
       });
       player.sendConsoleMessage(
         `${args[1]} has been removed from the whitelist`

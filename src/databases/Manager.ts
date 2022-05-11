@@ -4,7 +4,7 @@ import InstanceStorage from './InstanceStorage';
 import Mongo from './Mongo';
 
 class DatabaseManager {
-  public database: InstanceStorage;
+  public database: InstanceStorage | Mongo;
 
   public static instance = new DatabaseManager();
 
@@ -22,7 +22,7 @@ class DatabaseManager {
       mongo: Mongo,
     };
 
-    this.database = new constructors[config.database]();
+    this.database = new constructors[config.database.type]();
   }
 }
 
