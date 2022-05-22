@@ -7,7 +7,7 @@ const configPath = join(process.cwd(), 'config.json');
 
 export function initConfig(): Config {
   if (!statSync(configPath, { throwIfNoEntry: false })) {
-    writeFileSync(configPath, JSON.stringify(defaultConfig));
+    writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2));
 
     logger.log('Default config file created at', configPath);
     logger.log(
