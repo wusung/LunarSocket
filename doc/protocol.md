@@ -486,8 +486,10 @@ See [implementation](../src/packets/EquipEmotesPacket.ts)
 
 ## KeepAlive - `64`
 
-Packet used to keep alive the connection
+Packet used to keep the connection alive
 Packet containing all your mods and their state (whether they are enabled or not)
+
+Note: _The packet is sent every 30 seconds by the client_
 
 ```js
 {
