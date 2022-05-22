@@ -15,7 +15,7 @@ class DatabaseManager {
   private async init(): Promise<void> {
     const config = await getConfig();
 
-    logger.log('Using database:', config.database);
+    logger.log('Using database:', config.database.type);
 
     const constructors = {
       instanceStorage: InstanceStorage,

@@ -3,7 +3,7 @@ import { createServer, Server } from 'node:https';
 import { Server as WebSocketServer } from 'ws';
 import Packet from './packets/Packet';
 import Player from './player/Player';
-import getConfig, { getConfigSync } from './utils/config';
+import getConfig, { initConfig } from './utils/config';
 import logger from './utils/logger';
 
 console.log(`  _                               _____            _        _   
@@ -15,7 +15,7 @@ console.log(`  _                               _____            _        _
 
 let httpsServer: Server;
 
-const config = getConfigSync();
+const config = initConfig();
 
 if (config.server.secure) {
   httpsServer = createServer({
