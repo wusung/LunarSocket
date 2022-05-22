@@ -81,7 +81,7 @@ export default class Player {
     for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
 
     // Yes, wea re giving cosmetics out of nowhere again
-    for (let i = 1; i < 2403; i++)
+    for (let i = 1; i < 2454; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
     this.restoreFromInstanceStorage(); // Restoring data if it exists
