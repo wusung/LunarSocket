@@ -10,9 +10,11 @@ const command = new Command(
 command.help = `usage: broadcast <message>`;
 
 command.setHandler(async (player, command, args) => {
-  let message = args.join(' ').replace(/&([0123456789AaBbCcDdEeFfKkLlMmNnOoRr])/g, "§$1");
+  let message = args
+    .join(' ')
+    .replace(/&([0123456789AaBbCcDdEeFfKkLlMmNnOoRr])/g, '§$1');
 
-  for (player of connectedPlayers) player.sendNotification('', message);
+  for (const player of connectedPlayers) player.sendNotification('', message);
 
   logger.log(`${player.username} broadcasted: ${message}`);
 });
