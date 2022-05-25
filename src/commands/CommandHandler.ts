@@ -1,23 +1,14 @@
 import Player from '../player/Player';
 import broadcast from './broadcast';
 import Command from './Command';
-import deop from './deop';
 import help from './help';
 import online from './online';
-import op from './op';
 import whitelist from './whitelist';
 
 export default class CommandHandler {
   public player: Player;
 
-  public static commands: Command[] = [
-    online,
-    help,
-    whitelist,
-    op,
-    deop,
-    broadcast,
-  ];
+  public static commands: Command[] = [online, help, whitelist, broadcast];
 
   public constructor(player: Player) {
     this.player = player;
