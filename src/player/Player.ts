@@ -16,6 +16,7 @@ import {
 import PlayEmotePacket from '../packets/PlayEmotePacket';
 import getConfig from '../utils/config';
 import logger from '../utils/logger';
+import { getRole, Role } from '../utils/roles';
 
 export default class Player {
   public version: string;
@@ -26,7 +27,7 @@ export default class Player {
   public premium: RealFake<boolean>;
   public clothCloak: RealFake<boolean>;
   public plusColor: RealFake<number>;
-  public operator: boolean;
+  public role: Role;
 
   public emotes: {
     owned: OwnedFake<number[]>;
@@ -125,7 +126,10 @@ export default class Player {
     });
 
     (async () => {
-      this.operator = (await getConfig()).operators.includes(this.uuid);
+      this.role = await getRole('default');
+
+      this.color.fake = parseInt(this.role.iconColor);
+      this.plusColor.fake = parseInt(this.role.plusColor);
 
       const outgoingEvents = await readdir(
         join(process.cwd(), 'dist', 'player', 'events', 'outgoing')
@@ -226,18 +230,11 @@ export default class Player {
     this.writeToClient(packet);
   }
 
-  public setOperatorState(newState: boolean): void {
-    this.operator = newState;
-
-    const message = this.operator
-      ? '§l§aYou are now an operator!'
-      : '§l§cYou are no longer an operator!';
-    this.sendNotification('', message);
-
+  public setConsoleAccess(newState: boolean): void {
     const friendListPacket = new FriendListPacket();
     friendListPacket.write({
       ...this.lastFriendList.data,
-      consoleAccess: this.operator,
+      consoleAccess: this.role.console,
     });
 
     this.updateDatabase();

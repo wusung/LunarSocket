@@ -44,11 +44,23 @@ Open the `config.example.json` file and edit the values
     ]
   },
   "welcomeMessage": "LunarSocket made by SolarTweaks with love <3", // Message sent to the player when they connects
-  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"], // Players with operator privileges (console and commands access)
   "database": {
     "type": "instanceStorage", // See database section
     "config": {
       "mongo": "mongodb://<password>@localhost:27017" // MongoDB connection string
+    }
+  },
+  "roles": {
+    "admin": {
+      "console": true,
+      "iconColor": "0xff0000",
+      "plusColor": "0xffc800"
+    },
+    "default": {
+      // Default role don't remove!!! Custom roles go above
+      "console": false, // Whether or not the role can see the console
+      "iconColor": "0xffffff", // Color of the role icon
+      "plusColor": "0x00ff00" // Color of the role plus
     }
   }
 }

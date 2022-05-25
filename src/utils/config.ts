@@ -2,6 +2,7 @@ import { readFileSync, statSync, writeFileSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import logger from './logger';
+import { Role } from './roles';
 
 const configPath = join(process.cwd(), 'config.json');
 
@@ -45,12 +46,21 @@ const defaultConfig = {
     list: [] as string[],
   },
   welcomeMessage: 'LunarSocket made by SolarTweaks with love <3',
-  operators: [] as string[],
   database: {
     type: 'instanceStorage' as 'instanceStorage' | 'mongo',
     config: {
       mongo: 'mongodb://<password>@localhost:27017',
     },
+  },
+  roles: {
+    default: {
+      console: false,
+      iconColor: '0xffffff',
+      plusColor: '0x00ff00',
+    },
+  } as {
+    [key: string]: Role;
+    default: Role;
   },
 };
 

@@ -15,11 +15,22 @@
     ]
   },
   "welcomeMessage": "LunarSocket made by SolarTweaks with love <3",
-  "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"],
   "database": {
     "type": "instanceStorage",
     "config": {
       "mongo": "mongodb://<password>@localhost:27017"
+    }
+  },
+  "roles": {
+    "admin": {
+      "console": true,
+      "iconColor": "0xff0000",
+      "plusColor": "0xffc800"
+    },
+    "default": {
+      "console": false,
+      "iconColor": "0xffffff",
+      "plusColor": "0x00ff00"
     }
   }
 }
