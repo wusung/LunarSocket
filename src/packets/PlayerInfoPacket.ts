@@ -1,5 +1,4 @@
 import BufWrapper from '@minecraft-js/bufwrapper';
-
 import Packet from './Packet';
 
 export default class PlayerInfoPacket extends Packet<PlayerInfo> {
@@ -33,7 +32,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     this.buf.writeVarInt(unknownHashMapKeys.length);
     for (const key of unknownHashMapKeys) {
       this.buf.writeInt(parseInt(key));
-      this.buf.writeLong(data.unknownHashMap[key]);
+      this.buf.writeFloat(data.unknownHashMap[key]);
     }
 
     this.buf.writeInt(data.plusColor);
@@ -61,7 +60,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     const unknownHashMap: { [key: number]: number } = {};
     for (let i = 0; i < unknownHashMapKeysLength; i++) {
       const key = this.buf.readInt();
-      const value = this.buf.readLong() as number;
+      const value = this.buf.readFloat() as number;
       unknownHashMap[key] = value;
     }
 
