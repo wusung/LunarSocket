@@ -29,6 +29,7 @@
     "@minecraft-js/bufwrapper": "^1.2.3",
     "chalk": "^4.1.2",
     "mongodb": "^4.5.0",
+    "nodemon": "^2.0.16",
     "typed-emitter": "^2.1.0",
     "ws": "^8.5.0"
   },
