@@ -44,7 +44,7 @@ export default class Mongo extends Database {
     // Once the connection will be established, the setPlayer
     // method will be called again with the player instance
     if (!this.isConnected && !this.queue.includes(player))
-      this.queue.push(player);
+      return void this.queue.push(player);
 
     const existingPlayer = await this.getPlayer(player.uuid);
 
