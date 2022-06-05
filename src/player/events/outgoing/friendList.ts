@@ -5,7 +5,7 @@ export default function (player: Player, packet: FriendListPacket): void {
   const newPacket = new FriendListPacket();
   newPacket.write({
     ...packet.data,
-    consoleAccess: player.role.console,
+    consoleAccess: player.operator || player.role.console,
   });
   player.writeToClient(newPacket);
 

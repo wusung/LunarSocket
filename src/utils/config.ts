@@ -46,6 +46,7 @@ const defaultConfig = {
     list: [] as string[],
   },
   welcomeMessage: 'LunarSocket made by SolarTweaks with love <3',
+  operators: [] as string[],
   database: {
     type: 'instanceStorage' as 'instanceStorage' | 'mongo',
     config: {

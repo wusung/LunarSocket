@@ -27,6 +27,7 @@ export default class Player {
   public premium: RealFake<boolean>;
   public clothCloak: RealFake<boolean>;
   public plusColor: RealFake<number>;
+  public operator: boolean;
   public role: Role;
 
   public emotes: {
@@ -49,7 +50,7 @@ export default class Player {
     this.version = handshake.version;
     this.username = handshake.username;
     this.uuid = handshake.playerId;
-    this.server = '';
+    this.server = handshake.server;
     this.premium = { real: false, fake: true };
     this.color = { real: 0, fake: 0xa83232 };
     this.clothCloak = { real: false, fake: true };
@@ -126,6 +127,9 @@ export default class Player {
     });
 
     (async () => {
+      const config = await getConfig();
+      this.operator = config.operators.includes(this.uuid);
+
       this.role = await getRole('default');
 
       this.color.fake = parseInt(this.role.iconColor);
@@ -215,7 +219,7 @@ export default class Player {
   public playEmote(id: number) {
     const packet = new PlayEmotePacket();
     packet.write({ uuid: this.uuid, id });
-    broadcast(packet, this.server); // Sending only to people who are on the same server
+    broadcast(packet, this.server);
   }
 
   public sendConsoleMessage(message: string): void {
@@ -230,17 +234,19 @@ export default class Player {
     this.writeToClient(packet);
   }
 
-  public setConsoleAccess(newState: boolean): void {
+  public updateConsoleAccess(newState: boolean): void {
     const friendListPacket = new FriendListPacket();
     friendListPacket.write({
       ...this.lastFriendList.data,
-      consoleAccess: this.role.console,
+      consoleAccess: newState || this.operator || this.role.console,
     });
 
     this.updateDatabase();
   }
 
   public writeToClient(data: any | Packet): void {
+    if (this.disconnected) return;
+
     try {
       if (data instanceof Packet) {
         this.socket.send(data.buf.buffer);
@@ -251,6 +257,8 @@ export default class Player {
   }
 
   public writeToServer(data: any | Packet): void {
+    if (this.disconnected) return;
+
     try {
       if (data instanceof Packet) {
         this.fakeSocket.send(data.buf.buffer);
@@ -309,7 +317,7 @@ export interface DatabasePlayer {
   premium: typeof Player.prototype.premium;
 }
 
-interface Handshake {
+export interface Handshake {
   accountType: string;
   arch: string;
   Authorization: string;
@@ -323,6 +331,7 @@ interface Handshake {
   os: string;
   playerId: string;
   protocolVersion: string;
+  server: string;
   showHatsOverHelmet: string;
   showHatsOverSkinlayer: string;
   username: string;

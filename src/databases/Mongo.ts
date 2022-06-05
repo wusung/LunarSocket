@@ -5,11 +5,16 @@ import logger from '../utils/logger';
 import Database from './Database';
 
 export default class Mongo extends Database {
+  private isConnected: boolean;
   private client: MongoClient;
   private collection: Collection;
+  private queue: Player[];
 
   public constructor() {
     super();
+
+    this.isConnected = false;
+    this.queue = [];
     this.init();
   }
 
@@ -18,13 +23,29 @@ export default class Mongo extends Database {
 
     this.client = new MongoClient(config.database.config.mongo);
     await this.client.connect();
+    this.isConnected = true;
     logger.log('Connected to MongoDB');
 
     const db = this.client.db('LunarSocket');
     this.collection = db.collection('players');
+
+    this.emptyQueue();
+  }
+
+  private async emptyQueue() {
+    if (this.queue.length === 0) return;
+    logger.debug(`Executing ${this.queue.length} queued database calls`);
+    const promises = this.queue.map((p) => this.setPlayer(p));
+    return await Promise.all(promises);
   }
 
   public async setPlayer(player: Player): Promise<void> {
+    // If not connected, push the player instance into the queue
+    // Once the connection will be established, the setPlayer
+    // method will be called again with the player instance
+    if (!this.isConnected && !this.queue.includes(player))
+      this.queue.push(player);
+
     const existingPlayer = await this.getPlayer(player.uuid);
 
     if (existingPlayer)
