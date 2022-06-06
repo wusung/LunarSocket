@@ -22,50 +22,7 @@ $ npm run build # Build the project
 
 # Configuration
 
-Open the `config.example.json` file and edit the values
-
-```jsonc
-{
-  "server": {
-    "port": 80, // Port of the server
-    "secure": false, // Whether or not to enable SSL (wss protocol)
-    "certificates": {
-      // Certificates path (only if secure is true)
-      "key": "path/to/key",
-      "cert": "path/to/cert"
-    }
-  },
-  "whitelist": {
-    "enabled": true, // Whether or not the enable whitelist
-    "list": [
-      // UUIDs of the players to whitelist
-      "827f8c48-cdb2-4105-af39-df5a64f93490",
-      "7642d15d-2aec-4be8-8cbe-99a53c434248"
-    ]
-  },
-  "welcomeMessage": "LunarSocket made by SolarTweaks with love <3", // Message sent to the player when they connects
-  "database": {
-    "type": "instanceStorage", // See database section
-    "config": {
-      "mongo": "mongodb://<password>@localhost:27017" // MongoDB connection string
-    }
-  },
-  "roles": {
-    "admin": {
-      "console": true,
-      "iconColor": "0xff0000",
-      "plusColor": "0xffc800"
-    },
-    "default": {
-      // Default role don't remove!!! Custom roles go above
-      "console": false, // Whether or not the role can see the console
-      "iconColor": "0xffffff", // Color of the role icon
-      "plusColor": "0x00ff00" // Color of the role plus
-    }
-  }
-}
-```
-
+Open the `config.example.jsonc` file and edit the values
 Once you have edited the file save it as `config.json` and start the server.
 
 ## Database

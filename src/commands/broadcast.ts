@@ -10,11 +10,20 @@ const command = new Command(
 command.help = `usage: broadcast <message>`;
 
 command.setHandler(async (player, command, args) => {
-  let message = args
-    .join(' ')
-    .replace(/&([0123456789AaBbCcDdEeFfKkLlMmNnOoRr])/g, '§$1');
+  let title = '';
+  let message = args.join(' ');
 
-  for (const player of connectedPlayers) player.sendNotification('', message);
+  if (message.includes('||')) {
+    const split = message.split('||');
+    title = split[0];
+    message = split[1];
+  }
+
+  for (const player of connectedPlayers)
+    player.sendNotification(
+      title,
+      message.replace(/&([0123456789AaBbCcDdEeFfKkLlMmNnOoRr])/g, '§$1')
+    );
 
   logger.log(`${player.username} broadcasted: ${message}`);
 });

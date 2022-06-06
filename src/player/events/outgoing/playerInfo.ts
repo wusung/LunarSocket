@@ -11,9 +11,9 @@ export default function (player: Player, packet: PlayerInfoPacket): void {
       (c) => !player.cosmetics.owned.find((o) => o.id === c.id)
     );
     player.premium.real = packet.data.premium;
-    player.color.real = packet.data.color;
+    player.color = packet.data.color;
     player.clothCloak.real = packet.data.clothCloak;
-    player.plusColor.real = packet.data.plusColor;
+    player.plusColor = packet.data.plusColor;
 
     player.updateDatabase();
 
@@ -23,10 +23,13 @@ export default function (player: Player, packet: PlayerInfoPacket): void {
       ...packet.data,
       cosmetics: [...player.cosmetics.fake, ...player.cosmetics.owned],
       premium: player.premium.fake,
-      color: player.color.fake,
+      color: player.role.data.iconColor,
       clothCloak: player.clothCloak.fake,
-      plusColor: player.plusColor.fake,
+      plusColor: player.role.data.plusColor,
     });
+
+    player.lastPlayerInfo = newPacket;
+
     return player.writeToClient(newPacket);
   }
 

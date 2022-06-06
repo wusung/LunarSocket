@@ -14,6 +14,7 @@ import {
   OutgoingPacketHandler,
 } from '../packets/PacketHandlers';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
+import PlayerInfoPacket from '../packets/PlayerInfoPacket';
 import getConfig from '../utils/config';
 import logger from '../utils/logger';
 import { getRole, Role } from '../utils/roles';
@@ -23,21 +24,19 @@ export default class Player {
   public username: string;
   public uuid: string;
   public server: string;
-  public color: RealFake<number>;
+  public color: number;
   public premium: RealFake<boolean>;
   public clothCloak: RealFake<boolean>;
-  public plusColor: RealFake<number>;
+  public plusColor: number;
   public operator: boolean;
-  public role: Role;
-
+  public role: { name: string; data: Role };
   public emotes: {
     owned: OwnedFake<number[]>;
     equipped: OwnedFake<number[]>;
   };
   public cosmetics: OwnedFake<{ id: number; equipped: boolean }[]>;
-
   public lastFriendList: FriendListPacket;
-
+  public lastPlayerInfo: PlayerInfoPacket;
   public commandHandler: CommandHandler;
 
   private disconnected: boolean;
@@ -52,10 +51,8 @@ export default class Player {
     this.uuid = handshake.playerId;
     this.server = handshake.server;
     this.premium = { real: false, fake: true };
-    this.color = { real: 0, fake: 0xa83232 };
     this.clothCloak = { real: false, fake: true };
-    this.plusColor = { real: 0, fake: 0x3295a8 };
-
+    this.role = { name: 'default', data: null };
     this.emotes = {
       owned: { owned: [], fake: [] },
       equipped: { owned: [], fake: [] },
@@ -83,57 +80,54 @@ export default class Player {
     for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
 
     // Yes, wea re giving cosmetics out of nowhere again
-    for (let i = 1; i < 2454; i++)
+    for (let i = 1; i < 2472; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
-    this.restoreFromInstanceStorage(); // Restoring data if it exists
-    this.updateDatabase(); // Saving data to instanceStorage
-
-    // Forwarding data
-    this.socket.on('message', (data) => {
-      // Trying to handle packet
-      try {
-        this.incomingPacketHandler.handle(data as Buffer);
-      } catch (error) {
-        logger.error(error);
-        this.writeToServer(data);
-      }
-    });
-
-    this.fakeSocket.on('message', (data) => {
-      // Trying to handle packet
-      try {
-        this.outgoingPacketHandler.handle(data as Buffer);
-      } catch (error) {
-        logger.error(error);
-        this.writeToClient(data);
-      }
-    });
-
-    // Handling disconnection and errors
-    this.socket.on('close', () => {
-      this.removePlayer();
-    });
-    this.fakeSocket.on('close', () => {
-      this.removePlayer();
-    });
-    this.socket.on('error', (error) => {
-      logger.error(error);
-      this.removePlayer();
-    });
-    this.fakeSocket.on('error', (error) => {
-      logger.error(error);
-      this.removePlayer();
-    });
-
     (async () => {
+      await this.restoreFromDatabase(); // Restoring data if it exists
+      await this.updateDatabase(); // Saving data to database
+
+      // Forwarding data
+      this.socket.on('message', (data) => {
+        // Trying to handle packet
+        try {
+          this.incomingPacketHandler.handle(data as Buffer);
+        } catch (error) {
+          logger.error(error);
+          this.writeToServer(data);
+        }
+      });
+
+      this.fakeSocket.on('message', (data) => {
+        // Trying to handle packet
+        try {
+          this.outgoingPacketHandler.handle(data as Buffer);
+        } catch (error) {
+          logger.error(error);
+          this.writeToClient(data);
+        }
+      });
+
+      // Handling disconnection and errors
+      this.socket.on('close', () => {
+        this.removePlayer();
+      });
+      this.fakeSocket.on('close', () => {
+        this.removePlayer();
+      });
+      this.socket.on('error', (error) => {
+        logger.error(error);
+        this.removePlayer();
+      });
+      this.fakeSocket.on('error', (error) => {
+        logger.error(error);
+        this.removePlayer();
+      });
+
       const config = await getConfig();
       this.operator = config.operators.includes(this.uuid);
 
-      this.role = await getRole('default');
-
-      this.color.fake = parseInt(this.role.iconColor);
-      this.plusColor.fake = parseInt(this.role.plusColor);
+      await this.setRole(this.role.name, false);
 
       const outgoingEvents = await readdir(
         join(process.cwd(), 'dist', 'player', 'events', 'outgoing')
@@ -187,9 +181,9 @@ export default class Player {
         (c) => c.equipped
       ),
       premium: this.premium.fake,
-      color: this.color.fake,
+      color: this.role.data.iconColor,
       clothCloak: this.clothCloak.fake,
-      plusColor: this.plusColor.fake,
+      plusColor: this.role.data.plusColor,
     };
   }
 
@@ -223,9 +217,11 @@ export default class Player {
   }
 
   public sendConsoleMessage(message: string): void {
-    const packet = new ConsoleMessagePacket();
-    packet.write({ message });
-    this.writeToClient(packet);
+    for (const line of message.split('\n')) {
+      const packet = new ConsoleMessagePacket();
+      packet.write({ message: line });
+      this.writeToClient(packet);
+    }
   }
 
   public sendNotification(title: string, message: string): void {
@@ -238,10 +234,26 @@ export default class Player {
     const friendListPacket = new FriendListPacket();
     friendListPacket.write({
       ...this.lastFriendList.data,
-      consoleAccess: newState || this.operator || this.role.console,
+      consoleAccess: newState || this.operator || this.role.data.console,
     });
 
     this.updateDatabase();
+  }
+
+  public async setRole(rank: string, updateClient = true) {
+    const { default: isDefault, role } = await getRole(rank);
+    this.role.name = isDefault ? 'default' : rank;
+    this.role.data = role;
+
+    if (!updateClient) return;
+    const packet = new PlayerInfoPacket();
+    packet.write({
+      ...this.lastPlayerInfo.data,
+      color: this.role.data.iconColor,
+      plusColor: this.role.data.plusColor,
+    });
+    this.writeToClient(packet);
+    this.updateConsoleAccess(this.operator || this.role.data.console);
   }
 
   public writeToClient(data: any | Packet): void {
@@ -289,14 +301,15 @@ export default class Player {
       clothCloak: this.clothCloak,
       plusColor: this.plusColor,
       premium: this.premium,
+      role: this.role.name,
     };
   }
 
-  public updateDatabase(): void {
-    DatabaseManager.database.setPlayer(this);
+  public async updateDatabase(): Promise<void> {
+    await DatabaseManager.database.setPlayer(this);
   }
 
-  private async restoreFromInstanceStorage(): Promise<void> {
+  private async restoreFromDatabase(): Promise<void> {
     const data = await DatabaseManager.database.getPlayer(this.uuid);
     if (!data) return;
     this.emotes = data.emotes;
@@ -305,6 +318,7 @@ export default class Player {
     this.clothCloak = data.clothCloak;
     this.plusColor = data.plusColor;
     this.premium = data.premium;
+    this.role.name = data.role;
   }
 }
 
@@ -315,6 +329,7 @@ export interface DatabasePlayer {
   clothCloak: typeof Player.prototype.clothCloak;
   plusColor: typeof Player.prototype.plusColor;
   premium: typeof Player.prototype.premium;
+  role: string;
 }
 
 export interface Handshake {

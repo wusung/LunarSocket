@@ -1,5 +1,4 @@
 import BufWrapper from '@minecraft-js/bufwrapper';
-
 import Packet from './Packet';
 
 export default class PlayerInfoRequestPacket extends Packet<PlayerInfoRequest> {

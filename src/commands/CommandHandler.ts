@@ -1,14 +1,12 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import Player from '../player/Player';
-import broadcast from './broadcast';
 import Command from './Command';
-import help from './help';
-import online from './online';
-import whitelist from './whitelist';
 
 export default class CommandHandler {
-  public player: Player;
+  public readonly player: Player;
 
-  public static commands: Command[] = [online, help, whitelist, broadcast];
+  public static commands: Command[] = [];
 
   public constructor(player: Player) {
     this.player = player;
@@ -23,6 +21,19 @@ export default class CommandHandler {
       return this.player.sendConsoleMessage('§cCommand not found');
     }
 
+    if (
+      !(
+        this.player.role.data.permissions.includes('*') ||
+        this.player.role.data.permissions.includes(
+          `command.${command.command}`
+        ) ||
+        this.player.operator
+      )
+    ) {
+      return this.player.sendConsoleMessage(
+        "§cYou're not allowed to use this command!"
+      );
+    }
     if (raw.split(' ').includes('-h') || raw.split(' ').includes('--help')) {
       if (command.help) {
         const messages = command.help.split('\n'); // Console doesn't support \n
@@ -37,3 +48,15 @@ export default class CommandHandler {
     command.trigger(this.player, raw);
   }
 }
+
+const basePath = join(process.cwd(), 'dist', 'commands');
+readdirSync(basePath).forEach(async (file) => {
+  if (
+    file.endsWith('.js') &&
+    file !== 'CommandHandler.js' &&
+    file !== 'Command.js'
+  ) {
+    const command = await import(join(basePath, file));
+    CommandHandler.commands.push(command.default);
+  }
+});
