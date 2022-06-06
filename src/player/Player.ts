@@ -52,7 +52,10 @@ export default class Player {
     this.server = handshake.server;
     this.premium = { real: false, fake: true };
     this.clothCloak = { real: false, fake: true };
-    this.role = { name: 'default', data: null };
+    this.role = {
+      name: 'default',
+      data: { iconColor: 0, plusColor: 0, console: false, permissions: [] },
+    };
     this.emotes = {
       owned: { owned: [], fake: [] },
       equipped: { owned: [], fake: [] },
