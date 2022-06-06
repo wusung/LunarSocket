@@ -13,6 +13,6 @@ export async function getRole(
   const config = await getConfig();
 
   if (config.roles[name])
-    return { default: name === 'default', role: config.roles.roles[name] };
+    return { default: name === 'default', role: config.roles[name] };
   return { default: true, role: config.roles.default };
 }
