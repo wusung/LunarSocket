@@ -56,8 +56,9 @@ const defaultConfig = {
   roles: {
     default: {
       console: false,
-      iconColor: '0xffffff',
-      plusColor: '0x00ff00',
+      iconColor: 0xffffff,
+      plusColor: 0x00ff00,
+      permissions: [],
     },
   } as {
     [key: string]: Role;
