@@ -103,3 +103,7 @@ export function removePlayer(uuid: string): void {
 }
 
 export let connectedPlayers: Player[] = [];
+
+process.on('uncaughtException', (error) => {
+  logger.error(error);
+});
