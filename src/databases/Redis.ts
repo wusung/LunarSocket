@@ -2,21 +2,21 @@ import { RedisClientType } from '@redis/client';
 import redisJson from '@redis/json';
 import { createClient } from 'redis';
 import Player, { DatabasePlayer } from '../player/Player';
+import CallQueue from '../utils/CallQueue';
 import getConfig from '../utils/config';
-import DatabasePlayerQueue from '../utils/dbPlayerQueue';
 import logger from '../utils/logger';
 import Database from './Database';
 
 export default class Redis extends Database {
   private isConnected: boolean;
   private client: RedisClientType<{ json: typeof redisJson }>;
-  private queue: DatabasePlayerQueue;
+  private queue: CallQueue<Player, (player: Player) => Promise<void>>;
 
   public constructor() {
     super();
 
     this.isConnected = false;
-    this.queue = new DatabasePlayerQueue(this.setPlayer);
+    this.queue = new CallQueue(this.setPlayer);
     this.init().catch((reason) => {
       logger.error('An error occured while initializing Redis\n', reason);
       logger.error("Can't proceed without a working database, exiting...");
@@ -29,6 +29,7 @@ export default class Redis extends Database {
 
     this.client = createClient({
       url: config.database.config.redis,
+      database: config.database.config.redisDatabase ?? 0,
       modules: {
         json: redisJson,
       },
@@ -47,7 +48,7 @@ export default class Redis extends Database {
 
   public async setPlayer(player: Player): Promise<void> {
     // See src/databases/Mongo.ts for the explanation
-    if (!this.isConnected) return void this.queue.push(player);
+    if (!this.isConnected) return void this.queue.push([player]);
     await this.client.json.set(
       'players',
       player.uuid,

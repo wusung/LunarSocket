@@ -15,6 +15,7 @@ import {
 } from '../packets/PacketHandlers';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
 import PlayerInfoPacket from '../packets/PlayerInfoPacket';
+import CallQueue from '../utils/CallQueue';
 import getConfig from '../utils/config';
 import logger from '../utils/logger';
 import { getRole, Role } from '../utils/roles';
@@ -67,65 +68,54 @@ export default class Player {
 
     this.disconnected = false;
     this.socket = socket;
-    this.fakeSocket = new WebSocket(
-      'wss://assetserver.lunarclientprod.com/connect',
-      {
-        headers: { ...handshake },
-      }
-    );
     this.outgoingPacketHandler = new OutgoingPacketHandler(this);
     this.incomingPacketHandler = new IncomingPacketHandler(this);
-    this.commandHandler = new CommandHandler(this);
-
-    logger.log(this.username, 'connected!');
 
     // Yes, we are giving emotes out of nowhere
-    for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
+    for (let i = 0; i < 160; i++) this.emotes.owned.fake.push(i);
 
     // Yes, we're giving cosmetics out of nowhere again
-    for (let i = 1; i < 2472; i++)
+    for (let i = 1; i < 2477; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
+
+    const handleIncomingMessage = async (data: Buffer) => {
+      // Trying to handle packet
+      try {
+        this.incomingPacketHandler.handle(data);
+      } catch (error) {
+        logger.error(error);
+        this.writeToServer(data);
+      }
+    };
+
+    // Queuing incoming messages in case the client
+    // is sending a packet while the fake socket
+    // isn't ready yet
+    const incomingMessageQueue = new CallQueue<
+      Buffer,
+      (data: Buffer) => Promise<void>
+    >(handleIncomingMessage);
+
+    // Forwarding data
+    this.socket.on('message', (data: Buffer) => {
+      if (this.fakeSocket instanceof WebSocket) {
+        handleIncomingMessage(data);
+      } else incomingMessageQueue.push([data]);
+    });
+
+    // Handling disconnection and errors
+    this.socket.on('close', () => {
+      this.removePlayer();
+    });
+
+    this.socket.on('error', (error) => {
+      logger.error(error);
+      this.removePlayer();
+    });
 
     (async () => {
       await this.restoreFromDatabase(); // Restoring data if it exists
       await this.updateDatabase(); // Saving data to database
-
-      // Forwarding data
-      this.socket.on('message', (data) => {
-        // Trying to handle packet
-        try {
-          this.incomingPacketHandler.handle(data as Buffer);
-        } catch (error) {
-          logger.error(error);
-          this.writeToServer(data);
-        }
-      });
-
-      this.fakeSocket.on('message', (data) => {
-        // Trying to handle packet
-        try {
-          this.outgoingPacketHandler.handle(data as Buffer);
-        } catch (error) {
-          logger.error(error);
-          this.writeToClient(data);
-        }
-      });
-
-      // Handling disconnection and errors
-      this.socket.on('close', () => {
-        this.removePlayer();
-      });
-      this.fakeSocket.on('close', () => {
-        this.removePlayer();
-      });
-      this.socket.on('error', (error) => {
-        logger.error(error);
-        this.removePlayer();
-      });
-      this.fakeSocket.on('error', (error) => {
-        logger.error(error);
-        this.removePlayer();
-      });
 
       const config = await getConfig();
       this.operator = config.operators.includes(this.uuid);
@@ -165,17 +155,48 @@ export default class Player {
           }
         );
       }
-    })();
 
-    // After every listeners are registered sending a hi notification
-    setTimeout(async () => {
-      const notification = new NotificationPacket();
-      notification.write({
-        title: '',
-        message: (await getConfig()).welcomeMessage,
+      this.fakeSocket = new WebSocket(
+        'wss://assetserver.lunarclientprod.com/connect',
+        {
+          headers: { ...handshake },
+        }
+      );
+      this.commandHandler = new CommandHandler(this);
+      logger.log(this.username, 'connected!');
+
+      this.fakeSocket.once(
+        'message',
+        async () => await incomingMessageQueue.emptyQueue()
+      );
+
+      this.fakeSocket.on('message', (data) => {
+        // Trying to handle packet
+        try {
+          this.outgoingPacketHandler.handle(data as Buffer);
+        } catch (error) {
+          logger.error(error);
+          this.writeToClient(data);
+        }
       });
-      this.writeToClient(notification);
-    }, 1000);
+      this.fakeSocket.on('close', () => {
+        this.removePlayer();
+      });
+      this.fakeSocket.on('error', (error) => {
+        logger.error(error);
+        this.removePlayer();
+      });
+
+      // After every listeners are registered sending a hi notification
+      setTimeout(async () => {
+        const notification = new NotificationPacket();
+        notification.write({
+          title: '',
+          message: (await getConfig()).welcomeMessage,
+        });
+        this.writeToClient(notification);
+      }, 1000);
+    })();
   }
 
   public getPlayerInfo() {

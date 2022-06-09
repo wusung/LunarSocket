@@ -40,6 +40,10 @@ export default class FileStorage extends Database {
   }
 
   public async getPlayer(uuid: string): Promise<DatabasePlayer> {
-    return this.file[uuid];
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(this.file[uuid]);
+      }, 1000);
+    });
   }
 }

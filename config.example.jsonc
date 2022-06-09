@@ -21,7 +21,9 @@
     "type": "instanceStorage", // Type of the database (can be: instanceStorage, fileStorage or mongo)
     "config": {
       "mongo": "mongodb://<password>@localhost:27017", // Connect URI for mongo
-      "filePath": "/path/to/file.json" // File path for FileStorage
+      "filePath": "/path/to/file.json", // File path for FileStorage
+      "redis": "redis://alice:foobared@awesome.redis.server:6380", // Redis connect URI
+      "redisDatabase": 0 // Redis database to use
     }
   },
   "roles": {
