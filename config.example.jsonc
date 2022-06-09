@@ -18,9 +18,10 @@
   "operators": ["827f8c48-cdb2-4105-af39-df5a64f93490"], // List of players that are operators (bypasses role restrictions)
   "welcomeMessage": "LunarSocket made by SolarTweaks with love <3", // Message sent when you connect
   "database": {
-    "type": "instanceStorage", // Type of the database (instanceStorage or mongo)
+    "type": "instanceStorage", // Type of the database (can be: instanceStorage, fileStorage or mongo)
     "config": {
-      "mongo": "mongodb://<password>@localhost:27017" // Connect URI for mongo
+      "mongo": "mongodb://<password>@localhost:27017", // Connect URI for mongo
+      "filePath": "/path/to/file.json" // File path for FileStorage
     }
   },
   "roles": {

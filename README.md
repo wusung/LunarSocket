@@ -3,15 +3,15 @@
 Lunar Socket is a Websocket server for Lunar Client.
 It allows you to proxy the connection between Lunar Client and Lunar Servers. (To give you cosmetics or emotes for example)
 
-Lunar Client <-> Lunar Socket <-> Lunar Servers
+Lunar Client &lt;-> Lunar Socket &lt;-> Lunar Servers
 
 It can intercepts and edit the data in the packets.
 
-# Protocol
+# 🔖 Protocol
 
 You can see Lunar Client protocol detailed [here](https://github.com/Solar-Tweaks/LunarSocket/blob/main/doc/protocol.md)
 
-# Installation
+# ⬇️ Installation
 
 ```bash
 $ git clone https://github.com/Solar-Tweaks/LunarSocket # Clone repo
@@ -20,19 +20,20 @@ $ npm install # Install dependencies
 $ npm run build # Build the project
 ```
 
-# Configuration
+# 🔧 Configuration
 
 Open the `config.example.jsonc` file and edit the values
 Once you have edited the file save it as `config.json` and start the server.
 
 ## Database
 
-There's two types of databases available:
+There are a few types of databases available:
 
 - `instanceStorage` - Stores the data in the Lunar Socket instance which means that the data will be deleted when the server is restarted/stopped/updated.
-- `mango` - Stores the data in a MongoDB database.
+- `mongo` - Stores the data in a MongoDB database.
+- `fileStorage` - Stores the data in the provided json file.
 
-# Start the server
+# 🚀 Start the server
 
 ```bash
 $ npm start
