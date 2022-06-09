@@ -53,6 +53,7 @@ const defaultConfig = {
     config: {
       mongo: 'mongodb://<password>@localhost:27017',
       filePath: 'FileStorage.json',
+      redis: 'redis://alice:foobared@awesome.redis.server:6380',
     },
   },
   roles: {

@@ -1,6 +1,7 @@
 import { Collection, MongoClient } from 'mongodb';
 import Player, { DatabasePlayer } from '../player/Player';
 import getConfig from '../utils/config';
+import DatabasePlayerQueue from '../utils/dbPlayerQueue';
 import logger from '../utils/logger';
 import Database from './Database';
 
@@ -8,14 +9,18 @@ export default class Mongo extends Database {
   private isConnected: boolean;
   private client: MongoClient;
   private collection: Collection;
-  private queue: Player[];
+  private queue: DatabasePlayerQueue;
 
   public constructor() {
     super();
 
     this.isConnected = false;
-    this.queue = [];
-    this.init();
+    this.queue = new DatabasePlayerQueue(this.setPlayer);
+    this.init().catch((reason) => {
+      logger.error('An error occured while initializing Mongo\n', reason);
+      logger.error("Can't proceed without a working database, exiting...");
+      process.exit(1);
+    });
   }
 
   private async init(): Promise<void> {
@@ -29,22 +34,14 @@ export default class Mongo extends Database {
     this.isConnected = true;
     logger.log('Connected to MongoDB');
 
-    this.emptyQueue();
-  }
-
-  private async emptyQueue(): Promise<void> {
-    if (this.queue.length === 0) return;
-    logger.debug(`Executing ${this.queue.length} queued database calls`);
-    const promises = this.queue.map((p) => this.setPlayer(p));
-    return void (await Promise.all(promises));
+    this.queue.emptyQueue();
   }
 
   public async setPlayer(player: Player): Promise<void> {
     // If not connected, push the player instance into the queue
     // Once the connection will be established, the setPlayer
     // method will be called again with the player instance
-    if (!this.isConnected && !this.queue.includes(player))
-      return void this.queue.push(player);
+    if (!this.isConnected) return void this.queue.push(player);
 
     const existingPlayer = await this.getPlayer(player.uuid);
 

@@ -1,6 +1,7 @@
 import { readFile, stat, writeFile } from 'node:fs/promises';
 import Player, { DatabasePlayer } from '../player/Player';
 import getConfig from '../utils/config';
+import logger from '../utils/logger';
 import Database from './Database';
 
 export default class FileStorage extends Database {
@@ -10,7 +11,11 @@ export default class FileStorage extends Database {
   public constructor() {
     super();
 
-    this.init();
+    this.init().catch((reason) => {
+      logger.error('An error occured while initializing FileStorage\n', reason);
+      logger.error("Can't proceed without a working database, exiting...");
+      process.exit(1);
+    });
   }
 
   private async init(): Promise<void> {
