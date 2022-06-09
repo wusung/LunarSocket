@@ -319,13 +319,16 @@ export default class Player {
 
   public getDatabasePlayer(): DatabasePlayer {
     return {
-      emotes: this.emotes,
-      cosmetics: this.cosmetics,
-      color: this.color,
+      emotes: {
+        owned: this.emotes.equipped.owned,
+        fake: this.emotes.equipped.fake,
+      },
       clothCloak: this.clothCloak,
-      plusColor: this.plusColor,
-      premium: this.premium,
       role: this.role.name,
+      cosmetics: {
+        owned: this.cosmetics.owned.filter((c) => c.equipped).map((c) => c.id),
+        fake: this.cosmetics.fake.filter((c) => c.equipped).map((c) => c.id),
+      },
     };
   }
 
@@ -336,23 +339,31 @@ export default class Player {
   private async restoreFromDatabase(): Promise<void> {
     const data = await DatabaseManager.database.getPlayer(this.uuid);
     if (!data) return;
-    this.emotes = data.emotes;
-    this.cosmetics = data.cosmetics;
-    this.color = data.color;
+
+    // Considered as old database structure, ignoring
+    // it and the socket will override the data
+    if (Object.prototype.hasOwnProperty.call(data, 'color')) return;
+
     this.clothCloak = data.clothCloak;
-    this.plusColor = data.plusColor;
-    this.premium = data.premium;
     this.role.name = data.role;
+    this.emotes.equipped = data.emotes;
+    for (const ownedCosmetic of data.cosmetics.owned) {
+      const cosmetic = this.cosmetics.owned.find((c) => c.id === ownedCosmetic);
+      if (!cosmetic) continue;
+      cosmetic.equipped = true;
+    }
+    for (const fakeCosmetic of data.cosmetics.fake) {
+      const cosmetic = this.cosmetics.fake.find((c) => c.id === fakeCosmetic);
+      if (!cosmetic) continue;
+      cosmetic.equipped = true;
+    }
   }
 }
 
 export interface DatabasePlayer {
-  emotes: typeof Player.prototype.emotes;
-  cosmetics: typeof Player.prototype.cosmetics;
-  color: typeof Player.prototype.color;
+  emotes: OwnedFake<number[]>;
+  cosmetics: OwnedFake<number[]>;
   clothCloak: typeof Player.prototype.clothCloak;
-  plusColor: typeof Player.prototype.plusColor;
-  premium: typeof Player.prototype.premium;
   role: string;
 }
 
