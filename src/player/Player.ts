@@ -82,7 +82,7 @@ export default class Player {
     // Yes, we are giving emotes out of nowhere
     for (let i = 0; i < 150; i++) this.emotes.owned.fake.push(i);
 
-    // Yes, wea re giving cosmetics out of nowhere again
+    // Yes, we're giving cosmetics out of nowhere again
     for (let i = 1; i < 2472; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
