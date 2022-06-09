@@ -1,13 +1,20 @@
 import getConfig from '../utils/config';
 import logger from '../utils/logger';
+import FileStorage from './FileStorage';
 import InstanceStorage from './InstanceStorage';
 import Mongo from './Mongo';
 
 class DatabaseManager {
-  public database: InstanceStorage | Mongo;
-
+  public static constructors = {
+    instanceStorage: InstanceStorage,
+    mongo: Mongo,
+    fileStorage: FileStorage,
+  } as const;
   public static instance = new DatabaseManager();
 
+  public database: InstanceType<
+    typeof DatabaseManager.constructors[keyof typeof DatabaseManager.constructors]
+  >;
   private constructor() {
     this.init();
   }
@@ -17,13 +24,9 @@ class DatabaseManager {
 
     logger.log('Using database:', config.database.type);
 
-    const constructors = {
-      instanceStorage: InstanceStorage,
-      mongo: Mongo,
-    };
-
-    this.database = new constructors[config.database.type]();
+    this.database = new DatabaseManager.constructors[config.database.type]();
   }
 }
 
 export default DatabaseManager.instance;
+export { DatabaseManager };

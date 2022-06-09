@@ -1,6 +1,7 @@
 import { readFileSync, statSync, writeFileSync } from 'node:fs';
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { DatabaseManager } from '../databases/Manager';
 import logger from './logger';
 import { Role } from './roles';
 
@@ -48,9 +49,10 @@ const defaultConfig = {
   welcomeMessage: 'LunarSocket made by SolarTweaks with love <3',
   operators: [] as string[],
   database: {
-    type: 'instanceStorage' as 'instanceStorage' | 'mongo',
+    type: 'instanceStorage' as keyof typeof DatabaseManager.constructors,
     config: {
       mongo: 'mongodb://<password>@localhost:27017',
+      filePath: 'FileStorage.json',
     },
   },
   roles: {

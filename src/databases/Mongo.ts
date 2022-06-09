@@ -23,20 +23,20 @@ export default class Mongo extends Database {
 
     this.client = new MongoClient(config.database.config.mongo);
     await this.client.connect();
-    this.isConnected = true;
-    logger.log('Connected to MongoDB');
-
     const db = this.client.db('LunarSocket');
     this.collection = db.collection('players');
+
+    this.isConnected = true;
+    logger.log('Connected to MongoDB');
 
     this.emptyQueue();
   }
 
-  private async emptyQueue() {
+  private async emptyQueue(): Promise<void> {
     if (this.queue.length === 0) return;
     logger.debug(`Executing ${this.queue.length} queued database calls`);
     const promises = this.queue.map((p) => this.setPlayer(p));
-    return await Promise.all(promises);
+    return void (await Promise.all(promises));
   }
 
   public async setPlayer(player: Player): Promise<void> {
@@ -62,7 +62,6 @@ export default class Mongo extends Database {
   }
 
   public async getPlayer(uuid: string): Promise<DatabasePlayer> {
-    const player = await this.collection.findOne<DatabasePlayer>({ uuid });
-    return player;
+    return await this.collection.findOne<DatabasePlayer>({ uuid });
   }
 }
