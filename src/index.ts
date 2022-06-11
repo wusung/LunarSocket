@@ -6,6 +6,7 @@ import Player, { Handshake } from './player/Player';
 import getConfig, { initConfig } from './utils/config';
 import logger from './utils/logger';
 import ServerString from './utils/ServerString';
+import startStats from './utils/stats';
 
 console.log(`  _                               _____            _        _   
  | |                             / ____|          | |      | |  
@@ -103,6 +104,8 @@ export function removePlayer(uuid: string): void {
 }
 
 export let connectedPlayers: Player[] = [];
+
+startStats();
 
 process.on('uncaughtException', (error) => {
   logger.error(error);
