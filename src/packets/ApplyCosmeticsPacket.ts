@@ -1,5 +1,4 @@
 import BufWrapper from '@minecraft-js/bufwrapper';
-
 import Packet from './Packet';
 
 export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
@@ -22,8 +21,8 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
     }
 
     this.buf.writeBoolean(data.clothCloak);
-    this.buf.writeBoolean(data.unknownBooleanA);
-    this.buf.writeBoolean(data.unknownBooleanB);
+    this.buf.writeBoolean(data.showHatAboveHelmet);
+    this.buf.writeBoolean(data.scaleHatWithHeadwear);
 
     this.buf.writeVarInt(Object.keys(data.unknownMap).length);
     for (const key in data.unknownMap) {
@@ -35,6 +34,7 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
     }
 
     this.buf.writeInt(data.unknownInt);
+    this.buf.writeBoolean(data.unknownBoolean);
   }
 
   public read(): void {
@@ -49,8 +49,8 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
     }
 
     const clothCloak = this.buf.readBoolean();
-    const unknownBooleanA = this.buf.readBoolean();
-    const unknownBooleanB = this.buf.readBoolean();
+    const showHatAboveHelmet = this.buf.readBoolean();
+    const scaleHatWithHeadwear = this.buf.readBoolean();
 
     const unknownMapLength = this.buf.readVarInt();
     const unknownMap: { [key: number]: number } = {};
@@ -58,14 +58,16 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
       unknownMap[this.buf.readInt()] = this.buf.readFloat();
 
     const unknownInt = this.buf.readInt();
+    const unknownBoolean = this.buf.readBoolean();
 
     this.data = {
       cosmetics,
       clothCloak,
-      unknownBooleanA,
-      unknownBooleanB,
+      showHatAboveHelmet,
+      scaleHatWithHeadwear,
       unknownMap,
       unknownInt,
+      unknownBoolean,
     };
   }
 }
@@ -78,8 +80,9 @@ interface Cosmetic {
 interface ApplyCosmetics {
   cosmetics: Cosmetic[];
   clothCloak: boolean;
-  unknownBooleanA: boolean;
-  unknownBooleanB: boolean;
+  showHatAboveHelmet: boolean;
+  scaleHatWithHeadwear: boolean;
   unknownMap: { [key: number]: number };
   unknownInt: number;
+  unknownBoolean: boolean;
 }

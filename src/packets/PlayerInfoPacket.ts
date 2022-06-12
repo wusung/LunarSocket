@@ -25,8 +25,8 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     this.buf.writeBoolean(data.unknownBooleanA);
     this.buf.writeBoolean(data.premium);
     this.buf.writeBoolean(data.clothCloak);
-    this.buf.writeBoolean(data.unknownBooleanC);
-    this.buf.writeBoolean(data.unknownBooleanD);
+    this.buf.writeBoolean(data.showHatAboveHelmet);
+    this.buf.writeBoolean(data.scaleHatWithHeadwear);
 
     const unknownHashMapKeys = Object.keys(data.unknownHashMap);
     this.buf.writeVarInt(unknownHashMapKeys.length);
@@ -36,6 +36,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     }
 
     this.buf.writeInt(data.plusColor);
+    this.buf.writeBoolean(data.unknownBooleanB);
   }
 
   public read(): void {
@@ -53,8 +54,8 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     const unknownBooleanA = this.buf.readBoolean();
     const premium = this.buf.readBoolean();
     const clothCloak = this.buf.readBoolean();
-    const unknownBooleanC = this.buf.readBoolean();
-    const unknownBooleanD = this.buf.readBoolean();
+    const showHatAboveHelmet = this.buf.readBoolean();
+    const scaleHatWithHeadwear = this.buf.readBoolean();
 
     const unknownHashMapKeysLength = this.buf.readVarInt();
     const unknownHashMap: { [key: number]: number } = {};
@@ -65,6 +66,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     }
 
     const plusColor = this.buf.readInt();
+    const unknownBooleanB = this.buf.readBoolean();
 
     this.data = {
       uuid,
@@ -73,10 +75,11 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
       unknownBooleanA,
       premium,
       clothCloak,
-      unknownBooleanC,
-      unknownBooleanD,
+      showHatAboveHelmet,
+      scaleHatWithHeadwear,
       unknownHashMap,
       plusColor,
+      unknownBooleanB,
     };
   }
 }
@@ -93,8 +96,9 @@ interface PlayerInfo {
   unknownBooleanA: boolean;
   premium: boolean;
   clothCloak: boolean;
-  unknownBooleanC: boolean;
-  unknownBooleanD: boolean;
+  showHatAboveHelmet: boolean;
+  scaleHatWithHeadwear: boolean;
   unknownHashMap: { [key: number]: number };
   plusColor: number;
+  unknownBooleanB: boolean;
 }

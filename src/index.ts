@@ -71,8 +71,8 @@ server.on('connection', async (socket, request) => {
   }
 
   // Ignoring players with older/newer protocol versions
-  if (handshake.protocolVersion !== '5')
-    return socket.close(1002, 'Incompatible protocol version, requires 5');
+  if (handshake.protocolVersion !== '6')
+    return socket.close(1002, 'Incompatible protocol version, requires 6');
 
   const config = await getConfig();
 

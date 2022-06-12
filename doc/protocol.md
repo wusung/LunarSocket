@@ -158,10 +158,11 @@ Which means lunar sends you only equipped cosmetics_
   unknownBooleanA: 'boolean',
   premium: 'boolean',
   clothCloak: 'boolean',
-  unknownBooleanC: 'boolean',
-  unknownBooleanD: 'boolean',
+  showHatAboveHelmet: 'boolean',
+  scaleHatWithHeadwear: 'boolean',
   unknownHashMap: 'HashMap<int, float>',
-  plusColor: 'int'
+  plusColor: 'int',
+  unknownBooleanE: 'boolean'
 }
 ```
 
@@ -366,10 +367,11 @@ Sent when you equip a cosmetic or change ClothCloak state
 {
   cosmetics: 'Array<{ id: number, equipped: boolean }>',
   clothCloak: 'boolean',
-  unknownBooleanA: 'boolean',
-  unknownBooleanB: 'boolean',
+  showHatAboveHelmet: 'boolean',
+  scaleHatWithHeadwear: 'boolean',
   unknownMap: 'Map<Int, Float>',
-  unknownInt: 'int'
+  unknownInt: 'int',
+  unknownBoolean: 'boolean'
 }
 ```
 
@@ -510,7 +512,7 @@ Note: _yes privacy_
 
 ```js
 {
-  hosts: 'Array<string>'
+  hosts: 'Array<string>';
 }
 ```
 
@@ -520,13 +522,14 @@ See [implementation](../src/packets/HostListPacket.ts)
   <summary>Example packet</summary>
   <br/>
 
-  ```js
-  {
-    hosts: [
-      '127.0.0.1 example.com',
-      '127.0.0.1 anotherdomain.com',
-      '127.0.0.1 www.youtube.com'
-    ]
-  }
-  ```
+```js
+{
+  hosts: [
+    '127.0.0.1 example.com',
+    '127.0.0.1 anotherdomain.com',
+    '127.0.0.1 www.youtube.com',
+  ];
+}
+```
+
 </details>
