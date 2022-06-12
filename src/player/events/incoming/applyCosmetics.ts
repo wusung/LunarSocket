@@ -7,6 +7,7 @@ export default function (player: Player, packet: ApplyCosmeticsPacket): void {
   }
   player.clothCloak.fake = packet.data.clothCloak;
 
+  player.adjustableHeightCosmetics = packet.data.adjustableHeightCosmetics;
   const newAdjustableHeightCosmetics: { [key: string]: number } = {};
   for (const cosmetic in packet.data.adjustableHeightCosmetics)
     if (

@@ -60,7 +60,8 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
     const adjustableHeightCosmeticsLength = this.buf.readVarInt();
     const adjustableHeightCosmetics: { [key: number]: number } = {};
     for (let i = 0; i < adjustableHeightCosmeticsLength; i++)
-      adjustableHeightCosmetics[this.buf.readInt()] = this.buf.readFloat();
+      adjustableHeightCosmetics[this.buf.readInt()] =
+        Math.round(this.buf.readFloat() * 100) / 100;
 
     const unknownInt = this.buf.readInt();
     const petFlipShoulder = this.buf.readBoolean();
@@ -74,8 +75,6 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
       unknownInt,
       petFlipShoulder,
     };
-
-    console.log(this.data);
   }
 }
 

@@ -63,7 +63,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     const adjustableHeightCosmetics: { [key: number]: number } = {};
     for (let i = 0; i < adjustableHeightCosmeticsLength; i++) {
       const key = this.buf.readInt();
-      const value = this.buf.readFloat() as number;
+      const value = Math.round(this.buf.readFloat() * 100) / 100;
       adjustableHeightCosmetics[key] = value;
     }
 
