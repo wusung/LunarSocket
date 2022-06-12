@@ -160,7 +160,7 @@ Which means lunar sends you only equipped cosmetics_
   clothCloak: 'boolean',
   showHatAboveHelmet: 'boolean',
   scaleHatWithHeadwear: 'boolean',
-  unknownHashMap: 'HashMap<int, float>',
+  adjustableHeightCosmetics: 'HashMap<int, float>',
   plusColor: 'int',
   unknownBooleanE: 'boolean'
 }
@@ -369,9 +369,9 @@ Sent when you equip a cosmetic or change ClothCloak state
   clothCloak: 'boolean',
   showHatAboveHelmet: 'boolean',
   scaleHatWithHeadwear: 'boolean',
-  unknownMap: 'Map<Int, Float>',
+  adjustableHeightCosmetics: 'Map<Int, Float>',
   unknownInt: 'int',
-  unknownBoolean: 'boolean'
+  petFlipShoulder: 'boolean'
 }
 ```
 

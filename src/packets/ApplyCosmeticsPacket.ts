@@ -24,17 +24,22 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
     this.buf.writeBoolean(data.showHatAboveHelmet);
     this.buf.writeBoolean(data.scaleHatWithHeadwear);
 
-    this.buf.writeVarInt(Object.keys(data.unknownMap).length);
-    for (const key in data.unknownMap) {
-      if (Object.prototype.hasOwnProperty.call(data.unknownMap, key)) {
-        const element = data.unknownMap[key];
+    this.buf.writeVarInt(Object.keys(data.adjustableHeightCosmetics).length);
+    for (const key in data.adjustableHeightCosmetics) {
+      if (
+        Object.prototype.hasOwnProperty.call(
+          data.adjustableHeightCosmetics,
+          key
+        )
+      ) {
+        const element = data.adjustableHeightCosmetics[key];
         this.buf.writeInt(parseInt(key));
         this.buf.writeFloat(element);
       }
     }
 
     this.buf.writeInt(data.unknownInt);
-    this.buf.writeBoolean(data.unknownBoolean);
+    this.buf.writeBoolean(data.petFlipShoulder);
   }
 
   public read(): void {
@@ -52,23 +57,25 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
     const showHatAboveHelmet = this.buf.readBoolean();
     const scaleHatWithHeadwear = this.buf.readBoolean();
 
-    const unknownMapLength = this.buf.readVarInt();
-    const unknownMap: { [key: number]: number } = {};
-    for (let i = 0; i < unknownMapLength; i++)
-      unknownMap[this.buf.readInt()] = this.buf.readFloat();
+    const adjustableHeightCosmeticsLength = this.buf.readVarInt();
+    const adjustableHeightCosmetics: { [key: number]: number } = {};
+    for (let i = 0; i < adjustableHeightCosmeticsLength; i++)
+      adjustableHeightCosmetics[this.buf.readInt()] = this.buf.readFloat();
 
     const unknownInt = this.buf.readInt();
-    const unknownBoolean = this.buf.readBoolean();
+    const petFlipShoulder = this.buf.readBoolean();
 
     this.data = {
       cosmetics,
       clothCloak,
       showHatAboveHelmet,
       scaleHatWithHeadwear,
-      unknownMap,
+      adjustableHeightCosmetics,
       unknownInt,
-      unknownBoolean,
+      petFlipShoulder,
     };
+
+    console.log(this.data);
   }
 }
 
@@ -82,7 +89,7 @@ interface ApplyCosmetics {
   clothCloak: boolean;
   showHatAboveHelmet: boolean;
   scaleHatWithHeadwear: boolean;
-  unknownMap: { [key: number]: number };
+  adjustableHeightCosmetics: { [key: string]: number };
   unknownInt: number;
-  unknownBoolean: boolean;
+  petFlipShoulder: boolean;
 }

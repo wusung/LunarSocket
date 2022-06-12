@@ -14,6 +14,10 @@ export default function (player: Player, packet: PlayerInfoPacket): void {
     player.color = packet.data.color;
     player.clothCloak.real = packet.data.clothCloak;
     player.plusColor = packet.data.plusColor;
+    player.adjustableHeightCosmetics = {
+      ...packet.data.adjustableHeightCosmetics,
+      ...player.adjustableHeightCosmetics,
+    };
 
     player.updateDatabase();
 

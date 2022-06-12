@@ -7,6 +7,18 @@ export default function (player: Player, packet: ApplyCosmeticsPacket): void {
   }
   player.clothCloak.fake = packet.data.clothCloak;
 
+  const newAdjustableHeightCosmetics: { [key: string]: number } = {};
+  for (const cosmetic in packet.data.adjustableHeightCosmetics)
+    if (
+      Object.prototype.hasOwnProperty.call(
+        packet.data.adjustableHeightCosmetics,
+        cosmetic
+      )
+    )
+      if (player.cosmetics.owned.find((c) => c.id === parseInt(cosmetic)))
+        newAdjustableHeightCosmetics[cosmetic] =
+          packet.data.adjustableHeightCosmetics[cosmetic];
+
   // Sending the new state of the cosmetics to lunar
   const newPacket = new ApplyCosmeticsPacket();
   newPacket.write({
@@ -16,6 +28,7 @@ export default function (player: Player, packet: ApplyCosmeticsPacket): void {
     clothCloak: player.premium.real
       ? packet.data.clothCloak
       : player.clothCloak.real,
+    adjustableHeightCosmetics: newAdjustableHeightCosmetics,
   });
   player.writeToServer(newPacket);
 

@@ -35,6 +35,7 @@ export default class Player {
     owned: OwnedFake<number[]>;
     equipped: OwnedFake<number[]>;
   };
+  public adjustableHeightCosmetics: { [key: string]: number };
   public cosmetics: OwnedFake<{ id: number; equipped: boolean }[]>;
   public lastFriendList: FriendListPacket;
   public lastPlayerInfo: PlayerInfoPacket;
@@ -329,6 +330,7 @@ export default class Player {
         owned: this.cosmetics.owned.filter((c) => c.equipped).map((c) => c.id),
         fake: this.cosmetics.fake.filter((c) => c.equipped).map((c) => c.id),
       },
+      adjustableHeightCosmetics: this.adjustableHeightCosmetics,
     };
   }
 
@@ -357,6 +359,7 @@ export default class Player {
       if (!cosmetic) continue;
       cosmetic.equipped = true;
     }
+    this.adjustableHeightCosmetics = data.adjustableHeightCosmetics;
   }
 }
 
@@ -365,6 +368,7 @@ export interface DatabasePlayer {
   cosmetics: OwnedFake<number[]>;
   clothCloak: typeof Player.prototype.clothCloak;
   role: string;
+  adjustableHeightCosmetics: { [key: string]: number };
 }
 
 export interface Handshake {

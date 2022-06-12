@@ -28,11 +28,13 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     this.buf.writeBoolean(data.showHatAboveHelmet);
     this.buf.writeBoolean(data.scaleHatWithHeadwear);
 
-    const unknownHashMapKeys = Object.keys(data.unknownHashMap);
-    this.buf.writeVarInt(unknownHashMapKeys.length);
-    for (const key of unknownHashMapKeys) {
+    const adjustableHeightCosmeticsKeys = Object.keys(
+      data.adjustableHeightCosmetics
+    );
+    this.buf.writeVarInt(adjustableHeightCosmeticsKeys.length);
+    for (const key of adjustableHeightCosmeticsKeys) {
       this.buf.writeInt(parseInt(key));
-      this.buf.writeFloat(data.unknownHashMap[key]);
+      this.buf.writeFloat(data.adjustableHeightCosmetics[key]);
     }
 
     this.buf.writeInt(data.plusColor);
@@ -57,12 +59,12 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
     const showHatAboveHelmet = this.buf.readBoolean();
     const scaleHatWithHeadwear = this.buf.readBoolean();
 
-    const unknownHashMapKeysLength = this.buf.readVarInt();
-    const unknownHashMap: { [key: number]: number } = {};
-    for (let i = 0; i < unknownHashMapKeysLength; i++) {
+    const adjustableHeightCosmeticsLength = this.buf.readVarInt();
+    const adjustableHeightCosmetics: { [key: number]: number } = {};
+    for (let i = 0; i < adjustableHeightCosmeticsLength; i++) {
       const key = this.buf.readInt();
       const value = this.buf.readFloat() as number;
-      unknownHashMap[key] = value;
+      adjustableHeightCosmetics[key] = value;
     }
 
     const plusColor = this.buf.readInt();
@@ -77,7 +79,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
       clothCloak,
       showHatAboveHelmet,
       scaleHatWithHeadwear,
-      unknownHashMap,
+      adjustableHeightCosmetics,
       plusColor,
       unknownBooleanB,
     };
@@ -98,7 +100,7 @@ interface PlayerInfo {
   clothCloak: boolean;
   showHatAboveHelmet: boolean;
   scaleHatWithHeadwear: boolean;
-  unknownHashMap: { [key: number]: number };
+  adjustableHeightCosmetics: { [key: string]: number };
   plusColor: number;
   unknownBooleanB: boolean;
 }
