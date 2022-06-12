@@ -66,6 +66,7 @@ export default class Player {
       owned: [],
       fake: [],
     };
+    this.adjustableHeightCosmetics = {};
 
     this.disconnected = false;
     this.socket = socket;
@@ -346,9 +347,9 @@ export default class Player {
     // it and the socket will override the data
     if (Object.prototype.hasOwnProperty.call(data, 'color')) return;
 
-    this.clothCloak = data.clothCloak;
-    this.role.name = data.role;
-    this.emotes.equipped = data.emotes;
+    this.clothCloak = data.clothCloak ?? { real: false, fake: false };
+    this.role.name = data.role ?? 'default';
+    this.emotes.equipped = data.emotes ?? { owned: [], fake: [] };
     for (const ownedCosmetic of data.cosmetics.owned) {
       const cosmetic = this.cosmetics.owned.find((c) => c.id === ownedCosmetic);
       if (!cosmetic) continue;
@@ -359,7 +360,7 @@ export default class Player {
       if (!cosmetic) continue;
       cosmetic.equipped = true;
     }
-    this.adjustableHeightCosmetics = data.adjustableHeightCosmetics;
+    this.adjustableHeightCosmetics = data.adjustableHeightCosmetics ?? {};
   }
 }
 
