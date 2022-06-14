@@ -48,7 +48,11 @@ export default class Mongo extends Database {
     if (existingPlayer)
       this.collection.updateOne(
         { uuid: player.uuid },
-        { $set: player.getDatabasePlayer() }
+        {
+          $set: player.getDatabasePlayer(),
+          // Removing all fields
+          $unset: { color: null, plusColor: null, premium: null },
+        }
       );
     else
       await this.collection.insertOne({
