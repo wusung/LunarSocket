@@ -35,7 +35,7 @@ export default class Redis extends Database {
       },
     });
 
-    // await this.client.connect();
+    await this.client.connect();
 
     if ((await this.client.exists('players')) === 0)
       await this.client.json.set('players', '$', {});
