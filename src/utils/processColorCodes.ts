@@ -6,3 +6,7 @@ export default function processSpecialCharacters(str: string): string {
   const count = str.split('§').length - 1;
   return str + ' '.repeat(count);
 }
+
+export function removeColorCodes(str: string): string {
+  return str.replace(/§./g, '');
+}

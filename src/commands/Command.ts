@@ -1,4 +1,5 @@
 import Player from '../player/Player';
+import ConsolePlayer from './ConsolePlayer';
 
 export default class Command {
   public readonly command: string;
@@ -13,7 +14,7 @@ export default class Command {
     this.description = description;
   }
 
-  public trigger(player: Player, raw: string): void {
+  public trigger(player: Player | ConsolePlayer, raw: string): void {
     const args = raw.split(' ');
     const command = args[0];
     args.shift();
@@ -26,7 +27,7 @@ export default class Command {
 }
 
 type CommandHandlerFn = (
-  player: Player,
+  player: Player | ConsolePlayer,
   command: string,
   args: string[]
 ) => void;
