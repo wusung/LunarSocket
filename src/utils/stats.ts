@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { connectedPlayers } from '..';
 
-const stats = {
+export const stats = {
   onlinePlayers: {} as { [key: string]: number },
 };
 

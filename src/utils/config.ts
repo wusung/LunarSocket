@@ -37,10 +37,15 @@ const defaultConfig = {
   server: {
     port: 80,
     secure: false,
+    websocketPath: '/connect',
     certificates: {
       key: '',
       cert: '',
     },
+  },
+  api: {
+    enabled: false,
+    authorization: 'MySuperPassword156',
   },
   whitelist: {
     enabled: false,

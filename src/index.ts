@@ -1,6 +1,5 @@
-import { readFileSync } from 'node:fs';
-import { createServer, Server } from 'node:https';
 import { Server as WebSocketServer } from 'ws';
+import createServer from './api';
 import Packet from './packets/Packet';
 import Player, { Handshake } from './player/Player';
 import getConfig, { initConfig } from './utils/config';
@@ -15,23 +14,12 @@ console.log(`  _                               _____            _        _
  | |___| |_| | | | | (_| | |     ____) | (_) | (__|   <  __/ |_ 
  |______\\__,_|_| |_|\\__,_|_|    |_____/ \\___/ \\___|_|\\_\\___|\\__|\n`);
 
-let httpsServer: Server;
-
 const config = initConfig();
-
-if (config.server.secure) {
-  httpsServer = createServer({
-    cert: readFileSync(config.server.certificates.cert),
-    key: readFileSync(config.server.certificates.key),
-  });
-
-  httpsServer.listen(config.server.port);
-}
+export const httpServer = createServer();
 
 const server = new WebSocketServer({
-  server: config.server.secure ? httpsServer : undefined,
-  port: config.server.secure ? undefined : config.server.port,
-  path: '/connect',
+  server: httpServer,
+  path: config.server.websocketPath,
 });
 
 server.on('error', (error) => {
