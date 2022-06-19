@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
+import roles from './routes/roles';
 import stats from './routes/stats';
-import uptime from './routes/uptime';
 
 export default function registerRoutes(): {
   [key: string]: (request: IncomingMessage, response: ServerResponse) => void;
@@ -11,6 +11,6 @@ export default function registerRoutes(): {
       response.end();
     },
     '/api/stats': stats,
-    '/api/uptime': uptime,
+    '/api/roles': roles,
   };
 }

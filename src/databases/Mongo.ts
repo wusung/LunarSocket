@@ -65,4 +65,8 @@ export default class Mongo extends Database {
   public async getPlayer(uuid: string): Promise<DatabasePlayer> {
     return await this.collection.findOne<DatabasePlayer>({ uuid });
   }
+
+  public async getPlayerCount(): Promise<number> {
+    return await this.collection.countDocuments();
+  }
 }

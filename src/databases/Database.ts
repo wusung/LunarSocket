@@ -9,4 +9,9 @@ export default class Database {
     console.warn('Database#getPlayer is not implemented');
     return null;
   }
+
+  public async getPlayerCount(): Promise<number> {
+    console.warn('Database#getPlayerCount is not implemented');
+    return null;
+  }
 }

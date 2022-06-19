@@ -1,14 +1,24 @@
 import { IncomingMessage, ServerResponse } from 'node:http';
+import { connectedPlayers } from '../..';
+import { DatabaseManager } from '../../databases/Manager';
 import { stats as st } from '../../utils/stats';
-import auth from '../middleware/auth';
+import method from '../middleware/method';
 
-export default function stats(
+export default async function stats(
   request: IncomingMessage,
   response: ServerResponse
-): void {
-  if (!auth(request, response)) return;
+): Promise<void> {
+  if (!method('GET', request, response)) return;
+  // if (!auth(request, response)) return;
+
+  const stats = {
+    uptime: Math.round(process.uptime()),
+    online: connectedPlayers.length,
+    onlineGraph: st,
+    uniquePlayerCount: await DatabaseManager.instance.database.getPlayerCount(),
+  };
 
   response.writeHead(200, { 'Content-Type': 'application/json' });
-  response.write(JSON.stringify(st));
+  response.write(JSON.stringify(stats));
   response.end();
 }

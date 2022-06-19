@@ -16,4 +16,8 @@ export default class InstanceStorage extends Database {
   public async getPlayer(uuid: string): Promise<DatabasePlayer> {
     return this.database.get(uuid);
   }
+
+  public async getPlayerCount(): Promise<number> {
+    return Object.keys(this.database).length;
+  }
 }

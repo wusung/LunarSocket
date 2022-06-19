@@ -61,4 +61,8 @@ export default class Redis extends Database {
       path: uuid,
     })) as unknown as DatabasePlayer;
   }
+
+  public async getPlayerCount(): Promise<number> {
+    return await this.client.dbSize();
+  }
 }
