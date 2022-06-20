@@ -74,10 +74,10 @@ export default class Player {
     this.incomingPacketHandler = new IncomingPacketHandler(this);
 
     // Yes, we are giving emotes out of nowhere
-    for (let i = 0; i < 160; i++) this.emotes.owned.fake.push(i);
+    for (let i = 0; i < 180; i++) this.emotes.owned.fake.push(i);
 
     // Yes, we're giving cosmetics out of nowhere again
-    for (let i = 1; i < 2477; i++)
+    for (let i = 1; i < 2489; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
     const handleIncomingMessage = async (data: Buffer) => {
