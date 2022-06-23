@@ -12,7 +12,7 @@ export default class ClientBanPacket extends Packet<ClientBan> {
   public write(data: ClientBan): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(ClientBanPacket.id); // Packet ID
 
     this.buf.writeInt(data.id);
@@ -22,6 +22,8 @@ export default class ClientBanPacket extends Packet<ClientBan> {
     for (const server of data.servers) {
       this.buf.writeString(server);
     }
+
+    this.buf.finish();
   }
 
   public read(): void {

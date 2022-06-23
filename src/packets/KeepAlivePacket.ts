@@ -12,7 +12,7 @@ export default class KeepAlivePacket extends Packet<KeepAlive> {
   public write(data: KeepAlive): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(KeepAlivePacket.id); // Packet ID
 
     this.buf.writeVarInt(Object.keys(data.mods).length);
@@ -22,6 +22,8 @@ export default class KeepAlivePacket extends Packet<KeepAlive> {
     }
 
     this.buf.writeString(data.game);
+
+    this.buf.finish();
   }
 
   public read(): void {

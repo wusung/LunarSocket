@@ -12,11 +12,13 @@ export default class JoinServerPacket extends Packet<JoinServer> {
   public write(data: JoinServer): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(JoinServerPacket.id); // Packet ID
 
     this.buf.writeString(data.uuid);
     this.buf.writeString(data.server);
+
+    this.buf.finish();
   }
 
   public read(): void {

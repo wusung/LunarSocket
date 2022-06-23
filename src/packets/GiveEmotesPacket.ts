@@ -12,7 +12,7 @@ export default class GiveEmotesPacket extends Packet<GiveEmotes> {
   public write(data: GiveEmotes): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(GiveEmotesPacket.id); // Packet ID
 
     this.buf.writeVarInt(data.owned.length);
@@ -22,6 +22,8 @@ export default class GiveEmotesPacket extends Packet<GiveEmotes> {
     for (const emote of data.equipped) this.buf.writeVarInt(emote);
 
     this.buf.writeBytes([0x44]); // Don't ask me why I don't fucking know yet
+
+    this.buf.finish();
   }
 
   public read(): void {

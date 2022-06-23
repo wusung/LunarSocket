@@ -12,13 +12,15 @@ export default class HostListPacket extends Packet<HostList> {
   public write(data: HostList): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(HostListPacket.id); // Packet ID
 
     this.buf.writeInt(data.hosts.length);
     for (const host of data.hosts) {
       this.buf.writeString(host);
     }
+
+    this.buf.finish();
   }
 
   public read(): void {

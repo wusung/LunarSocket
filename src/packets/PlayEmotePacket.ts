@@ -12,10 +12,12 @@ export default class PlayEmotePacket extends Packet<PlayEmote> {
   public write(data: PlayEmote): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(PlayEmotePacket.id); // Packet ID
     this.buf.writeUUID(data.uuid);
     this.buf.writeInt(data.id);
+
+    this.buf.finish();
   }
 
   public read(): void {

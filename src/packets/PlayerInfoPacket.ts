@@ -11,7 +11,7 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
   public write(data: PlayerInfo): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(PlayerInfoPacket.id); // Packet ID
 
     this.buf.writeUUID(data.uuid);
@@ -39,6 +39,8 @@ export default class PlayerInfoPacket extends Packet<PlayerInfo> {
 
     this.buf.writeInt(data.plusColor);
     this.buf.writeBoolean(data.unknownBooleanB);
+
+    this.buf.finish();
   }
 
   public read(): void {

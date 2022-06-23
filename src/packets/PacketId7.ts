@@ -12,10 +12,12 @@ export default class PacketId7 extends Packet<Id7> {
   public write(data: Id7): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(PacketId7.id); // Packet ID
 
     this.buf.writeString(JSON.stringify(data.bulk));
+
+    this.buf.finish();
   }
 
   public read(): void {

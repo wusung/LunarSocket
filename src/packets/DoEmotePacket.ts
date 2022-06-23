@@ -12,10 +12,12 @@ export default class DoEmotePacket extends Packet<DoEmote> {
   public write(data: DoEmote): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(DoEmotePacket.id); // Packet ID
 
     this.buf.writeInt(data.id);
+
+    this.buf.finish();
   }
 
   public read(): void {

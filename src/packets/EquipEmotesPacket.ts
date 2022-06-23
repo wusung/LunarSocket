@@ -12,11 +12,13 @@ export default class EquipEmotesPacket extends Packet<EquipEmotes> {
   public write(data: EquipEmotes): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(EquipEmotesPacket.id); // Packet ID
 
     this.buf.writeVarInt(data.emotes.length);
     for (const emote of data.emotes) this.buf.writeVarInt(emote);
+
+    this.buf.finish();
   }
 
   public read(): void {

@@ -12,11 +12,13 @@ export default class FriendRequestPacket extends Packet<FriendRequest> {
   public write(data: FriendRequest): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(FriendRequestPacket.id); // Packet ID
 
     this.buf.writeString(data.uuid);
     this.buf.writeString(data.name);
+
+    this.buf.finish();
   }
 
   public read(): void {

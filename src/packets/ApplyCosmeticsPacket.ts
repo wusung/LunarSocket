@@ -11,7 +11,7 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
   public write(data: ApplyCosmetics): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(ApplyCosmeticsPacket.id); // Packet ID
 
     this.buf.writeInt(data.cosmetics.length);
@@ -40,6 +40,8 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
 
     this.buf.writeInt(data.unknownInt);
     this.buf.writeBoolean(data.petFlipShoulder);
+
+    this.buf.finish();
   }
 
   public read(): void {

@@ -11,13 +11,15 @@ export default class PlayerInfoRequestPacket extends Packet<PlayerInfoRequest> {
   public write(data: PlayerInfoRequest): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(PlayerInfoRequestPacket.id); // Packet ID
 
     this.buf.writeVarInt(data.uuids.length);
     for (const uuid of data.uuids) {
       this.buf.writeUUID(uuid);
     }
+
+    this.buf.finish();
   }
 
   public read(): void {

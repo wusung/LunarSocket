@@ -12,7 +12,7 @@ export default class FriendUpdatePacket extends Packet<FriendUpdate> {
   public write(data: FriendUpdate): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(FriendUpdatePacket.id); // Packet ID
 
     this.buf.writeString(data.uuid);
@@ -20,6 +20,8 @@ export default class FriendUpdatePacket extends Packet<FriendUpdate> {
     this.buf.writeLong(data.unknownLong);
     this.buf.writeBoolean(data.unknownBoolean);
     this.buf.writeString(data.version);
+
+    this.buf.finish();
   }
 
   public read(): void {

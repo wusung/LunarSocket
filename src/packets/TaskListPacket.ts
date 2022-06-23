@@ -12,13 +12,15 @@ export default class TaskListPacket extends Packet<TaskList> {
   public write(data: TaskList): void {
     this.data = data;
 
-    this.buf = new BufWrapper();
+    this.buf = new BufWrapper(null, { oneConcat: true });
     this.buf.writeVarInt(TaskListPacket.id); // Packet ID
 
     this.buf.writeInt(data.tasks.length);
     for (const task of data.tasks) {
       this.buf.writeString(task);
     }
+
+    this.buf.finish();
   }
 
   public read(): void {
