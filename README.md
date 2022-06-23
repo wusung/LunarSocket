@@ -32,6 +32,7 @@ There are a few types of databases available:
 - `instanceStorage` - Stores the data in the Lunar Socket instance which means that the data will be deleted when the server is restarted/stopped/updated.
 - `mongo` - Stores the data in a MongoDB database.
 - `fileStorage` - Stores the data in the provided json file.
+- `Redis` - Stores the data in a Redis database; (Requires RedisJson)
 
 # 🚀 Start the server
 
