@@ -11,7 +11,7 @@ import NotificationPacket from '../packets/NotificationPacket';
 import Packet from '../packets/Packet';
 import {
   IncomingPacketHandler,
-  OutgoingPacketHandler,
+  OutgoingPacketHandler
 } from '../packets/PacketHandlers';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
 import PlayerInfoPacket from '../packets/PlayerInfoPacket';
@@ -317,6 +317,22 @@ export default class Player {
       this.fakeSocket.close(1000);
     } catch (error) {}
     removePlayer(this.uuid);
+  }
+
+  public getLatency(): Promise<number> {
+    return new Promise((resolve) => {
+      const start = Date.now();
+
+      const execute = (data: Buffer): void => {
+        if (data.toString() !== start.toString()) return;
+
+        resolve((Date.now() - start) /2);
+        this.socket.off('pong', execute);
+      };
+      this.socket.on('pong', execute);
+
+      this.socket.ping(start.toString());
+    });
   }
 
   public getDatabasePlayer(): DatabasePlayer {
