@@ -2,10 +2,15 @@
   "server": {
     "port": 80,
     "secure": false,
+    "websocketPath": "/connect",
     "certificates": {
       "key": "path/to/key",
       "cert": "path/to/cert"
     }
+  },
+  "api": {
+    "enabled": true,
+    "authorization": "password"
   },
   "whitelist": {
     "enabled": true,

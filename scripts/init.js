@@ -62,6 +62,19 @@ const prompt = require('prompt');
           return prompt.history('secure').value;
         },
       },
+      api: {
+        description: 'Enable API?',
+        default: false,
+        type: 'boolean',
+      },
+      apiAuth: {
+        description: 'API Password',
+        required: true,
+        type: 'string',
+        ask() {
+          return prompt.history('api').value;
+        },
+      },
       whitelist: {
         description: 'Do you want to enable the whitelist?',
         default: false,
