@@ -72,7 +72,6 @@ export default class Player {
     this.socket = socket;
     this.outgoingPacketHandler = new OutgoingPacketHandler(this);
     this.incomingPacketHandler = new IncomingPacketHandler(this);
-
     // Yes, we are giving emotes out of nowhere
     for (let i = 0; i < 180; i++) this.emotes.owned.fake.push(i);
 
