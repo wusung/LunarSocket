@@ -62,6 +62,9 @@ const defaultConfig = {
       redisDatabase: 0,
     },
   },
+  blacklist: {
+    list: [] as string[],
+  },
   roles: {
     default: {
       console: false,
@@ -73,6 +76,7 @@ const defaultConfig = {
     [key: string]: Role;
     default: Role;
   },
+  
 };
 
 type Config = typeof defaultConfig;

@@ -67,6 +67,8 @@ server.on('connection', async (socket, request) => {
   if (config.whitelist.enabled)
     if (!config.whitelist.list.includes(handshake.playerId))
       return socket.close(3000, 'You are not whitelisted');
+  if(config.blacklist.list.includes(handshake.playerId))
+    return socket.close(3000, 'You have been blacklisted.');
 
   // Closing the connection if the player is already connected
   if (connectedPlayers.find((p) => p.uuid === handshake.playerId))
