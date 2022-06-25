@@ -3,6 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { DatabaseManager } from '../databases/Manager';
 import logger from './logger';
+import mergeObjects from './mergeObjects';
 import { Role } from './roles';
 
 const configPath = join(process.cwd(), 'config.json');
@@ -22,11 +23,17 @@ export function initConfig(): Config {
 }
 
 export default async function getConfig(): Promise<Config> {
-  return JSON.parse(await readFile(configPath, 'utf-8'));
+  return mergeObjects(
+    defaultConfig,
+    JSON.parse(await readFile(configPath, 'utf-8'))
+  );
 }
 
 export function getConfigSync(): Config {
-  return JSON.parse(readFileSync(configPath, 'utf-8'));
+  return mergeObjects(
+    defaultConfig,
+    JSON.parse(readFileSync(configPath, 'utf-8'))
+  );
 }
 
 export async function editConfig(newConfig: Config): Promise<void> {
@@ -76,7 +83,6 @@ const defaultConfig = {
     [key: string]: Role;
     default: Role;
   },
-  
 };
 
 type Config = typeof defaultConfig;
