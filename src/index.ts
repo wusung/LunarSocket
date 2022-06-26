@@ -79,10 +79,15 @@ server.on('connection', async (socket, request) => {
   connectedPlayers.push(player);
 });
 
-export function broadcast(data: Buffer | Packet, server?: string): void {
+export function broadcast(
+  data: Buffer | Packet,
+  server?: string,
+  player?: Player
+): void {
   const playerServer = new ServerString(server);
 
   connectedPlayers.forEach((p) => {
+    if (player && p.uuid === player.uuid) return;
     if (server) {
       if (ServerString.match(playerServer, p.server)) p.writeToClient(data);
     } else p.writeToClient(data);

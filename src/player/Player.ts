@@ -11,7 +11,7 @@ import NotificationPacket from '../packets/NotificationPacket';
 import Packet from '../packets/Packet';
 import {
   IncomingPacketHandler,
-  OutgoingPacketHandler
+  OutgoingPacketHandler,
 } from '../packets/PacketHandlers';
 import PlayEmotePacket from '../packets/PlayEmotePacket';
 import PlayerInfoPacket from '../packets/PlayerInfoPacket';
@@ -238,7 +238,8 @@ export default class Player {
   public playEmote(id: number) {
     const packet = new PlayEmotePacket();
     packet.write({ uuid: this.uuid, id });
-    broadcast(packet, this.server);
+    this.writeToClient(packet);
+    broadcast(packet, this.server, this);
   }
 
   public sendConsoleMessage(message: string): void {
@@ -325,7 +326,7 @@ export default class Player {
       const execute = (data: Buffer): void => {
         if (data.toString() !== start.toString()) return;
 
-        resolve((Date.now() - start) /2);
+        resolve((Date.now() - start) / 2);
         this.socket.off('pong', execute);
       };
       this.socket.on('pong', execute);
