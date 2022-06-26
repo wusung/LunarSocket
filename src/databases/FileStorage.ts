@@ -40,7 +40,7 @@ export default class FileStorage extends Database {
   }
 
   public async getPlayer(uuid: string): Promise<DatabasePlayer> {
-    return await this.file[uuid];
+    return this.file[uuid];
   }
 
   public async getPlayerCount(): Promise<number> {
