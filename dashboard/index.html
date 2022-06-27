@@ -43,9 +43,7 @@
       </div>
       <script>
         (async () => {
-          const stats = await (
-            await fetch('https://socket.solartweaks.com/api/stats')
-          ).json();
+          const stats = await (await fetch('/api/stats')).json();
 
           document.getElementById('unique').innerText = stats.uniquePlayerCount;
 
