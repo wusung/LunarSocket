@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard | LunarSocket</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Roboto', sans-serif;
+        color: white;
+      }
+
+      body {
+        background-color: black;
+      }
+
+      p {
+        position: absolute;
+        top: 5px;
+        left: 5px;
+      }
+
+      div {
+        width: 95%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
+  </head>
+  <body>
+    <body>
+      <p>Unique player count: <span id="unique">loading...</span></p>
+      <div>
+        <canvas id="online"></canvas>
+      </div>
+      <script>
+        (async () => {
+          const stats = await (
+            await fetch('https://socket.solartweaks.com/api/stats')
+          ).json();
+
+          document.getElementById('unique').innerText = stats.uniquePlayerCount;
+
+          Chart.defaults.color = '#ffffff';
+
+          new Chart(document.getElementById('online'), {
+            type: 'line',
+            data: {
+              labels: Object.keys(stats.onlineGraph.onlinePlayers),
+              datasets: [
+                {
+                  label: 'Online players',
+                  data: Object.values(stats.onlineGraph.onlinePlayers),
+                  tension: 0.1,
+                  fill: true,
+                  borderColor: '#4287f5',
+                  backgroundColor: 'rgba(66, 135, 245, 0.1)',
+                },
+              ],
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                },
+              },
+              scaleFontColor: '#ffffff',
+            },
+          });
+        })();
+      </script>
+    </body>
+  </body>
+</html>
