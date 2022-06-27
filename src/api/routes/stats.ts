@@ -18,7 +18,10 @@ export default async function stats(
     uniquePlayerCount: await DatabaseManager.instance.database.getPlayerCount(),
   };
 
-  response.writeHead(200, { 'Content-Type': 'application/json' });
+  response.writeHead(200, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+  });
   response.write(JSON.stringify(stats));
   response.end();
 }
