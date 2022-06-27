@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --write src/**/*.ts --config .prettierrc",
     "build": "tsc",
     "start": "node .",
     "init": "node scripts/init.js",
@@ -41,6 +42,7 @@
   "devDependencies": {
     "@types/node": "^17.0.23",
     "@types/ws": "^8.5.3",
+    "prettier": "^2.7.1",
     "typescript": "^4.6.3"
   }
 }
