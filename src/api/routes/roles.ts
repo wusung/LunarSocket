@@ -6,9 +6,8 @@ const rolesRouter = Router();
 
 rolesRouter.patch(
   '/',
+  auth,
   (request: Request<{}, {}, RolesRequestBody>, response) => {
-    if (!auth(request, response)) return;
-
     request.on('end', async () => {
       if (
         typeof request.body.uuid !== 'string' ||
