@@ -1,22 +1,15 @@
-import * as http from 'node:http';
-import * as https from 'node:https';
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
 import logger from '../utils/logger';
 import registerRoutes from './routes';
 
-export default function initAPI(server: http.Server | https.Server): void {
+export default function initAPI(): express.Express {
   logger.log('Initializing API...');
-  const routes = registerRoutes();
-  server.on('request', (request, response) => {
-    // const route = routes[request.url];
-    let route;
-    for (const r in routes) {
-      if (request.url.startsWith(r)) route = routes[r];
-    }
+  const app = express();
 
-    if (route) route(request, response);
-    else {
-      response.writeHead(404, { 'Content-Type': 'text/plain' });
-      response.end();
-    }
-  });
+  app.disable('x-powered-by');
+  app.use(bodyParser.json());
+  registerRoutes(app);
+
+  return app;
 }

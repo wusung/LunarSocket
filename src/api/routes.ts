@@ -1,18 +1,13 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
-import { dashboard } from './routes/dashboard';
-import roles from './routes/roles';
-import stats from './routes/stats';
+import { Express } from 'express';
+import dashboard from './routes/dashboard';
+import rolesRouter from './routes/roles';
+import statsRouter from './routes/stats';
 
-export default function registerRoutes(): {
-  [key: string]: (request: IncomingMessage, response: ServerResponse) => void;
-} {
-  return {
-    '/': (request, response) => {
-      response.writeHead(200, { 'Content-Type': 'text/html' });
-      response.end();
-    },
-    '/api/stats': stats,
-    '/api/roles': roles,
-    '/dashboard': dashboard,
-  };
+export default function registerRoutes(app: Express): void {
+  app.use('/api/stats', statsRouter);
+  app.use('/api/roles', rolesRouter);
+
+  app.use('/dashboard', dashboard);
+
+  app.get('/', (request, response) => response.sendStatus(200));
 }

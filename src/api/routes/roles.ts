@@ -1,51 +1,42 @@
-import { IncomingMessage, ServerResponse } from 'node:http';
+import { Request, Router } from 'express';
 import { connectedPlayers } from '../..';
 import auth from '../middleware/auth';
-import method from '../middleware/method';
 
-export default async function roles(
-  request: IncomingMessage,
-  response: ServerResponse
-): Promise<void> {
-  if (!method('PATCH', request, response)) return;
-  if (!auth(request, response)) return;
+const rolesRouter = Router();
 
-  let data = '';
-  request.on('data', (chunk) => {
-    data += chunk;
-  });
+rolesRouter.patch(
+  '/',
+  (request: Request<{}, {}, RolesRequestBody>, response) => {
+    if (!auth(request, response)) return;
 
-  request.on('end', async () => {
-    let body: RolesRequestBody;
+    request.on('end', async () => {
+      if (
+        typeof request.body.uuid !== 'string' ||
+        typeof request.body.role !== 'string'
+      )
+        return response.sendStatus(400);
 
-    try {
-      body = JSON.parse(data);
+      const player = connectedPlayers.find((p) => p.uuid === request.body.uuid);
+      if (!player) {
+        response.writeHead(404, { 'Content-Type': 'text/plain' });
+        return void response.end('Player not found or not online');
+      }
 
-      if (typeof body.uuid !== 'string' || typeof body.role !== 'string')
-        throw new Error('Invalid request body');
-    } catch (error) {
-      response.writeHead(400, { 'Content-Type': 'text/plain' });
-      return void response.end('Invalid JSON');
-    }
+      const oldRole = player.role.name;
+      await player.setRole(request.body.role);
 
-    const player = connectedPlayers.find((p) => p.uuid === body.uuid);
-    if (!player) {
-      response.writeHead(404, { 'Content-Type': 'text/plain' });
-      return void response.end('Player not found or not online');
-    }
+      if (oldRole === player.role.name) {
+        response.writeHead(200, { 'Content-Type': 'text/plain' });
+        return void response.end('No change');
+      } else {
+        response.writeHead(200, { 'Content-Type': 'text/plain' });
+        return void response.end('OK');
+      }
+    });
+  }
+);
 
-    const oldRole = player.role.name;
-    await player.setRole(body.role);
-
-    if (oldRole === player.role.name) {
-      response.writeHead(200, { 'Content-Type': 'text/plain' });
-      return void response.end('No change');
-    } else {
-      response.writeHead(200, { 'Content-Type': 'text/plain' });
-      return void response.end('OK');
-    }
-  });
-}
+export default rolesRouter;
 
 interface RolesRequestBody {
   uuid: string;
