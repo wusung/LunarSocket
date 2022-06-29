@@ -153,6 +153,30 @@ const prompt = require('prompt');
     }
   );
 
+  const dashboardWd = join(__dirname, '..', 'dashboard');
+
+  if (results.api) {
+    await execute(
+      'npm',
+      ['install'],
+      {
+        start: 'Installing required dashboard dependencies...',
+        end: "All dashboard's dependencies installed",
+      },
+      dashboardWd
+    );
+
+    await execute(
+      'npm',
+      ['run', 'build'],
+      {
+        start: 'Building dashboard source code...',
+        end: "Dashboard's source code built",
+      },
+      dashboardWd
+    );
+  }
+
   console.log(
     'LunarSocket installation process finished! For advanced configuration make sure to edit the config.json file'
   );

@@ -1,4 +1,5 @@
 import { connectedPlayers } from '..';
+import events from '../utils/events';
 import Command from './Command';
 
 const command = new Command('role', 'Manage roles');
@@ -38,6 +39,10 @@ command.setHandler(async (player, command, args) => {
       player.sendConsoleMessage(
         `§a${target} has been given the role ${foundTarget.role.name}`
       );
+      events.push({
+        type: 'role-set',
+        value: `${foundTarget.username},${foundTarget.role.name}`,
+      });
       break;
 
     default:

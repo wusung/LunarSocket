@@ -83,6 +83,10 @@ const defaultConfig = {
     [key: string]: Role;
     default: Role;
   },
+  commands: {
+    stop: '',
+    restart: '',
+  },
 };
 
 type Config = typeof defaultConfig;

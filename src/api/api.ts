@@ -1,4 +1,5 @@
 import * as bodyParser from 'body-parser';
+import * as cors from 'cors';
 import * as express from 'express';
 import logger from '../utils/logger';
 import registerRoutes from './routes';
@@ -9,6 +10,7 @@ export default function initAPI(): express.Express {
 
   app.disable('x-powered-by');
   app.use(bodyParser.json());
+  app.use(cors());
   registerRoutes(app);
 
   return app;

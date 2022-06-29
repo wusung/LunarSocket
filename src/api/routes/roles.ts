@@ -1,5 +1,6 @@
 import { Request, Router } from 'express';
 import { connectedPlayers } from '../..';
+import events from '../../utils/events';
 import auth from '../middleware/auth';
 
 const rolesRouter = Router();
@@ -17,19 +18,20 @@ rolesRouter.patch(
 
       const player = connectedPlayers.find((p) => p.uuid === request.body.uuid);
       if (!player) {
-        response.writeHead(404, { 'Content-Type': 'text/plain' });
-        return void response.end('Player not found or not online');
+        return response.sendStatus(404);
       }
 
       const oldRole = player.role.name;
       await player.setRole(request.body.role);
+      events.push({
+        type: 'role-set',
+        value: `${player.username},${player.role.name}`,
+      });
 
       if (oldRole === player.role.name) {
-        response.writeHead(200, { 'Content-Type': 'text/plain' });
-        return void response.end('No change');
+        return response.sendStatus(200);
       } else {
-        response.writeHead(200, { 'Content-Type': 'text/plain' });
-        return void response.end('OK');
+        return response.sendStatus(200);
       }
     });
   }

@@ -55,5 +55,9 @@
       "plusColor": "0x00ff00",
       "permissions": []
     }
+  },
+  "commands": {
+    "stop": "sudo systemctl stop lunarsocket",
+    "restart": "sudo systemctl restart lunarsocket"
   }
 }

@@ -17,6 +17,7 @@ import PlayEmotePacket from '../packets/PlayEmotePacket';
 import PlayerInfoPacket from '../packets/PlayerInfoPacket';
 import CallQueue from '../utils/CallQueue';
 import getConfig from '../utils/config';
+import events from '../utils/events';
 import logger from '../utils/logger';
 import { getRole, Role } from '../utils/roles';
 
@@ -165,6 +166,7 @@ export default class Player {
       );
       this.commandHandler = new CommandHandler(this);
       logger.log(this.username, 'connected!');
+      events.push({ type: 'login', value: this.username });
 
       this.fakeSocket.once(
         'message',
@@ -310,6 +312,7 @@ export default class Player {
     if (this.disconnected) return;
     this.disconnected = true;
     logger.log(this.username, 'disconnected!');
+    events.push({ type: 'logout', value: this.username });
     try {
       this.socket.close(1000);
     } catch (error) {}
@@ -319,7 +322,8 @@ export default class Player {
     removePlayer(this.uuid);
   }
 
-  public getLatency(): Promise<number> {
+  public getLatency(lunar?: boolean): Promise<number> {
+    const socket = lunar ? this.fakeSocket : this.socket;
     return new Promise((resolve) => {
       const start = Date.now();
 
@@ -327,11 +331,11 @@ export default class Player {
         if (data.toString() !== start.toString()) return;
 
         resolve((Date.now() - start) / 2);
-        this.socket.off('pong', execute);
+        socket.off('pong', execute);
       };
-      this.socket.on('pong', execute);
+      socket.on('pong', execute);
 
-      this.socket.ping(start.toString());
+      socket.ping(start.toString());
     });
   }
 

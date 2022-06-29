@@ -27,6 +27,10 @@ function onlineListener(): void {
   }, 1 * 60 * 1000); // Every minutes
 }
 
+export async function getLunarLatency() {
+  return await connectedPlayers[0]?.getLatency(true);
+}
+
 export default function startStats(): void {
   onlineListener();
 }

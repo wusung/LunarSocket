@@ -1,4 +1,5 @@
 import { Express } from 'express';
+import actionRouter from './routes/action';
 import dashboard from './routes/dashboard';
 import keyRouter from './routes/key';
 import rolesRouter from './routes/roles';
@@ -8,6 +9,7 @@ export default function registerRoutes(app: Express): void {
   app.use('/api/stats', statsRouter);
   app.use('/api/roles', rolesRouter);
   app.use('/api/key', keyRouter);
+  app.use('/api/action', actionRouter);
 
   app.use('/dashboard', dashboard);
 

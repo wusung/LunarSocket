@@ -12,4 +12,5 @@ export default function auth(
 
   if (!header) return response.sendStatus(401);
   else if (header === authorization) next();
+  else return response.sendStatus(401);
 }

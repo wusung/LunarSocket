@@ -2,12 +2,12 @@ const { createSpinner } = require('nanospinner');
 const { spawn } = require('node:child_process');
 const { writeFile: wf } = require('node:fs/promises');
 
-function execute(command, args, texts) {
+function execute(command, args, texts, cwd = process.cwd()) {
   return new Promise((resolve) => {
     const spinner = createSpinner(texts.start).start();
 
     const proc = spawn(command, args, {
-      cwd: process.cwd(),
+      cwd,
     });
 
     proc.on('exit', (code) => {

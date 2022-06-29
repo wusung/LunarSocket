@@ -3,7 +3,7 @@ import auth from '../middleware/auth';
 
 const keyRouter = Router();
 
-keyRouter.post('/', auth, (request, response) => {
+keyRouter.get('/', auth, (request, response) => {
   response.sendStatus(200);
 });
 
