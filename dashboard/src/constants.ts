@@ -1,5 +1,5 @@
 // Should be empty for production
-export const HOST = 'http://localhost:25565';
+export const HOST = '';
 
 export const ENDPOINTS = {
   KEY: '/api/key',
