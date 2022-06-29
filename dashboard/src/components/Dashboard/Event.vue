@@ -42,6 +42,11 @@ export default defineComponent({
         const values = this.$props.value.split(',');
         this.text = `${values[0]}'s role: ${values[1]}`;
         break;
+      case 'start':
+        this.icon = 'fa-solid fa-rocket';
+        this.color = '52, 103, 235';
+        this.text = `Server started on ${this.$props.value}`;
+        break;
       default:
         break;
     }
@@ -67,5 +72,6 @@ div.event-item > i {
 div.event-item > h4 {
   padding: 5px;
   font-weight: normal;
+  font-size: 16px;
 }
 </style>

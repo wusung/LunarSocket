@@ -20,14 +20,17 @@ setInterval(async () => {
 }, 10000);
 
 statsRouter.get('/', auth, async (request, response) => {
+  const averageConnected = Math.round(
+    Object.values(st.onlinePlayers).reduce((p, c) => p + c, 0) /
+      Object.values(st.onlinePlayers).length
+  );
+
   const stats = {
     uptime: Math.round(process.uptime()),
     onlinePlayers: connectedPlayers.length,
     uniquePlayers: await DatabaseManager.instance.database.getPlayerCount(),
     lunarLatency: (await getLunarLatency()) ?? 0,
-    averageConnected:
-      Object.values(st.onlinePlayers).reduce((p, c) => p + c, 0) /
-      Object.values(st.onlinePlayers).length,
+    averageConnected: isNaN(averageConnected) ? 0 : averageConnected,
     events: [...events].reverse(),
     onlineGraph: st.onlinePlayers,
     rankRepartition: {

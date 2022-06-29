@@ -33,7 +33,7 @@
       </div>
       <div id="events-content">
         <Event
-          v-for="event in $store.state.stats.events"
+          v-for="event in [...$store.state.stats.events].slice(0, 75)"
           :key="event"
           :type="event.type"
           :value="event.value"

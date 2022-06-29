@@ -1,4 +1,3 @@
-import { writeFile } from 'node:fs/promises';
 import { connectedPlayers } from '..';
 
 export const stats = {
@@ -14,16 +13,6 @@ function onlineListener(): void {
     setTimeout(() => {
       delete stats.onlinePlayers[key];
     }, 24 * 60 * 60 * 1000);
-
-    let csv = 'Time, Online Players\n';
-    for (const time in stats.onlinePlayers) {
-      if (Object.prototype.hasOwnProperty.call(stats.onlinePlayers, time)) {
-        const count = stats.onlinePlayers[time];
-        csv += `${time},${count}\n`;
-      }
-    }
-
-    await writeFile('stats.csv', csv, 'utf8');
   }, 1 * 60 * 1000); // Every minutes
 }
 

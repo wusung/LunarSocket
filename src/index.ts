@@ -3,6 +3,7 @@ import createServer from './api';
 import Packet from './packets/Packet';
 import Player, { Handshake } from './player/Player';
 import getConfig, { initConfig } from './utils/config';
+import events from './utils/events';
 import logger from './utils/logger';
 import ServerString from './utils/ServerString';
 import startStats from './utils/stats';
@@ -28,6 +29,13 @@ server.on('error', (error) => {
 
 server.on('listening', () => {
   logger.log(`Server listening on port ${config.server.port}`);
+  const date = new Date();
+  events.push({
+    type: 'start',
+    value: `${date.getHours()}:${date.getMinutes()} (${
+      date.getMonth() + 1
+    }/${date.getDate()})`,
+  });
 });
 
 server.on('connection', async (socket, request) => {
