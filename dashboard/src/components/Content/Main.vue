@@ -38,6 +38,7 @@
           :type="event.type"
           :value="event.value"
         />
+        <p>Only showing the first 75 events<br />for your browser's sake</p>
       </div>
     </div>
     <div id="online" class="card">
@@ -324,6 +325,13 @@ div#events-content {
   overflow-y: scroll;
   align-items: center;
   height: 95%;
+  text-align: center;
+}
+
+div#events-content > p {
+  margin-top: 15px;
+  font-size: 14px;
+  line-height: 16px;
 }
 
 div#events-content::-webkit-scrollbar {
