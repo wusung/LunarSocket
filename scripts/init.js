@@ -3,6 +3,8 @@ const { readFileSync } = require('node:fs');
 const { join } = require('node:path');
 const prompt = require('prompt');
 
+const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
 (async () => {
   console.log(
     "Welcome to the LunarSocket install process, if you are in setup mode\nyou'll be asked a few questions to setup LunarSocket.\n"
@@ -13,12 +15,12 @@ const prompt = require('prompt');
     end: 'Local copy up to date',
   });
 
-  await execute('npm', ['install'], {
+  await execute(npm, ['install'], {
     start: 'Installing required dependencies...',
     end: 'All dependencies installed',
   });
 
-  await execute('npm', ['run', 'build'], {
+  await execute(npm, ['run', 'build'], {
     start: 'Building source code...',
     end: 'Source code built',
   });
@@ -157,7 +159,7 @@ const prompt = require('prompt');
 
   if (results.api) {
     await execute(
-      'npm',
+      npm,
       ['install'],
       {
         start: 'Installing required dashboard dependencies...',
@@ -167,7 +169,7 @@ const prompt = require('prompt');
     );
 
     await execute(
-      'npm',
+      npm,
       ['run', 'build'],
       {
         start: 'Building dashboard source code...',
