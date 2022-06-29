@@ -247,7 +247,8 @@ Play the emote animation for someone
 ```js
 {
   uuid: 'UUID',
-  id: 'int'
+  id: 'int',
+  metadata: 'int'
 }
 ```
 

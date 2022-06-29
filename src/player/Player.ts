@@ -76,7 +76,7 @@ export default class Player {
     for (let i = 0; i < 180; i++) this.emotes.owned.fake.push(i);
 
     // Yes, we're giving cosmetics out of nowhere again
-    for (let i = 1; i < 2515; i++)
+    for (let i = 1; i < 2560; i++)
       this.cosmetics.fake.push({ id: i, equipped: false });
 
     const handleIncomingMessage = async (data: Buffer) => {
@@ -235,9 +235,9 @@ export default class Player {
     this.writeToClient(packet);
   }
 
-  public playEmote(id: number) {
+  public playEmote(id: number, metadata = 0) {
     const packet = new PlayEmotePacket();
-    packet.write({ uuid: this.uuid, id });
+    packet.write({ uuid: this.uuid, id, metadata });
     this.writeToClient(packet);
     broadcast(packet, this.server, this);
   }

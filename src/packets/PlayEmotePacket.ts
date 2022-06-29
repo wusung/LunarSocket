@@ -16,6 +16,7 @@ export default class PlayEmotePacket extends Packet<PlayEmote> {
     this.buf.writeVarInt(PlayEmotePacket.id); // Packet ID
     this.buf.writeUUID(data.uuid);
     this.buf.writeInt(data.id);
+    this.buf.writeInt(data.metadata);
 
     this.buf.finish();
   }
@@ -24,6 +25,7 @@ export default class PlayEmotePacket extends Packet<PlayEmote> {
     this.data = {
       uuid: this.buf.readUUID(),
       id: this.buf.readInt(),
+      metadata: this.buf.readInt(),
     };
   }
 }
@@ -31,4 +33,5 @@ export default class PlayEmotePacket extends Packet<PlayEmote> {
 interface PlayEmote {
   uuid: string;
   id: number;
+  metadata: number;
 }
