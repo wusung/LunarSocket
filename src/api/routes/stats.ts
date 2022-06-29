@@ -16,7 +16,7 @@ setInterval(async () => {
   currentCpuUsage = await cpu.usage(5000);
 
   const space = await checkDiskSpace(process.cwd());
-  diskSpace = [space.free, space.size];
+  diskSpace = [space.size - space.free, space.size];
 }, 10000);
 
 statsRouter.get('/', auth, async (request, response) => {
