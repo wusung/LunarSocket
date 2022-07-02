@@ -16,10 +16,13 @@ You can see Lunar Client protocol detailed [here](https://github.com/Solar-Tweak
 ```bash
 $ git clone https://github.com/Solar-Tweaks/LunarSocket # Clone repo
 $ cd LunarSocket # Go to LunarSocket folder
-$ npm init # Walk you through creating a package.json file.
 $ npm install # Install dependencies
-$ npm update # Check for updates
 $ npm run build # Build the project
+
+# For the dashboard
+$ cd dashboard # Go to the dashboard folder
+$ npm install # Install dependencies
+$ npm run build
 ```
 
 # 💻 Installation using Script
@@ -27,13 +30,14 @@ $ npm run build # Build the project
 ```bash
 $ git clone https://github.com/Solar-Tweaks/LunarSocket # Clone repo
 $ cd LunarSocket # Go to LunarSocket folder
-$ node .\scripts\init.js # Execute the setup script
+$ npm install # Install dependencies
+$ npm run init # Execute the init script
 ```
 
 or
 
 ```bash
-git clone https://github.com/Solar-Tweaks/LunarSocket && cd LunarSocket && node .\scripts\init.js
+git clone https://github.com/Solar-Tweaks/LunarSocket && cd LunarSocket && npm install && npm run init
 # Do the script installation but with just 1 command
 ```
 
