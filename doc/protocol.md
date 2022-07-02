@@ -11,7 +11,7 @@
 | 8         | [PlayerInfo](#playerinfo---8)                                                                 | Client   |
 | 9         | FriendRequest ([C](#friendrequest-clientbound---9)\|[S](#friendrequest-serverbound---9))      | Both     |
 | 16        | [Unknown](#unknown---16)                                                                      | Unknown  |
-| 17        | [Unknown](#unknown---17)                                                                      | Unknown  |
+| 17        | [RemoveFriend](#removefriend---17)                                                            | Server   |
 | 18        | [FriendUpdate](#friendupdate---18)                                                            | Client   |
 | 20        | [ApplyCosmetics](#applycosmetics---20)                                                        | Server   |
 | 21        | FriendResponse ([C](#friendresponse-clientbound---21)\|[S](#friendresponse-serverbound---21)) | Both     |
@@ -360,6 +360,18 @@ Note: _The `uuid` field is a string and not an UUID! This is not a mistake_
 
 See [implementation](../src/packets/FriendRequestPacket.ts)
 
+## RemoveFriend - `17`
+
+Sent when you remove a friend from your friendlist
+
+```js
+{
+  uuid: 'string';
+}
+```
+
+See [implementation](../src/packets/RemoveFriendPacket.ts)
+
 ## ApplyCosmetics - `20`
 
 Sent when you equip a cosmetic or change ClothCloak state
@@ -550,18 +562,6 @@ See [implementation](../src/packets/HostListPacket.ts)
 ```
 
 See [implementation](../src/packets/PacketId16.ts)
-
-## Unknown - `17`
-
-??
-
-```js
-{
-  uuid: 'string';
-}
-```
-
-See [implementation](../src/packets/PacketId17.ts)
 
 ## Unknown - `22`
 
