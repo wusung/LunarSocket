@@ -20,8 +20,21 @@ $ npm install # Install dependencies
 $ npm run build # Build the project
 ```
 
-# 🔧 Configuration
+# 💻 Installation using Script
+```bash
+$ git clone https://github.com/Solar-Tweaks/LunarSocket # Clone repo
+$ cd LunarSocket # Go to LunarSocket folder
+$ node .\scripts\init.js # Execute the setup script
+```
+or
 
+``` bash
+git clone https://github.com/Solar-Tweaks/LunarSocket && cd LunarSocket && node .\scripts\init.js
+# Do the script installation but with just 1 command
+```
+
+
+# 🔧 Configuration
 Open the `config.example.jsonc` file and edit the values
 Once you have edited the file save it as `config.json` and start the server.
 
