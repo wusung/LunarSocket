@@ -21,6 +21,10 @@ import HostListRequestPacket from './HostListRequest';
 import JoinServerPacket from './JoinServerPacket';
 import KeepAlivePacket from './KeepAlivePacket';
 import NotificationPacket from './NotificationPacket';
+import PacketId16 from './PacketId16';
+import PacketId17 from './PacketId17';
+import PacketId22 from './PacketId22';
+import PacketId24 from './PacketId24';
 import PacketId7 from './PacketId7';
 import PlayEmotePacket from './PlayEmotePacket';
 import PlayerInfoPacket from './PlayerInfoPacket';
@@ -44,6 +48,12 @@ const OutgoingPackets = {
   clientBan: ClientBanPacket,
   friendUpdate: FriendUpdatePacket,
   joinServer: JoinServerPacket,
+
+  // Unknown packets
+  PacketId16,
+  PacketId17,
+  PacketId22,
+  PacketId24,
 };
 
 // Outgoing is when a packet is sent by the server to the client
@@ -101,6 +111,12 @@ const IncomingPackets = {
   keepAlive: KeepAlivePacket,
   taskList: TaskListPacket,
   hostList: HostListPacket,
+
+  // Unknown packets
+  PacketId16,
+  PacketId17,
+  PacketId22,
+  PacketId24,
 };
 
 // Incoming is when a packet is sent by the client to the server

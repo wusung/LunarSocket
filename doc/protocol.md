@@ -10,13 +10,13 @@
 | 7         | [Unknown](#unknown---7)                                                                       | Client   |
 | 8         | [PlayerInfo](#playerinfo---8)                                                                 | Client   |
 | 9         | FriendRequest ([C](#friendrequest-clientbound---9)\|[S](#friendrequest-serverbound---9))      | Both     |
-| 16        |                                                                                               |          |
-| 17        |                                                                                               |          |
+| 16        | [Unknown](#unknown---16)                                                                      | Unknown  |
+| 17        | [Unknown](#unknown---17)                                                                      | Unknown  |
 | 18        | [FriendUpdate](#friendupdate---18)                                                            | Client   |
 | 20        | [ApplyCosmetics](#applycosmetics---20)                                                        | Server   |
 | 21        | FriendResponse ([C](#friendresponse-clientbound---21)\|[S](#friendresponse-serverbound---21)) | Both     |
-| 22        |                                                                                               |          |
-| 24        |                                                                                               |          |
+| 22        | [Unknown](#unknown---22)                                                                      | Unknown  |
+| 24        | [Unknown](#unknown---24)                                                                      | Unknown  |
 | 25        |                                                                                               |          |
 | 33        | [ForceCrash](#forcecrash---33)                                                                | Client   |
 | 35        | [TaskListRequest](#tasklistrequest---35)                                                      | Client   |
@@ -534,3 +534,56 @@ See [implementation](../src/packets/HostListPacket.ts)
 ```
 
 </details>
+
+# Unknown packets
+
+## Unknown - `16`
+
+??
+
+```js
+{
+  uuid: 'string',
+  name: 'string',
+  unknownBoolean: 'boolean'
+}
+```
+
+See [implementation](../src/packets/PacketId16.ts)
+
+## Unknown - `17`
+
+??
+
+```js
+{
+  uuid: 'string';
+}
+```
+
+See [implementation](../src/packets/PacketId17.ts)
+
+## Unknown - `22`
+
+??
+
+```js
+{
+  unknownBoolean: 'boolean';
+}
+```
+
+See [implementation](../src/packets/PacketId22.ts)
+
+## Unknown - `24`
+
+??
+
+```js
+{
+  id: 'int',
+  value: 'string'
+}
+```
+
+See [implementation](../src/packets/PacketId24.ts)
