@@ -22,13 +22,13 @@ import JoinServerPacket from './JoinServerPacket';
 import KeepAlivePacket from './KeepAlivePacket';
 import NotificationPacket from './NotificationPacket';
 import PacketId16 from './PacketId16';
-import PacketId17 from './PacketId17';
 import PacketId22 from './PacketId22';
 import PacketId24 from './PacketId24';
 import PacketId7 from './PacketId7';
 import PlayEmotePacket from './PlayEmotePacket';
 import PlayerInfoPacket from './PlayerInfoPacket';
 import PlayerInfoRequestPacket from './PlayerInfoRequestPacket';
+import RemoveFriendPacket from './RemoveFriendPacket';
 import TaskListPacket from './TaskListPacket';
 import TaskListRequestPacket from './TaskListRequestPacket';
 
@@ -51,7 +51,6 @@ const OutgoingPackets = {
 
   // Unknown packets
   PacketId16,
-  PacketId17,
   PacketId22,
   PacketId24,
 };
@@ -111,10 +110,10 @@ const IncomingPackets = {
   keepAlive: KeepAlivePacket,
   taskList: TaskListPacket,
   hostList: HostListPacket,
+  removeFriendPacket: RemoveFriendPacket,
 
   // Unknown packets
   PacketId16,
-  PacketId17,
   PacketId22,
   PacketId24,
 };
