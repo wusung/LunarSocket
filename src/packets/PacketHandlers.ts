@@ -1,7 +1,9 @@
 import BufWrapper from '@minecraft-js/bufwrapper';
 import { EventEmitter } from 'node:events';
 import TypedEventEmitter from 'typed-emitter';
+import { isProduction } from '..';
 import Player from '../player/Player';
+import logger from '../utils/logger';
 import ApplyCosmeticsPacket from './ApplyCosmeticsPacket';
 import ClientBanPacket from './ClientBanPacket';
 import ConsoleMessagePacket from './ConsoleMessagePacket';
@@ -62,9 +64,11 @@ export class OutgoingPacketHandler extends (EventEmitter as new () => TypedEvent
     const Packet = OutgoingPacketHandler.packets.find((p) => p.id === id);
 
     if (!Packet) {
-      // logger.warn('Unknown packet id (outgoing):', id, data.toString('hex'));
+      if (!isProduction)
+        logger.warn('Unknown packet id (outgoing):', id, data.toString('hex'));
       return this.player.writeToClient(data);
-    }
+    } else if (!isProduction)
+      logger.debug(`Received packet id ${id} (${Packet.name}) from server`);
 
     const packet = new Packet(buf);
     packet.read();
@@ -117,9 +121,10 @@ export class IncomingPacketHandler extends (EventEmitter as new () => TypedEvent
     const Packet = IncomingPacketHandler.packets.find((p) => p.id === id);
 
     if (!Packet) {
-      // logger.warn('Unknown packet id (incoming):', id, data);
+      if (!isProduction) logger.warn('Unknown packet id (incoming):', id, data);
       return this.player.writeToServer(data);
-    }
+    } else if (!isProduction)
+      logger.debug(`Sending packet id ${id} (${Packet.name}) to client`);
 
     const packet = new Packet(buf);
     packet.read();
