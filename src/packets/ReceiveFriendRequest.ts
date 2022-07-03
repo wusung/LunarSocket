@@ -2,18 +2,18 @@ import BufWrapper from '@minecraft-js/bufwrapper';
 
 import Packet from './Packet';
 
-export default class PacketId16 extends Packet<Id16> {
+export default class ReceiveFriendRequestPacket extends Packet<ReceiveFriendRequest> {
   public static id = 16;
 
   public constructor(buf?: BufWrapper) {
     super(buf);
   }
 
-  public write(data: Id16): void {
+  public write(data: ReceiveFriendRequest): void {
     this.data = data;
 
     this.buf = new BufWrapper(null, { oneConcat: true });
-    this.buf.writeVarInt(PacketId16.id); // Packet ID
+    this.buf.writeVarInt(ReceiveFriendRequestPacket.id); // Packet ID
 
     this.buf.writeString(data.uuid);
     this.buf.writeString(data.name);
@@ -31,7 +31,7 @@ export default class PacketId16 extends Packet<Id16> {
   }
 }
 
-interface Id16 {
+interface ReceiveFriendRequest {
   uuid: string;
   name: string;
   unknownBoolean: boolean;
