@@ -1,5 +1,5 @@
 // Should be empty for production
-export const HOST = 'https://socket.solartweaks.com';
+export const HOST = '';
 
 export const ENDPOINTS = {
   KEY: '/api/key',
