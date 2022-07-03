@@ -29,7 +29,7 @@ rolesRouter.patch(
       });
 
       if (oldRole === player.role.name) {
-        return response.sendStatus(200);
+        return response.sendStatus(304);
       } else {
         return response.sendStatus(200);
       }
