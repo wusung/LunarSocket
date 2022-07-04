@@ -17,7 +17,7 @@ export default class ReceiveFriendRequestPacket extends Packet<ReceiveFriendRequ
 
     this.buf.writeString(data.uuid);
     this.buf.writeString(data.name);
-    this.buf.writeBoolean(data.unknownBoolean);
+    this.buf.writeBoolean(data.isAdded);
 
     this.buf.finish();
   }
@@ -26,7 +26,7 @@ export default class ReceiveFriendRequestPacket extends Packet<ReceiveFriendRequ
     this.data = {
       uuid: this.buf.readString(),
       name: this.buf.readString(),
-      unknownBoolean: this.buf.readBoolean(),
+      isAdded: this.buf.readBoolean(),
     };
   }
 }
@@ -34,5 +34,5 @@ export default class ReceiveFriendRequestPacket extends Packet<ReceiveFriendRequ
 interface ReceiveFriendRequest {
   uuid: string;
   name: string;
-  unknownBoolean: boolean;
+  isAdded: boolean;
 }

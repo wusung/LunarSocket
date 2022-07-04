@@ -16,7 +16,7 @@
 | 20        | [ApplyCosmetics](#applycosmetics---20)                                                        | Server   |
 | 21        | FriendResponse ([C](#friendresponse-clientbound---21)\|[S](#friendresponse-serverbound---21)) | Both     |
 | 22        | [ToggleFriendRequests](#togglefriendrequests---22)                                            | Server   |
-| 24        | [Unused](#unused---24)                                                                        | Unknown  |
+| 24        | [ConstantChanged](#constantchanged---24)                                                      | Server   |
 | 25        | [Unused](#unused---25)                                                                        | Unknown  |
 | 33        | [ForceCrash](#forcecrash---33)                                                                | Client   |
 | 35        | [TaskListRequest](#tasklistrequest---35)                                                      | Client   |
@@ -190,7 +190,7 @@ Sent to the client by the server when you receive a friend request
 {
   uuid: 'string',
   name: 'string',
-  unknownBoolean: 'boolean'
+  isAdded: 'boolean'
 }
 ```
 
@@ -441,6 +441,21 @@ Sent by the client when you toggle your friend requests (enable or disable them)
 
 See [implementation](../src/packets/ToggleFriendRequestsPacket.ts)
 
+## ConstantChanged - `24`
+
+Sent to socket when a known good constant has been changed in the client, for example the reach constant.
+
+Note: **Packet is unused today**
+
+```js
+{
+  id: 'int',
+  value: 'string'
+}
+```
+
+See [implementation](../src/packets/ConstantChanged.ts)
+
 ## TaskList - `36`
 
 Packet containing the output of the `tasklist.exe` program on Windows..
@@ -599,19 +614,6 @@ See [implementation](../src/packets/HostListPacket.ts)
 </details>
 
 # Unused packets
-
-## Unused - `24`
-
-??
-
-```js
-{
-  id: 'int',
-  value: 'string'
-}
-```
-
-See [implementation](../src/packets/PacketId24.ts)
 
 ## Unused - `25`
 
