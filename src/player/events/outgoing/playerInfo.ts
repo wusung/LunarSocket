@@ -26,6 +26,7 @@ export default function (player: Player, packet: PlayerInfoPacket): void {
     newPacket.write({
       ...packet.data,
       ...player.getPlayerInfo(),
+      cosmetics: [...player.cosmetics.fake, ...player.cosmetics.owned],
     });
 
     player.lastPlayerInfo = newPacket;
