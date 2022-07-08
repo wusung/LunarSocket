@@ -3,6 +3,7 @@ import actionRouter from './routes/action';
 import broadcastRouter from './routes/broadcast';
 import chatMessageRouter from './routes/chatMessage';
 import dashboard from './routes/dashboard';
+import displayColorRouter from './routes/displayColor';
 import keyRouter from './routes/key';
 import playersRouter from './routes/players';
 import rolesRouter from './routes/roles';
@@ -16,6 +17,7 @@ export default function registerRoutes(app: Express): void {
   app.use('/api/broadcast', broadcastRouter);
   app.use('/api/chatMessage', chatMessageRouter);
   app.use('/api/players', playersRouter);
+  app.use('/api/displayColor', displayColorRouter);
 
   app.use('/dashboard', dashboard);
 

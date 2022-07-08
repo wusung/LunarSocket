@@ -55,6 +55,20 @@ There are a few types of databases available:
 - `fileStorage` - Stores the data in the provided json file.
 - `Redis` - Stores the data in a Redis database; (Requires RedisJson)
 
+# Permission system
+
+You can add permissions for roles, the permission is very easy. The permissions
+for a command is simply `command.<NAME>` where `<NAME>` is the command name.
+For example `command.broadcast` is the permission for the broadcast command.
+
+Here is a list of the special permissions:
+
+- `*` - All permissions
+- `customization.displayColor` - Let the user put a custom icon color through the API
+- `customization.displayIconColor` - Let the user put a custom plus color through the API
+
+_More the come soon with customization 👀_
+
 # 🚀 Starting the server
 
 ```bash

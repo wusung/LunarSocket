@@ -37,6 +37,7 @@ export default class Player {
     equipped: OwnedFake<number[]>;
   };
   public adjustableHeightCosmetics: { [key: string]: number };
+  public customization: PlayerCustomization;
   public cosmetics: OwnedFake<{ id: number; equipped: boolean }[]>;
   public lastFriendList: FriendListPacket;
   public lastPlayerInfo: PlayerInfoPacket;
@@ -68,6 +69,10 @@ export default class Player {
       fake: [],
     };
     this.adjustableHeightCosmetics = {};
+    this.customization = {
+      displayColor: 0,
+      displayPlusColor: 0,
+    };
 
     this.disconnected = false;
     this.socket = socket;
@@ -205,14 +210,29 @@ export default class Player {
   }
 
   public getPlayerInfo() {
+    let color = this.role.data.iconColor;
+    let plusColor = this.role.data.plusColor;
+
+    const permissions = this.role.data.permissions;
+    if (
+      permissions.includes('*') ||
+      permissions.includes('customization.displayColor')
+    )
+      color = this.customization.displayColor;
+    if (
+      permissions.includes('*') ||
+      permissions.includes('customization.displayPlusColor')
+    )
+      plusColor = this.customization.displayPlusColor;
+
     return {
       cosmetics: [...this.cosmetics.fake, ...this.cosmetics.owned].filter(
         (c) => c.equipped
       ),
       premium: this.premium.fake,
-      color: this.role.data.iconColor,
+      color,
       clothCloak: this.clothCloak.fake,
-      plusColor: this.role.data.plusColor,
+      plusColor,
     };
   }
 
@@ -321,7 +341,7 @@ export default class Player {
     try {
       this.fakeSocket.close(1000);
     } catch (error) {}
-    removePlayer(this.uuid);
+    this.updateDatabase().then(() => removePlayer(this.uuid));
   }
 
   public getLatency(lunar?: boolean): Promise<number> {
@@ -354,6 +374,7 @@ export default class Player {
         fake: this.cosmetics.fake.filter((c) => c.equipped).map((c) => c.id),
       },
       adjustableHeightCosmetics: this.adjustableHeightCosmetics,
+      customization: this.customization,
     };
   }
 
@@ -383,6 +404,11 @@ export default class Player {
       cosmetic.equipped = true;
     }
     this.adjustableHeightCosmetics = data.adjustableHeightCosmetics ?? {};
+
+    this.customization = {
+      displayColor: data.customization?.displayColor || 0,
+      displayPlusColor: data.customization?.displayPlusColor || 0,
+    };
   }
 }
 
@@ -392,6 +418,12 @@ export interface DatabasePlayer {
   clothCloak: typeof Player.prototype.clothCloak;
   role: string;
   adjustableHeightCosmetics: { [key: string]: number };
+  customization: PlayerCustomization;
+}
+
+interface PlayerCustomization {
+  displayColor: number;
+  displayPlusColor: number;
 }
 
 export interface Handshake {

@@ -25,11 +25,7 @@ export default function (player: Player, packet: PlayerInfoPacket): void {
     const newPacket = new PlayerInfoPacket();
     newPacket.write({
       ...packet.data,
-      cosmetics: [...player.cosmetics.fake, ...player.cosmetics.owned],
-      premium: player.premium.fake,
-      color: player.role.data.iconColor,
-      clothCloak: player.clothCloak.fake,
-      plusColor: player.role.data.plusColor,
+      ...player.getPlayerInfo(),
     });
 
     player.lastPlayerInfo = newPacket;
