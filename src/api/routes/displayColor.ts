@@ -21,7 +21,17 @@ displayColorRouter.patch(
         .status(404)
         .send('Player not found, make sure the player is connected');
 
-    console.log('player check');
+    const permissions = player.role.data.permissions;
+    if (
+      !(
+        permissions.includes('*') ||
+        (permissions.includes('customization.displayColor') &&
+          permissions.includes('customization.displayPlusColor'))
+      )
+    )
+      return response
+        .status(401)
+        .send("Player doesn't have the right to use custom colors");
 
     player.customization.displayColor = request.body.displayColor;
     player.customization.displayPlusColor = request.body.displayPlusColor;
