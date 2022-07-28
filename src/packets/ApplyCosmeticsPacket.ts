@@ -40,6 +40,9 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
 
     this.buf.writeInt(data.unknownInt);
     this.buf.writeBoolean(data.petFlipShoulder);
+    this.buf.writeBoolean(data.unknownBooleanA);
+    this.buf.writeBoolean(data.unknownBooleanB);
+    this.buf.writeBoolean(data.unknownBooleanC);
 
     this.buf.finish();
   }
@@ -67,6 +70,9 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
 
     const unknownInt = this.buf.readInt();
     const petFlipShoulder = this.buf.readBoolean();
+    const unknownBooleanA = this.buf.readBoolean();
+    const unknownBooleanB = this.buf.readBoolean();
+    const unknownBooleanC = this.buf.readBoolean();
 
     this.data = {
       cosmetics,
@@ -76,6 +82,9 @@ export default class ApplyCosmeticsPacket extends Packet<ApplyCosmetics> {
       adjustableHeightCosmetics,
       unknownInt,
       petFlipShoulder,
+      unknownBooleanA,
+      unknownBooleanB,
+      unknownBooleanC,
     };
   }
 }
@@ -93,4 +102,7 @@ interface ApplyCosmetics {
   adjustableHeightCosmetics: { [key: string]: number };
   unknownInt: number;
   petFlipShoulder: boolean;
+  unknownBooleanA: boolean;
+  unknownBooleanB: boolean;
+  unknownBooleanC: boolean;
 }

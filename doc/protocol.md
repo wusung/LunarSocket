@@ -413,7 +413,10 @@ Sent when you equip a cosmetic or change ClothCloak state
   scaleHatWithHeadwear: 'boolean',
   adjustableHeightCosmetics: 'Map<Int, Float>',
   unknownInt: 'int',
-  petFlipShoulder: 'boolean'
+  petFlipShoulder: 'boolean',
+  unknownBooleanA: 'boolean',
+  unknownBooleanD: 'boolean',
+  unknownBooleanC: 'boolean'
 }
 ```
 
