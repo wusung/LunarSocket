@@ -44,7 +44,10 @@ git clone https://github.com/Solar-Tweaks/LunarSocket && cd LunarSocket && npm i
 # 🔧 Configuration
 
 Open the `config.example.json` file and edit the values.
-Once you have edited the file, save it as `config.json` and start the server.
+Once you have edited the file, save it as `config.json` and start the server. Or you can run `init` to generator config.json.
+```bash
+npm run init
+```
 
 # 📂 Databases
 
